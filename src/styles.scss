@@ -1,0 +1,50 @@
+@import "~bootstrap/scss/bootstrap.scss";
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  margin-top: 56px;
+  height: calc( 100vh - 56px );
+}
+
+.action-btn {
+  border: 0;
+  background-color: transparent;
+  padding: 0;
+  margin: 2px 4px;
+}
+.action-btn.green {
+  color: #27ae60;
+}
+.action-btn.green:hover {
+  color: #2ecc71;
+}
+.action-btn.red {
+  color: #c0392b;
+}
+.action-btn.red {
+  color: #e74c3c;
+}
+.action-btn:focus {
+  outline: none !important;
+}
+.editable {
+  cursor: pointer;
+}
+.editable:hover {
+  background-color: rgb(224, 224, 224);
+}
+
+.selectcard {
+  float: left;
+  width: 20rem;
+  margin: 0.5rem;
+  &.selected {
+    -webkit-box-shadow: 0px 0px 18px -1px rgba(0,140,255,1);
+    -moz-box-shadow: 0px 0px 18px -1px rgba(0,140,255,1);
+    box-shadow: 0px 0px 18px -1px rgba(0,140,255,1);
+  }
+}

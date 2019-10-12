@@ -1,0 +1,28 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="#">AGLight</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <ng-container *ngFor="let item of menuItems">
+            <li *ngIf="item" class="nav-item" routerLinkActive="active">
+                <a class="nav-link" routerLink="{{ item.url }}">{{ item.name }}</a>
+            </li>
+            <li class="nav-item disabled" *ngIf="item.seperator"><a class="nav-link disabled"></a></li>
+        </ng-container>
+        
+      </ul>
+      <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link" href (click)="toggleSettingsDropdown($event)">
+                    <i class="fas fa-cog"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" [class.show]="showSettingsDropdown">
+                    <a class="dropdown-item" routerLinkActive="active" (click)="toggleSettingsDropdown($event)" routerLink="avalibleHeads">Heads</a>
+                    <a class="dropdown-item" routerLinkActive="active" (click)="toggleSettingsDropdown($event)" routerLink="cloud">Cloud</a>
+                </div>
+            </li>
+      </ul>
+    </div>
+  </nav>
