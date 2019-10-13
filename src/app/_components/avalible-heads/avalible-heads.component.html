@@ -1,11 +1,11 @@
 <button class="btn btn-success" (click)="save()">Save</button>
-<table class="table table-striped table-sm">
+<table class="table table-striped table-sm table-fit">
     <thead>
         <tr>
-            <td><button class="action-btn green" (click)="addHead()"><i class="fas fa-plus"></i></button></td>
+            <td class="verysmallwidth"><button class="action-btn green" (click)="addHead()"><i class="fas fa-plus"></i></button></td>
             <td>Name</td>
             <td>Manufacturer</td>
-            <td>Channels</td>
+            <td class="halfwidth">Channels</td>
         </tr>
     </thead>
     <tbody>
@@ -14,11 +14,12 @@
             <td class="editable" (click)="change('name', i)"><i class="fas fa-pen"></i> {{head.name}}</td>
             <td class="editable" (click)="change('manufacturer', i)"><i class="fas fa-pen"></i> {{head.manufacturer}}</td>
             <td>
-                <table>
+                <button class="btn btn-link" (click)="toggleShowChannelModes(i)">{{head.showChannelModes ? "Verstecken" : "Anzeigen" }}</button>
+                <table class="fullwidth" *ngIf="head.showChannelModes">
                     <thead>
                         <tr>
-                            <td><button class="action-btn green" (click)="addChannelMode(i)"><i class="fas fa-plus"></i></button></td>
-                            <td>Channel Mode</td>
+                            <td class="verysmallwidth"><button class="action-btn green" (click)="addChannelMode(i)"><i class="fas fa-plus"></i></button></td>
+                            <td class="smallwidth">Channel Mode</td>
                             <td>Channel Config</td>
                         </tr>
                     </thead>
@@ -26,12 +27,12 @@
                         
                         <tr *ngFor="let channelMode of head.channelModes; let j = index">
                             <td><button class="action-btn red" (click)="deleteChannelMode(i, j)"><i class="fas fa-times"></i></button></td>
-                            <td>{{channelMode.channels.length}}</td>
+                            <td>{{channelMode.channels | channelNumberSum}}</td>
                             <td>
-                                <table>
+                                <table class="fullwidth">
                                     <thead>
                                         <tr>
-                                            <td><button class="action-btn green" (click)="addChannel(i,j)"><i class="fas fa-plus"></i></button></td>
+                                            <td class="verysmallwidth"><button class="action-btn green" (click)="addChannel(i,j)"><i class="fas fa-plus"></i></button></td>
                                             <td>Channel</td>
                                             <td>Type</td>
                                             <td>Name</td>

@@ -8,18 +8,15 @@ const createElement = require("@cloudcmd/create-element");
 
 const keyDown = currify(keyDown_);
 
-const BUTTON_OK = {
-    ok: "OK",
-};
-
 const BUTTON_OK_CANCEL = {
-    cancel: "Cancel",
     ok: "OK",
+    // tslint:disable-next-line: object-literal-sort-keys
+    cancel: "Cancel",
 };
 
 const zIndex = store(100);
 
-exports.select = (title, msg, choosableOptions, options) => {
+function select(title, msg, choosableOptions, options) {
     let optionsHTML = "";
     choosableOptions.forEach((option) => {
         optionsHTML += `<div class="card selectcard" data-value='${option.value}'>
@@ -30,20 +27,12 @@ exports.select = (title, msg, choosableOptions, options) => {
         </div>`;
       });
     const valueStr = `<input style="display: none !important;" value="" data-name="js-input">${optionsHTML}`;
-    const buttons = getButtons(options) || BUTTON_OK_CANCEL;
+    const buttons = BUTTON_OK_CANCEL;
 
     return showDialog(title, msg, valueStr, buttons, options);
-};
-
-function getButtons(options = {}) {
-    const buttons = options;
-
-    if (!buttons) {
-        return null;
-    }
-
-    return buttons;
 }
+
+export { select };
 
 function getTemplate(title, msg, value, buttons) {
     const encodedMsg = msg.replace(/\n/g, "<br>");

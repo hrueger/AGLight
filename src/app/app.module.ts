@@ -18,6 +18,7 @@ import { NavbarComponent } from "./_components/navbar/navbar.component";
 import { ShowComponent } from "./_components/show/show.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { ChannelNumberSumPipe } from "./_pipes/channel-number-sum.pipe";
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -36,6 +37,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     ConfigureShowComponent,
     ShowComponent,
     CloudComponent,
+    ChannelNumberSumPipe,
   ],
   imports: [
     BrowserModule,

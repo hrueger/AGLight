@@ -1,13 +1,13 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { AvalibleHeadsComponent } from "./_components/avalible-heads/avalible-heads.component";
+import { CloudComponent } from "./_components/cloud/cloud.component";
 import { ConfigureShowComponent } from "./_components/configure-show/configure-show.component";
 import { EffectsComponent } from "./_components/effects/effects.component";
 import { GroupsComponent } from "./_components/groups/groups.component";
 import { HeadsComponent } from "./_components/heads/heads.component";
 import { HomeComponent } from "./_components/home/home.component";
 import { ShowComponent } from "./_components/show/show.component";
-import { CloudComponent } from "./_components/cloud/cloud.component";
-import { AvalibleHeadsComponent } from "./_components/avalible-heads/avalible-heads.component";
 
 const routes: Routes = [
   {

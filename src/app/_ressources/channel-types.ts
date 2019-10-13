@@ -20,14 +20,20 @@ const channelTypes  = [
   {
     description: "2x2 Channels for more exact x and y rotation.",
     length: 4,
-    name: "Rotation",
-    value: "rotation",
+    name: "Detailed Rotation",
+    value: "detailedrotation",
   },
   {
     description: "1 Channel for controlling the strength of something",
     length: 1,
     name: "Strength",
     value: "normal",
+  },
+  {
+    description: "1 Channel for setting a fixed value, for example to enable a specific mode of a head.",
+    length: 1,
+    name: "Fixed Value",
+    value: "fixed",
   },
 ];
 export { channelTypes };

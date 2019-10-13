@@ -1,7 +1,8 @@
-import { Component, NgZone } from "@angular/core";
+import { Component } from "@angular/core";
 import * as smalltalk from "smalltalk";
 import { channelTypes } from "../../_ressources/channel-types";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
+import { Store } from "../../_utils/store";
 
 @Component({
   selector: "app-avalible-heads",
@@ -10,28 +11,42 @@ import * as smalltalkSelect from "../../_utils/smalltalk-select";
 })
 export class AvalibleHeadsComponent {
   public heads: any[] = [];
+  private store: Store;
 
-  constructor(private ngZone: NgZone) {
-    // tslint:disable-next-line: no-string-literal
-    window["angularComponentRef"] = {component: this, zone: ngZone};
+  public ngOnInit() {
+    this.store = new Store({
+      configName: "heads",
+      defaults: {
+        heads: [],
+      },
+    });
+    this.heads = this.store.get("heads");
+  }
+
+  public toggleShowChannelModes(i) {
+    this.heads[i].showChannelModes = (this.heads[i].showChannelModes ? !this.heads[i].showChannelModes : true);
+    this.save();
   }
 
   public deleteHead(i) {
     smalltalk.confirm("Detele head",
     "Are you sure that this head should be deleted? You won't be able to restore it.").then(() => {
       this.heads.splice(i, 1);
+      this.save();
     }, () => undefined);
   }
   public deleteChannelMode(i, j) {
     smalltalk.confirm("Detele channel mode",
     "Are you sure that this channel mode should be deleted? You won't be able to restore it.").then(() => {
       this.heads[i].channelModes.splice(j, 1);
+      this.save();
     }, () => undefined);
   }
   public deleteChannel(i, j, k) {
     smalltalk.confirm("Detele channel",
     "Are you sure that this channel should be deleted? You won't be able to restore it.").then(() => {
       this.heads[i].channelModes[j].channels.splice(k, 1);
+      this.save();
     }, () => undefined);
   }
 
@@ -43,9 +58,11 @@ export class AvalibleHeadsComponent {
       manufacturer: "Unnamed Company",
       name: "Unnamed Head",
     });
+    this.save();
   }
   public addChannelMode(i) {
     this.heads[i].channelModes.push(this.createChannelMode());
+    this.save();
   }
   public addChannel(i, j) {
     let n;
@@ -55,6 +72,7 @@ export class AvalibleHeadsComponent {
       n = 1;
     }
     this.heads[i].channelModes[j].channels.push(this.createChannel(n));
+    this.save();
   }
 
   public createChannelMode() {
@@ -74,7 +92,7 @@ export class AvalibleHeadsComponent {
   }
 
   public save() {
-    console.log(this.heads);
+    this.store.set("heads", this.heads);
   }
   public change(field, i, j = 0, k = 0) {
     let val;
@@ -125,22 +143,18 @@ export class AvalibleHeadsComponent {
               this.heads[i].channelModes[j].channels[k].name = res;
               break;
             case "channelNumber":
-              this.heads[i].channelModes[j].channels[k].number = res;
+              this.heads[i].channelModes[j].channels[k].number = parseInt(res, undefined);
               break;
           }
+          this.save();
         }
       }, () => undefined);
     } else {
       smalltalkSelect.select(title, message, options, {}).then((res) => {
         this.heads[i].channelModes[j].channels[k].type = options.filter((option) => option.value == res)[0].name;
         this.heads[i].channelModes[j].channels[k].length = options.filter((option) => option.value == res)[0].length;
+        this.save();
       }, () => undefined);
     }
   }
-
-  public ngOnDestroy() {
-    // tslint:disable-next-line: no-string-literal
-    window["angularComponent"] = null;
-  }
-
 }
