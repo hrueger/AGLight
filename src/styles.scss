@@ -22,12 +22,28 @@ html, body {
 .action-btn.green:hover {
   color: #2ecc71;
 }
+
 .action-btn.red {
   color: #c0392b;
 }
-.action-btn.red {
+.action-btn.red:hover {
   color: #e74c3c;
 }
+
+.action-btn.yellow {
+  color: #f1c40f;
+}
+.action-btn.yellow:hover {
+  color: #fddd5b;
+}
+
+.action-btn.blue {
+  color: #2980b9;
+}
+.action-btn.blue:hover {
+  color: #3498db;
+}
+
 .action-btn:focus {
   outline: none !important;
 }

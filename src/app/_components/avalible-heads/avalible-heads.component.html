@@ -3,9 +3,9 @@
     <thead>
         <tr>
             <td class="verysmallwidth"><button class="action-btn green" (click)="addHead()"><i class="fas fa-plus"></i></button></td>
-            <td>Name</td>
-            <td>Manufacturer</td>
-            <td class="halfwidth">Channels</td>
+            <td class="middlewidth">Name</td>
+            <td class="middlewidth">Manufacturer</td>
+            <td class="">Channels</td>
         </tr>
     </thead>
     <tbody>
@@ -14,7 +14,7 @@
             <td class="editable" (click)="change('name', i)"><i class="fas fa-pen"></i> {{head.name}}</td>
             <td class="editable" (click)="change('manufacturer', i)"><i class="fas fa-pen"></i> {{head.manufacturer}}</td>
             <td>
-                <button class="btn btn-link" (click)="toggleShowChannelModes(i)">{{head.showChannelModes ? "Verstecken" : "Anzeigen" }}</button>
+                <button class="action-btn yellow" (click)="toggleShowChannelModes(i)"><i [class]='head.showChannelModes ? "fas fa-eye-slash" : "fas fa-eye"'></i></button>
                 <table class="fullwidth" *ngIf="head.showChannelModes">
                     <thead>
                         <tr>
@@ -36,15 +36,39 @@
                                             <td>Channel</td>
                                             <td>Type</td>
                                             <td>Name</td>
+                                            <td class="verysmallwidth"></td>
+                                            <td>Config</td>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr *ngFor="let channel of channelMode.channels; let k = index">
-                                            
                                             <td><button class="action-btn red" (click)="deleteChannel(i, j, k)"><i class="fas fa-times"></i></button></td>
                                             <td class="editable" (click)="change('channelNumber', i, j, k)"><i class="fas fa-pen"></i> {{channel.number}}{{channel.length > 1 ? " - " + (channel.number + channel.length - 1) : ""}}</td>
                                             <td class="editable" (click)="change('channelType', i, j, k)"><i class="fas fa-pen"></i> {{channel.type}}</td>
                                             <td class="editable" (click)="change('channelName', i, j, k)"><i class="fas fa-pen"></i> {{channel.name}}</td>
+                                            <td><button *ngIf="channel.type == 'Steps'" class="action-btn blue" (click)="toggleShowChannelConfig(i,j,k)"><i [class]='channel.showChannelConfig ? "fas fa-eye-slash" : "fas fa-eye"'></i></button></td>
+                                            <td>
+                                                <table  class="fullwidth" *ngIf="channel.showChannelConfig">
+                                                    <thead>
+                                                        <tr>
+                                                            <td class="verysmallwidth"><button class="action-btn green" (click)="addChannelConfigNode(i,j,k)"><i class="fas fa-plus"></i></button></td>
+                                                            <td>Start</td>
+                                                            <td>End</td>
+                                                            <td>Mode</td>
+                                                            <td>Name</td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let node of channel.configNodes; let l = index">
+                                                            <td class="verysmallwidth"><button class="action-btn red" (click)="deleteChannelConfigNode(i,j,k,l)"><i class="fas fa-times"></i></button></td>
+                                                            <td class="editable" (click)="change('start', i, j, k, l)"><i class="fas fa-pen"></i> {{node.start}}</td>
+                                                            <td class="editable" (click)="change('end', i, j, k, l)"><i class="fas fa-pen"></i> {{node.end}}</td>
+                                                            <td class="editable" (click)="change('configNodeMode', i, j, k, l)"><i class="fas fa-pen"></i> {{node.mode}}</td>
+                                                            <td class="editable" (click)="change('configNodeName', i, j, k, l)"><i class="fas fa-pen"></i> {{node.name}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>

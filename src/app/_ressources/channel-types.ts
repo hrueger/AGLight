@@ -6,12 +6,6 @@ const channelTypes  = [
     value: "rgb",
   },
   {
-    description: "1 Channel with fixed values for some predefined colors.",
-    length: 1,
-    name: "Color Fixed",
-    value: "color",
-  },
-  {
     description: "2 Channels for the x and y rotation.",
     length: 2,
     name: "Rotation",
@@ -26,14 +20,14 @@ const channelTypes  = [
   {
     description: "1 Channel for controlling the strength of something",
     length: 1,
-    name: "Strength",
-    value: "normal",
+    name: "Linear",
+    value: "linear",
   },
   {
-    description: "1 Channel for setting a fixed value, for example to enable a specific mode of a head.",
+    description: "1 Channel for setting a fixed value in multiple steps, for example to enable a specific mode.",
     length: 1,
-    name: "Fixed Value",
-    value: "fixed",
+    name: "Steps",
+    value: "steps",
   },
 ];
 export { channelTypes };
