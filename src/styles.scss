@@ -44,6 +44,12 @@ html, body {
   color: #3498db;
 }
 
+.action-btn.purple {
+  color: #8e44ad;
+}
+.action-btn.purple:hover {
+  color: #9b59b6;
+}
 .action-btn:focus {
   outline: none !important;
 }

@@ -1,6 +1,9 @@
 import { Pipe, PipeTransform } from "@angular/core";
 
-@Pipe({name: "channelNumberSum"})
+@Pipe({
+  name: "channelNumberSum",
+  pure: false,
+})
 export class ChannelNumberSumPipe implements PipeTransform {
   public transform(input: any[], key: string): any {
       if (input) {

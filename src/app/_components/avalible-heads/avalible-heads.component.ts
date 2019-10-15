@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectorRef } from "@angular/core";
 import * as smalltalk from "smalltalk";
 import { channelTypes } from "../../_ressources/channel-types";
 import { configNodeModes } from "../../_ressources/config-node-modes";
@@ -12,7 +12,9 @@ import { Store } from "../../_utils/store";
 })
 export class AvalibleHeadsComponent {
   public heads: any[] = [];
+  public clipboard: any = [];
   private store: Store;
+
 
   public ngOnInit() {
     this.store = new Store({
@@ -89,10 +91,41 @@ export class AvalibleHeadsComponent {
     this.save();
   }
   public addChannelConfigNode(i: number, j: number, k: number) {
+    let start = 0;
+    const end = 255;
     if (!this.heads[i].channelModes[j].channels[k].configNodes) {
       this.heads[i].channelModes[j].channels[k].configNodes = [];
+    } else {
+      start = 254;
     }
-    this.heads[i].channelModes[j].channels[k].configNodes.push(this.createConfigNode());
+    this.heads[i].channelModes[j].channels[k].configNodes.push(this.createConfigNode(start, end));
+    this.sortConfigNodes(i, j, k);
+  }
+  public autoFillConfigNodes(i: number, j: number, k: number) {
+    smalltalk.prompt("Autofill steps", "How wide should each step be?").then((res) => {
+      if (res) {
+        res = parseInt(res, undefined);
+        if (res > 0) {
+          let start;
+          const end = 255;
+          if (this.heads[i].channelModes[j].channels[k].configNodes
+            && this.heads[i].channelModes[j].channels[k].configNodes.length) {
+            start = this.heads[i].channelModes[j].channels[k].configNodes.reduce((prev, curr) => {
+              return prev.start < curr.end ? prev : curr;
+            }).end + 1;
+          } else {
+            start = 0;
+          }
+          let counter = start;
+          while (counter < end) {
+            this.heads[i].channelModes[j].channels[k].configNodes.push(
+              this.createConfigNode(counter, counter + res - 1));
+            counter += res;
+          }
+        }
+        this.save();
+      }
+    });
   }
 
   public createChannelMode() {
@@ -110,13 +143,29 @@ export class AvalibleHeadsComponent {
       type: "Please select",
     };
   }
-  public createConfigNode() {
+  public createConfigNode(start, end) {
     return {
-      end: 255,
-      mode: "Linear",
+      end,
+      mode: "Equal mode",
       name: "Unnamed step",
-      start: 0,
+      start,
     };
+  }
+
+  public copyChannelConfigNodes(i: number, j: number, k: number) {
+    this.clipboard = this.heads[i].channelModes[j].channels[k].configNodes;
+  }
+  public pasteChannelConfigNodes(i: number, j: number, k: number) {
+    smalltalk.confirm("Paste channel steps",
+    "Are you sure that the steps sould be pasted here? You won't be able to undo it.").then(() => {
+      if (!this.heads[i].channelModes[j].channels[k].configNodes) {
+        this.heads[i].channelModes[j].channels[k].configNodes = [];
+      }
+      this.heads[i].channelModes[j].channels[k].configNodes =
+        this.heads[i].channelModes[j].channels[k].configNodes.concat(this.clipboard);
+      this.clipboard = [];
+      this.save();
+    }, () => undefined);
   }
 
   public save() {
@@ -162,11 +211,6 @@ export class AvalibleHeadsComponent {
         title = "Edit step start value";
         message = "Enter the start value of that step (0 - 255):";
         break;
-      case "end":
-        val = this.heads[i].channelModes[j].channels[k].configNodes[l].end;
-        title = "Edit step end value";
-        message = "Enter the end value of that step (0 - 255):";
-        break;
       case "configNodeName":
         val = this.heads[i].channelModes[j].channels[k].configNodes[l].name;
         title = "Edit step name";
@@ -203,13 +247,15 @@ export class AvalibleHeadsComponent {
               break;
             case "channelNumber":
               this.heads[i].channelModes[j].channels[k].number = parseInt(res, undefined);
+              this.sortChannels(i, j);
               break;
 
             case "start":
               this.heads[i].channelModes[j].channels[k].configNodes[l].start = parseInt(res, undefined);
-              break;
-            case "end":
-              this.heads[i].channelModes[j].channels[k].configNodes[l].end = parseInt(res, undefined);
+              this.sortConfigNodes(i, j, k);
+              if (this.heads[i].channelModes[j].channels[k].configNodes[l - 1]) {
+                this.heads[i].channelModes[j].channels[k].configNodes[l - 1].end = parseInt(res, undefined) - 1;
+              }
               break;
             case "configNodeName":
               this.heads[i].channelModes[j].channels[k].configNodes[l].name = res;
@@ -239,5 +285,36 @@ export class AvalibleHeadsComponent {
         this.save();
       }, () => undefined);
     }
+  }
+
+  private sortConfigNodes(i: number, j: number, k: number) {
+    this.heads[i].channelModes[j].channels[k].configNodes =
+      this.heads[i].channelModes[j].channels[k].configNodes.sort((a, b) => {
+        if (a.start > b.start) {
+          return 1;
+        }
+        if (a.start < b.start) {
+          return -1;
+        }
+        if (a.end > b.end) {
+          return 1;
+        }
+        if (a.end < b.end) {
+          return -1;
+        }
+        return 0;
+    });
+  }
+  private sortChannels(i: number, j: number) {
+    this.heads[i].channelModes[j].channels =
+      this.heads[i].channelModes[j].channels.sort((a, b) => {
+        if (a.number > b.number) {
+          return 1;
+        }
+        if (a.number < b.number) {
+          return -1;
+        }
+        return 0;
+    });
   }
 }

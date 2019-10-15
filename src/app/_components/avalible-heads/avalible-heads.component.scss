@@ -13,4 +13,7 @@ thead tr td {
 }
 .verysmallwidth {
     width: 1em;
+    &.double {
+        width: 3.5em;
+    }
 }
