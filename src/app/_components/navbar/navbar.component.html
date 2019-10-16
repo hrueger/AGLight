@@ -7,7 +7,7 @@
       <ul class="navbar-nav mr-auto">
         <ng-container *ngFor="let item of menuItems">
             <li *ngIf="item" class="nav-item" routerLinkActive="active">
-                <a class="nav-link" routerLink="{{ item.url }}">{{ item.name }}</a>
+                <a class="nav-link" *ngIf="showLoaded" routerLink="{{ item.url }}">{{ item.name }}</a>
             </li>
             <li class="nav-item disabled" *ngIf="item.seperator"><a class="nav-link disabled"></a></li>
         </ng-container>
@@ -16,7 +16,7 @@
       <ul class="navbar-nav ml-auto">
             <li class="nav-item dropdown">
                 <a class="nav-link" href (click)="toggleSettingsDropdown($event)">
-                    <i class="fas fa-cog"></i>
+                    <i class="fas fa-cog clickable"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" [class.show]="showSettingsDropdown">
                     <a class="dropdown-item" routerLinkActive="active" (click)="toggleSettingsDropdown($event)" routerLink="avalibleHeads">Heads</a>

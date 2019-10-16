@@ -23,7 +23,7 @@ export class AvalibleHeadsComponent {
         heads: [],
       },
     });
-    this.heads = this.store.get("heads");
+    this.heads = this.store.get();
   }
 
   public toggleShowChannelModes(i: number) {
@@ -169,7 +169,7 @@ export class AvalibleHeadsComponent {
   }
 
   public save() {
-    this.store.set("heads", this.heads);
+    this.store.set(this.heads);
   }
   public change(field: string, i: number, j: number = 0, k: number = 0, l: number = 0) {
     let val;

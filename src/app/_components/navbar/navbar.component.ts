@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { ShowService } from "../../_services/show.service";
 
 @Component({
   selector: "app-navbar",
@@ -6,6 +7,7 @@ import { Component } from "@angular/core";
   templateUrl: "./navbar.component.html",
 })
 export class NavbarComponent {
+  public showLoaded: boolean = false;
   public showSettingsDropdown = false;
   public menuItems: any[] = [
     {
@@ -35,6 +37,11 @@ export class NavbarComponent {
       url: "show",
     },
   ];
+  constructor(private showService: ShowService) {}
+
+  public ngAfterContentChecked() {
+    this.showLoaded = this.showService.showLoaded;
+  }
   public toggleSettingsDropdown(e) {
     e.stopPropagation();
     e.preventDefault();

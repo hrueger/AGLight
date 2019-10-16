@@ -1,5 +1,127 @@
-<div class="container">
-  <h1 class="title">
-    Hi
-  </h1>
+<div class="row p-5">
+  <div class="col">
+    <div class="card perfectheight">
+      <div class="row no-gutters">
+        <div class="col-md-4 card-img-holder perfectheight bg-success">
+          <div class="card-img"><i class="fas fa-plus-circle"></i></div>
+        </div>
+        <div class="col-md-8">
+          <div class="card-header">Create new show</div>
+          <div class="card-body">
+            <p class="card-text">Start by creating a new empty show.</p>
+            <button (click)="newShow()" class="btn btn-success">New</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card perfectheight">
+      <div class="row no-gutters">
+        <div class="col-md-4 card-img-holder perfectheight bg-primary">
+            <div class="card-img"><i class="fas fa-list-ul"></i></div>
+        </div>
+        <div class="col-md-8">
+          <div class="card-header">Open recent</div>
+          <div class="card-body">
+            <p class="card-text">Choose a show from the recent shows menu.</p>
+            <div class="dropdown">
+              <button
+                (click)="showRecentDropdown = !showRecentDropdown"
+                class="btn btn-primary dropdown-toggle"
+              >
+                Recent
+              </button>
+              <div class="dropdown-menu" [class.show]="showRecentDropdown">
+                <a
+                  *ngFor="let path of recentShows; let i = index"
+                  class="dropdown-item"
+                  (click)="recentShow(i)"
+                  >{{ path }}</a
+                >
+                <a
+                  class="dropdown-item disabled"
+                  *ngIf="!recentShows || !recentShows.length"
+                  >No recent shows</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card perfectheight">
+      <div class="row no-gutters">
+        <div class="col-md-4 card-img-holder perfectheight bg-info">
+            <div class="card-img"><i class="fas fa-folder-open"></i></div>
+        </div>
+        <div class="col-md-8">
+          <div class="card-header">Open show</div>
+          <div class="card-body">
+            <p class="card-text">Open a show file from explorer</p>
+            <button (click)="openShow()" class="btn btn-info">Open</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row p-5">
+  <div class="col">
+    <div class="card perfectheight">
+      <div class="row no-gutters">
+        <div class="col-md-4 card-img-holder perfectheight bg-danger">
+            <div class="card-img"><i class="fas fa-lightbulb"></i></div>
+        </div>
+        <div class="col-md-8">
+          <div class="card-header">Configure Heads</div>
+          <div class="card-body">
+            <p class="card-text">
+              Add new products, channel modes of configurations.
+            </p>
+            <a routerLink="/avalibleHeads" class="btn btn-danger">Configure</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card perfectheight">
+      <div class="row no-gutters">
+        <div class="col-md-4 card-img-holder perfectheight bg-secondary">
+            <div class="card-img"><i class="fas fa-cloud-upload-alt"></i></div>
+        </div>
+        <div class="col-md-8">
+          <div class="card-header">Sync with web</div>
+          <div class="card-body">
+            <p class="card-text">
+              Down- or upload the library to the server to share or get the
+              newest version.
+            </p>
+            <a routerLink="/cloud" class="btn btn-secondary">Sync</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card perfectheight">
+      <div class="row no-gutters">
+        <div class="col-md-4 card-img-holder perfectheight bg-warning">
+            <div class="card-img"><i class="fas fa-info-circle"></i></div>
+        </div>
+        <div class="col-md-8">
+          <div class="card-header">Info</div>
+          <div class="card-body">
+            <p class="card-text">
+              Dive into this software by reading the manual, looking how it was built and viewing the licenses of the used components.
+            </p>
+            <a routerLink="/about" class="btn btn-warning">Read</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
