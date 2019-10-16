@@ -5,19 +5,23 @@ const fs = require("fs");
 class Store {
     private path: string;
     private data: any[];
-    constructor(opts) {
+    constructor(opts: {
+      configName: string,
+      defaults: any
+    }) {
         const userDataPath = (electron.app || electron.remote.app).getPath("userData");
         this.path = path.join(userDataPath, opts.configName + ".json");
         this.data = parseDataFile(this.path, opts.defaults);
     }
 
-    public get(key) {
-        return this.data[key];
+    public get() {
+        return this.data;
     }
 
-    public set(key, val) {
-        this.data[key] = val;
-        fs.writeFileSync(this.path, JSON.stringify(this.data));
+    public set(val) {
+        this.data = val;
+        const data = JSON.stringify(this.data);
+        fs.writeFileSync(this.path, data);
     }
 }
 
