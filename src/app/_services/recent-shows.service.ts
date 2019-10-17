@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import * as fs from "fs";
 import { Store } from "../_utils/store";
 
 @Injectable({
@@ -26,7 +27,12 @@ export class RecentShowsService {
     this.data.push(path);
     this.store.set(this.data);
   }
-  public get(reverse: boolean = true) {
+  public get(reverse: boolean = true, doExistingCheck = true) {
+    if (doExistingCheck) {
+      this.data = this.data.filter((path) => {
+        return (fs.existsSync(path) ? true : false);
+      });
+    }
     if (reverse) {
       return this.data.reverse();
     } else {
