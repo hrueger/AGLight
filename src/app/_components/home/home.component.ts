@@ -31,13 +31,13 @@ export class HomeComponent {
       message: "Create show file",
       title: "Create show file",
     });
-    if (this.showService.createShow(path)) {
+    if (path && this.showService.createShow(path)) {
       this.router.navigate(["heads"]);
     }
   }
   public recentShow(i) {
     const path = this.recentShows[i];
-    if (this.showService.createShow(path)) {
+    if (this.showService.loadShow(path)) {
       this.router.navigate(["heads"]);
     }
   }
@@ -54,7 +54,7 @@ export class HomeComponent {
       properties: ["openFile"],
       title: "Open show file",
     })[0];
-    if (this.showService.loadShow(path)) {
+    if (path && this.showService.loadShow(path)) {
       this.router.navigate(["heads"]);
     }
   }
