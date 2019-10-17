@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { remote } from "electron";
 import { ShowService } from "../../_services/show.service";
 
 @Component({
@@ -7,8 +8,10 @@ import { ShowService } from "../../_services/show.service";
   templateUrl: "./navbar.component.html",
 })
 export class NavbarComponent {
+  public isMaximized: boolean = true;
   public showLoaded: boolean = false;
   public showSettingsDropdown = false;
+
   public menuItems: any[] = [
     {
       name: "Heads",
@@ -33,8 +36,12 @@ export class NavbarComponent {
       url: "show",
     },
   ];
+  private win: any;
   constructor(private showService: ShowService) {}
 
+  public ngOnInit() {
+    this.win =  remote.getCurrentWindow();
+  }
   public ngAfterContentChecked() {
     this.showLoaded = this.showService.showLoaded;
   }
@@ -42,5 +49,21 @@ export class NavbarComponent {
     e.stopPropagation();
     e.preventDefault();
     this.showSettingsDropdown = !this.showSettingsDropdown;
+  }
+
+  public minWindow() {
+    this.win.minimize();
+  }
+  public maxWindow() {
+    if (this.win.isMaximized()) {
+      this.win.unmaximize();
+      this.isMaximized = false;
+    } else {
+      this.win.maximize();
+      this.isMaximized = true;
+    }
+  }
+  public closeWindow() {
+    this.win.close();
   }
 }
