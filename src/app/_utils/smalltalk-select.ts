@@ -19,7 +19,7 @@ const zIndex = store(100);
 function select(title, msg, choosableOptions, options) {
     let optionsHTML = "";
     choosableOptions.forEach((option) => {
-        optionsHTML += `<div class="card selectcard" data-value='${option.value}'>
+        optionsHTML += `<div class="card selectcard" data-value='${JSON.stringify(option.value)}'>
           <h5 class="card-header">${option.name}</h5>
           <div class="card-body">
             ${option.description}
@@ -259,8 +259,7 @@ function closeDialog(el, dialog, ok, cancel) {
 
     const value = find(dialog, ["input"])
         .reduce((value, elem) => elem.value, null);
-
-    ok(value);
+    ok(JSON.parse(value));
     remove(dialog);
 }
 
