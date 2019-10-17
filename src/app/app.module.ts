@@ -22,6 +22,9 @@ import { ShowComponent } from "./_components/show/show.component";
 import { ChannelNumberSumPipe } from "./_pipes/channel-number-sum.pipe";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { EffectAffectsSumPipe } from './_pipes/effect-affects-sum.pipe';
+import { FirstLetterUppercasePipe } from './_pipes/first-letter-uppercase.pipe';
+import { ConfigureEffectComponent } from './_components/configure-effect/configure-effect.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -44,6 +47,9 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     InfoComponent,
     LicensesComponent,
     ManualComponent,
+    EffectAffectsSumPipe,
+    FirstLetterUppercasePipe,
+    ConfigureEffectComponent,
   ],
   imports: [
     BrowserModule,

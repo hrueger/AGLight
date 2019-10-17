@@ -3,6 +3,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { AboutComponent } from "./_components/about/about.component";
 import { AvalibleHeadsComponent } from "./_components/avalible-heads/avalible-heads.component";
 import { CloudComponent } from "./_components/cloud/cloud.component";
+import { ConfigureEffectComponent } from "./_components/configure-effect/configure-effect.component";
 import { ConfigureShowComponent } from "./_components/configure-show/configure-show.component";
 import { EffectsComponent } from "./_components/effects/effects.component";
 import { HeadsComponent } from "./_components/heads/heads.component";
@@ -32,6 +33,11 @@ const routes: Routes = [
     canActivate: [ShowLoadedGuard],
     component: EffectsComponent,
     path: "effects",
+  },
+  {
+    canActivate: [ShowLoadedGuard],
+    component: ConfigureEffectComponent,
+    path: "configureEffect/:head/:effect",
   },
   {
     canActivate: [ShowLoadedGuard],

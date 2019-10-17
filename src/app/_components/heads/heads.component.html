@@ -34,9 +34,10 @@
                   <td>Manufacturer</td>
                   <td>Channel mode</td>
                   <td>Number</td>
-                  <td class="">Total address span</td>
-                  <td>Start address</td>
-                  <td>End address</td>
+                  <td class="">TAS</td>
+                  <td>Start addr.</td>
+                  <td>End addr.</td>
+                  <td>Effects</td>
               </tr>
           </thead>
           <tbody>
@@ -50,6 +51,28 @@
                   <td>{{head.number * (head.channelMode.channels | channelNumberSum)}}</td>
                   <td class="editable" (click)="change('startAddress', i)"><i class="fas fa-pen"></i> {{head.startAddress}}</td>
                   <td>{{head.startAddress + (head.number * (head.channelMode.channels | channelNumberSum)) - 1}}</td>
+                  <td>
+                    <table>
+                      <thead>
+                        <tr>
+                          <td class="verysmallwidth"><button class="action-btn green" (click)="addEffect(i)"><i class="fas fa-plus"></i></button></td>
+                          <td>Effect</td>
+                          <td>Type</td>
+                          <td>Affects</td>
+                          <td class="verysmallwidth"></td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let effect of head.effects; let j = index">
+                          <td><button class="action-btn red" (click)="deleteEffect(i, j)"><i class="fas fa-times"></i></button></td>
+                          <td class="editable" (click)="change('effect', i, j)"><i class="fas fa-pen"></i> {{effect.name}}</td>
+                          <td>{{effect.group | firstLetterUppercase}}</td>
+                          <td [innerHTML]="effect.affects | effectAffectsSum"></td>
+                          <td><button class="action-btn blue" (click)="configureEffect(i, j)"><i class="fas fa-cog"></i></button></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
               </tr>
           </tbody>
       </table>

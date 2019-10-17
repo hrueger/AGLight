@@ -1,5 +1,7 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import * as smalltalk from "smalltalk";
+import { effects } from "../../_ressources/effects";
 import { ShowService } from "../../_services/show.service";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
 import { Store } from "../../_utils/store";
@@ -16,7 +18,7 @@ export class HeadsComponent implements OnInit {
   private heads: any[];
   private displayHeads: any[];
 
-  constructor(private showService: ShowService, private cdr: ChangeDetectorRef) {}
+  constructor(private showService: ShowService, private router: Router) {}
 
   public ngOnInit() {
     this.store = new Store({
@@ -29,7 +31,6 @@ export class HeadsComponent implements OnInit {
     this.displayHeads = this.heads;
     this.sortDisplayHeads();
     this.usedHeads = this.showService.getData("usedHeads");
-    console.log(this.usedHeads);
     /*const that = this;
     window.setTimeout(() => {
       that.ngOnInit();
@@ -68,6 +69,26 @@ export class HeadsComponent implements OnInit {
         this.save();
       }, () => undefined);
     }, () => undefined);
+  }
+
+  public addEffect(i: number) {
+    const groups = this.getSelectOptionsFromEffectGroups();
+    smalltalkSelect.select("Add effect",
+      "Choose the effect group to see the effects listed in there", groups, {}).then((g: string) => {
+        const e = this.getSelectOptionsFromEffects(g);
+        smalltalkSelect.select("Add effect",
+          "Choose the effect to add to this head", e, {}).then((res) => {
+            if (!this.usedHeads[i].effects) {
+              this.usedHeads[i].effects = [];
+            }
+            this.usedHeads[i].effects.push(effects.filter((f) => f.name == res)[0]);
+            this.save();
+          }, () => undefined);
+      }, () => undefined);
+  }
+
+  public configureEffect(i: number, j: number) {
+    this.router.navigate(["configureEffect", i, j]);
   }
 
   public change(field: string, i: number) {
@@ -142,6 +163,14 @@ export class HeadsComponent implements OnInit {
     }, () => undefined);
   }
 
+  public deleteEffect(i: number, j: number) {
+    smalltalk.confirm("Delete effect",
+    "Are you sure that this effect should be deleted? You won't be able to restore it.").then(() => {
+      this.usedHeads[i].effects.splice(j, 1);
+      this.save();
+    }, () => undefined);
+  }
+
   public save() {
     // console.log("saving");
     this.showService.setData("usedHeads", this.usedHeads);
@@ -166,6 +195,37 @@ export class HeadsComponent implements OnInit {
         description: `This mode will use ${n} channel(s).`,
         name: `${n} channel mode`,
         value: channelMode,
+      };
+    });
+  }
+
+  private getSelectOptionsFromEffects(group: string) {
+    return effects.filter((e) => {
+      return e.group == group;
+      })
+      .map((effect) => {
+        let affects = "";
+        effect.affects.forEach((a) => {
+          affects += `${a.number}x ${a.name}<br>`;
+        });
+        return {
+          description: `This effect will affect:<br>${affects}`,
+          name: effect.name,
+          value: effect.name,
+        };
+      });
+  }
+
+  private getSelectOptionsFromEffectGroups() {
+    return effects.filter((e, index, self) => {
+      return index === self.findIndex((t) => (
+        t.group === e.group
+      ));
+    }).map((effect) => {
+      return {
+        description: `See all effects listed in group '${effect.group}'.`,
+        name: effect.group[0].toUpperCase() + effect.group.slice(1),
+        value: effect.group,
       };
     });
   }
