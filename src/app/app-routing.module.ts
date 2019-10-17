@@ -5,7 +5,6 @@ import { AvalibleHeadsComponent } from "./_components/avalible-heads/avalible-he
 import { CloudComponent } from "./_components/cloud/cloud.component";
 import { ConfigureShowComponent } from "./_components/configure-show/configure-show.component";
 import { EffectsComponent } from "./_components/effects/effects.component";
-import { GroupsComponent } from "./_components/groups/groups.component";
 import { HeadsComponent } from "./_components/heads/heads.component";
 import { HomeComponent } from "./_components/home/home.component";
 import { InfoComponent } from "./_components/info/info.component";
@@ -28,11 +27,6 @@ const routes: Routes = [
     canActivate: [ShowLoadedGuard],
     component: HeadsComponent,
     path: "heads",
-  },
-  {
-    canActivate: [ShowLoadedGuard],
-    component: GroupsComponent,
-    path: "groups",
   },
   {
     canActivate: [ShowLoadedGuard],
