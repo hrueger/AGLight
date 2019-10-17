@@ -1,0 +1,67 @@
+.titlebar {
+    & * {
+        -webkit-app-region: drag !important;
+        cursor: default;
+    }
+    padding: 0;
+    -webkit-app-region: drag !important;
+    height: 30px;
+    background-color: #3C3C3C;
+    .navbar-brand {
+        font-size: 1em
+    }
+    .clps {
+        display: flex !important;
+        flex-basis: auto;
+        flex-basis: 100%;
+        flex-grow: 1;
+        align-items: center;
+    }
+    .nav-link, .nav-link * {
+        -webkit-app-region: no-drag !important;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    .nav-link {
+        height: 30px;
+        padding: 0;
+        padding-top: 2px;
+        padding-left: 10px;
+        padding-right: 10px;
+        &.icon {
+            padding-top: 3px;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+        &.wi { 
+            padding-left: 0px;
+            padding-right: 0px;
+            padding-top: 0;
+            &.down {
+                padding-top: 3px;
+            }
+        }
+        &:hover {
+            background-color: #505050;
+        }
+        &.close:hover {
+            background-color: red;
+            opacity: 1;
+        }
+    }
+    .nav-item.disabled:hover {
+        background-color: #3C3C3C;
+    }
+    .nav-item.disabled {
+        cursor: auto;
+    }
+    .window-icon {
+        height: 12px;
+        margin: 9px;
+        width: 25px;
+        opacity: 0.5;
+    }
+    .nav-link.close {
+        opacity: 1;
+    }
+}

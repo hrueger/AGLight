@@ -1,3 +1,4 @@
+@import "variables.scss";
 @import "~bootstrap/scss/bootstrap.scss";
 
 html, body {
@@ -97,10 +98,11 @@ a, button {
 }
 
 .card-header {
-  background-color: #fff;
+  background-color: transparent;
   font-weight: bold;
   font-size: 1.2em;
 }
+
 
 div.card-img {
   font-size: 4em;
@@ -193,4 +195,23 @@ thead tr td {
   &.double {
       width: 3.5em;
   }
+}
+
+/* Theme */
+.card {
+  background-color: #424242;
+  border: 1px solid rgba(255, 255, 255, 0.125);
+}
+.dropdown-menu {
+  background-color: rgb(83, 83, 83);
+}
+.dropdown-item:hover {
+  background-color: rgb(124, 124, 124);
+  color: #fff;
+}
+.dropdown-item {
+  color: #fff;
+}
+.sidebar {
+  background-color: #424242;
 }
