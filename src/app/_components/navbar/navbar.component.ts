@@ -15,10 +15,6 @@ export class NavbarComponent {
       url: "heads",
     },
     {
-      name: "Groups",
-      url: "groups",
-    },
-    {
       name: "Effects",
       url: "effects",
     },
