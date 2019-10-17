@@ -75,7 +75,7 @@ a, button {
   cursor: pointer;
 }
 .editable:hover {
-  background-color: rgb(224, 224, 224);
+  background-color: rgb(88, 88, 88);
 }
 
 .selectcard {
@@ -213,5 +213,17 @@ thead tr td {
   color: #fff;
 }
 .sidebar {
-  background-color: #424242;
+  background-color: #252525 !important;
+  .nav-link {
+    font-weight: 400 !important;
+  }
+}
+
+.smalltalk .page {
+  background-color: #252525 !important;
+  color: #fff !important;
+  header {
+    color: #fff !important;
+    text-shadow: none !important;
+  }
 }
