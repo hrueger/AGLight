@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from "@angular/core";
+import { Component } from "@angular/core";
 import * as smalltalk from "smalltalk";
 import { channelTypes } from "../../_ressources/channel-types";
 import { configNodeModes } from "../../_ressources/config-node-modes";
@@ -14,7 +14,6 @@ export class AvalibleHeadsComponent {
   public heads: any[] = [];
   public clipboard: any = [];
   private store: Store;
-
 
   public ngOnInit() {
     this.store = new Store({
@@ -38,7 +37,7 @@ export class AvalibleHeadsComponent {
   }
 
   public deleteHead(i: number) {
-    smalltalk.confirm("Detele head",
+    smalltalk.confirm("Delete head",
     "Are you sure that this head should be deleted? You won't be able to restore it.").then(() => {
       this.heads.splice(i, 1);
       this.save();
