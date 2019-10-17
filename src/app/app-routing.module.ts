@@ -12,6 +12,7 @@ import { InfoComponent } from "./_components/info/info.component";
 import { LicensesComponent } from "./_components/licenses/licenses.component";
 import { ManualComponent } from "./_components/manual/manual.component";
 import { ShowComponent } from "./_components/show/show.component";
+import { ShowLoadedGuard } from "./_guards/show-loaded.guard";
 
 const routes: Routes = [
   {
@@ -24,22 +25,27 @@ const routes: Routes = [
     path: "home",
   },
   {
+    canActivate: [ShowLoadedGuard],
     component: HeadsComponent,
     path: "heads",
   },
   {
+    canActivate: [ShowLoadedGuard],
     component: GroupsComponent,
     path: "groups",
   },
   {
+    canActivate: [ShowLoadedGuard],
     component: EffectsComponent,
     path: "effects",
   },
   {
+    canActivate: [ShowLoadedGuard],
     component: ConfigureShowComponent,
     path: "configureShow",
   },
   {
+    canActivate: [ShowLoadedGuard],
     component: ShowComponent,
     path: "show",
   },

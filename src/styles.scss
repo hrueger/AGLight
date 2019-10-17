@@ -18,6 +18,10 @@ a, button {
 	-webkit-app-region: no-drag;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 .main {
   margin-top: 56px;
   height: calc( 100vh - 56px );
@@ -112,13 +116,7 @@ div.card-img-holder {
 }
 
 .perfectheight {
-  height: calc( (100vh - 400px) / 2 );
-}
-
-.feather {
-  width: 16px;
-  height: 16px;
-  vertical-align: text-bottom;
+  min-height: calc( (100vh - 400px) / 2 );
 }
 
 
@@ -174,4 +172,25 @@ div.card-img-holder {
 .sidebar-heading {
   font-size: .75rem;
   text-transform: uppercase;
+}
+
+
+thead tr td {
+  font-weight: bold;
+}
+
+.middlewidth {
+  width: 10em;
+}
+.fullwidth {
+  width: 100%;
+}
+.smallwidth {
+  width: 5em;
+}
+.verysmallwidth {
+  width: 1em;
+  &.double {
+      width: 3.5em;
+  }
 }
