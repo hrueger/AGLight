@@ -71,6 +71,16 @@ export class HeadsComponent implements OnInit {
     }, () => undefined);
   }
 
+  public getAffectedChannel(i: number, j: number, k: number) {
+    const c = this.usedHeads[i].channelMode.channels.filter(
+      (channel) => channel.name == this.usedHeads[i].effects[j].affects[k].name);
+    if (c && c[0]) {
+        return c.name;
+      } else {
+        return "Please select";
+      }
+  }
+
   public addEffect(i: number) {
     const groups = this.getSelectOptionsFromEffectGroups();
     smalltalkSelect.select("Add effect",
@@ -206,10 +216,10 @@ export class HeadsComponent implements OnInit {
       .map((effect) => {
         let affects = "";
         effect.affects.forEach((a) => {
-          affects += `${a.number}x ${a.name}<br>`;
+          affects += `${a.name}<br>`;
         });
         return {
-          description: `This effect will affect:<br>${affects}`,
+          description: `This effect will affect the following channels:<br>${affects}`,
           name: effect.name,
           value: effect.name,
         };

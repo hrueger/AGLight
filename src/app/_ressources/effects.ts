@@ -1,10 +1,7 @@
 const effects  = [
   {
     affects: [
-      {
-        name: "Color RGB",
-        number: 1,
-      },
+      {name: "Color RGB"},
     ],
     get: "(t) => {return t}",
     group: "color",
@@ -12,10 +9,9 @@ const effects  = [
   },
   {
     affects: [
-      {
-        name: "Linear",
-        number: 3,
-      },
+      {name: "Linear"},
+      {name: "Linear"},
+      {name: "Linear"},
     ],
     get: "(t) => {return t}",
     group: "color",
@@ -23,10 +19,7 @@ const effects  = [
   },
   {
     affects: [
-      {
-        name: "Rotation",
-        number: 1,
-      },
+      {name: "Rotation"},
     ],
     get: "(t) => {return t}",
     group: "rotation",

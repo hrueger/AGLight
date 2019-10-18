@@ -58,8 +58,7 @@
                           <td class="verysmallwidth"><button class="action-btn green" (click)="addEffect(i)"><i class="fas fa-plus"></i></button></td>
                           <td>Effect</td>
                           <td>Type</td>
-                          <td>Affects</td>
-                          <td class="verysmallwidth"></td>
+                          <td>Channels</td>
                         </tr>
                       </thead>
                       <tbody>
@@ -67,8 +66,22 @@
                           <td><button class="action-btn red" (click)="deleteEffect(i, j)"><i class="fas fa-times"></i></button></td>
                           <td class="editable" (click)="change('effect', i, j)"><i class="fas fa-pen"></i> {{effect.name}}</td>
                           <td>{{effect.group | firstLetterUppercase}}</td>
-                          <td [innerHTML]="effect.affects | effectAffectsSum"></td>
-                          <td><button class="action-btn blue" (click)="configureEffect(i, j)"><i class="fas fa-cog"></i></button></td>
+                          <td>
+                            <table>
+                              <thead>
+                                <tr>
+                                  <td>Type</td>
+                                  <td>Channel</td>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let r of effect.affects; let k = index">
+                                  <td>{{r.name}}</td>
+                                  <td class="editable" (click)="change('affectedChannel', i, j, k)"><i class="fas fa-pen"></i> {{getAffectedChannel(i,j,k)}}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
                         </tr>
                       </tbody>
                     </table>
