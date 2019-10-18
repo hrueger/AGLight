@@ -60,7 +60,6 @@
     "codelyzer": "5.1.0",
     "conventional-changelog-cli": "2.0.21",
     "core-js": "3.1.4",
-    "custom-electron-titlebar": "^3.1.0",
     "electron": "6.0.10",
     "electron-builder": "21.2.0",
     "electron-reload": "1.5.0",
@@ -90,7 +89,6 @@
     "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
     "bootstrap": "^4.3.1",
     "ngx-perfect-scrollbar": "^8.0.0",
-    "primeng": "^8.0.4",
     "smalltalk": "^4.0.2",
     "uninstall": "0.0.0"
   }
