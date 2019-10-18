@@ -19,8 +19,8 @@ a, button {
 	-webkit-app-region: no-drag;
 }
 
-.clickable {
-  cursor: pointer;
+.clickable, .clickable * {
+  cursor: pointer !important;
 }
 
 .main {
