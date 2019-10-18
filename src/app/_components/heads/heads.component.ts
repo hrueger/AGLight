@@ -73,9 +73,9 @@ export class HeadsComponent implements OnInit {
 
   public getAffectedChannel(i: number, j: number, k: number) {
     const c = this.usedHeads[i].channelMode.channels.filter(
-      (channel) => channel.name == this.usedHeads[i].effects[j].affects[k].name);
+      (channel) => channel.number == this.usedHeads[i].effects[j].affects[k].channel);
     if (c && c[0]) {
-        return c.name;
+        return `${c[0].number}: ${c[0].name}`;
       } else {
         return "Please select";
       }
@@ -91,7 +91,10 @@ export class HeadsComponent implements OnInit {
             if (!this.usedHeads[i].effects) {
               this.usedHeads[i].effects = [];
             }
-            this.usedHeads[i].effects.push(effects.filter((f) => f.name == res)[0]);
+            const effect = effects.filter((f) => f.name == res)[0];
+            // tslint:disable-next-line: no-string-literal
+            effect["guid"] = this.genGUID();
+            this.usedHeads[i].effects.push(effect);
             this.save();
           }, () => undefined);
       }, () => undefined);
@@ -101,7 +104,7 @@ export class HeadsComponent implements OnInit {
     this.router.navigate(["configureEffect", i, j]);
   }
 
-  public change(field: string, i: number) {
+  public change(field: string, i: number, j: number = null, k: number = null) {
     let val;
     let title;
     let message;
@@ -132,6 +135,14 @@ export class HeadsComponent implements OnInit {
           this.heads.filter((h) => h.name == this.usedHeads[i].name)
           .filter((h) => h.manufacturer == this.usedHeads[i].manufacturer)[0]);
         break;
+      case "affectedChannel":
+        val = null;
+        title = "Choose affected channel";
+        message = "Choose the channel which this effect should affect:";
+        selectBox = true;
+        options = this.getPossibleChannelsToAffect(i, j, k);
+        break;
+
     }
     if (!selectBox) {
       smalltalk.prompt(title, message, val).then((res) => {
@@ -152,16 +163,24 @@ export class HeadsComponent implements OnInit {
         }
       }, () => undefined);
     } else {
-      smalltalkSelect.select(title, message, options, {}).then((res) => {
-        if (res) {
-          switch (field) {
-            case "channelMode":
-              this.usedHeads[i].channelMode = res;
-              break;
-          }
+      if (options.length == 0) {
+        if (field == "affectedChannel") {
+          smalltalk.alert("Error", "Unfortunately, this effect can't be applied to this head(s).");
         }
-        this.save();
-      }, () => undefined);
+      } else {
+        smalltalkSelect.select(title, message, options, {}).then((res) => {
+          if (res) {
+            switch (field) {
+              case "channelMode":
+                this.usedHeads[i].channelMode = res;
+                break;
+              case "affectedChannel":
+                this.usedHeads[i].effects[j].affects[k].channel = res;
+            }
+          }
+          this.save();
+        }, () => undefined);
+      }
     }
   }
 
@@ -198,6 +217,27 @@ export class HeadsComponent implements OnInit {
       });
   }
 
+  private getPossibleChannelsToAffect(i: number, j: number, k: number) {
+    // console.log(this.usedHeads[i].channelMode.channels
+    //  .filter((channel) => {
+        // console.info(channel);
+        // console.log(!channel.effect);
+        // console.log(channel.type);
+        // console.log(this.usedHeads[i].effects[j].affects[k].name);
+    //    return !channel.effect && channel.type == this.usedHeads[i].effects[j].affects[k].name;
+    //  }));
+
+    return this.usedHeads[i].channelMode.channels
+    .filter((channel) => !channel.effect && channel.type == this.usedHeads[i].effects[j].affects[k].name)
+    .map((channel) => {
+      return {
+        description: channel.name,
+        name: channel.name,
+        value: channel.number,
+      };
+    });
+  }
+
   private getSelectOptionsFromHead(head: any) {
     return head.channelModes.map((channelMode) => {
       const n = channelMode.channels.reduce((a, b) => a + b.length, 0);
@@ -210,6 +250,7 @@ export class HeadsComponent implements OnInit {
   }
 
   private getSelectOptionsFromEffects(group: string) {
+    // ToDo: check if effect can be applied to head
     return effects.filter((e) => {
       return e.group == group;
       })
@@ -255,6 +296,14 @@ export class HeadsComponent implements OnInit {
         return -1;
       }
       return 0;
+    });
+  }
+
+  private genGUID() {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+      // tslint:disable-next-line: one-variable-per-declaration no-bitwise
+      const r = Math.random() * 16 | 0, v = c == "x" ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
     });
   }
 
