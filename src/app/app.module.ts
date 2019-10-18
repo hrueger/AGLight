@@ -11,7 +11,6 @@ import { AboutComponent } from "./_components/about/about.component";
 import { AvalibleHeadsComponent } from "./_components/avalible-heads/avalible-heads.component";
 import { CloudComponent } from "./_components/cloud/cloud.component";
 import { ConfigureShowComponent } from "./_components/configure-show/configure-show.component";
-import { EffectsComponent } from "./_components/effects/effects.component";
 import { HeadsComponent } from "./_components/heads/heads.component";
 import { HomeComponent } from "./_components/home/home.component";
 import { InfoComponent } from "./_components/info/info.component";
@@ -37,7 +36,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     HomeComponent,
     NavbarComponent,
     HeadsComponent,
-    EffectsComponent,
     AvalibleHeadsComponent,
     ConfigureShowComponent,
     ShowComponent,

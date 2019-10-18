@@ -18,10 +18,6 @@ export class NavbarComponent {
       url: "heads",
     },
     {
-      name: "Effects",
-      url: "effects",
-    },
-    {
       seperator: true,
     },
     {
