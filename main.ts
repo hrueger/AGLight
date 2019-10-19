@@ -1,4 +1,3 @@
-import { Color, Titlebar } from "custom-electron-titlebar";
 import { app, BrowserWindow, globalShortcut, Menu, screen } from "electron";
 import * as path from "path";
 import * as url from "url";

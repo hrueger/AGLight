@@ -1,0 +1,16 @@
+gridster {
+  height: calc( 100vh - 90px );
+  width: 100%;
+  background-color: transparent;
+  gridster-item {
+    background-color: #3b3b3b;
+  }
+}
+.gridster-row {
+  border-top: 1px solid #505050 !important;
+  border-bottom: 1px solid #505050 !important;
+}
+.gridster-column {
+  border-right: 1px solid #505050 !important;
+  border-left: 1px solid #505050 !important;
+}

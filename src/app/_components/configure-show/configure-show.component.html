@@ -1,1 +1,20 @@
-<p>configure-show works!</p>
+<button class="btn btn-round btn-success" (click)="addItem()"><i class="fas fa-plus"></i></button>
+<gridster [options]="options">
+    <gridster-item [item]="item" *ngFor="let item of ui">
+
+      <div class="gridster-item-content">
+        <div class="item-buttons float-right">
+          <button class="btn btn-danger btn-round" (click)="removeItem($event, item)" (touchstart)="removeItem($event, item)">
+            <i class="fas fa-times"></i> 
+          </button>
+        </div>
+        <div>
+          <div class="stuff">
+            <span>Some content to select and click without dragging the widget</span>
+            <a href="https://www.google.com" target="_blank">Link to Google</a>
+          </div>
+        </div>
+      </div>
+
+    </gridster-item>
+  </gridster>

@@ -219,15 +219,26 @@ thead tr td {
   }
 }
 
-.smalltalk .page {
-  background-color: #252525 !important;
-  color: #fff !important;
-  header {
+.smalltalk {
+  background-color: rgba(0, 0, 0, 0.9) !important;
+  .page {
+    background-color: #252525 !important;
     color: #fff !important;
-    text-shadow: none !important;
+    header {
+      color: #fff !important;
+      text-shadow: none !important;
+    }
+    .content-area {
+      overflow-y: auto !important;
+      max-height: 70vh !important;
+    }
   }
+  
 }
-
 pre {
   color: #fff;
+}
+
+.btn-round {
+  border-radius: 1000px;
 }
