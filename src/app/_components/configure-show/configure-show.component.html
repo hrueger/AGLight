@@ -1,17 +1,46 @@
 <button class="btn btn-round btn-success" (click)="addItem()"><i class="fas fa-plus"></i></button>
 <gridster [options]="options">
-    <gridster-item [item]="item" *ngFor="let item of ui">
+    <gridster-item [item]="control" *ngFor="let control of ui">
 
-      <div class="gridster-item-content">
+      <div class="content drag-handler">
         <div class="item-buttons float-right">
-          <button class="btn btn-danger btn-round" (click)="removeItem($event, item)" (touchstart)="removeItem($event, item)">
-            <i class="fas fa-times"></i> 
+          <button class="btn btn-danger btn-round" (click)="removeItem($event, control)" (touchstart)="removeItem($event, control)">
+            <i class="fas fa-times"></i>
           </button>
         </div>
-        <div>
-          <div class="stuff">
-            <span>Some content to select and click without dragging the widget</span>
-            <a href="https://www.google.com" target="_blank">Link to Google</a>
+        <div class="widget">
+          <!--<div class="stuff">
+            <span>Widget: {{control.widget}}</span> <span>effectOrChannelIdx: {{control.effectOrChannelIdx}}</span> <span>effectOrHead: {{control.effectOrHead}}</span> <span>headIdx: {{control.headIdx}}</span> <span>effectParamIdx: {{control.effectParamIdx}}</span>
+          </div>-->
+
+          <!--<input class="widget fader" orient="vertical" [(value)]="control.value"  type="range" [min]="control.min" max="control.max" [(ngModel)]="control.value">-->
+          {{ 
+            control.effectOrHead == "head" ? 
+            (heads[control.headIdx].channelMode.channels[control.effectOrChannelIdx].name):
+            ("Effect: "+ heads[control.headIdx].effects[control.effectOrChannelIdx].name + ": " + (heads[control.headIdx].effects[control.effectOrChannelIdx].params[control.effectParamIdx].name | firstLetterUppercase))
+          }} - {{heads[control.headIdx].displayName}}
+          <div class="widget-slider d-flex" *ngIf="control.widget == 'Fader'">
+            <ng5-slider  [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: false}"></ng5-slider>
+          </div>
+
+          <div class="widget-button" *ngIf="control.widget == 'Button'">
+            <button class="btn btn-primary gridster-item-content">Button</button>
+          </div>
+
+          <div class="widget-buttongrid" *ngIf="control.widget == 'Buttongrid'">
+            <table class="gridster-item-content">
+              <tr *ngFor="let row of getButtongridRowArray(control); let i = index">
+                <td *ngFor="let col of getButtongridColArray(control, i); let j = index">
+                  <button class="btn btn-primary" [ngStyle]='tryGetBackgroundColor(control.effectOrHead == "head" ? 
+                  heads[control.headIdx].channelMode.channels[control.effectOrChannelIdx].configNodes[col].name :
+                    ((heads[control.headIdx].effects[control.effectOrChannelIdx].params[control.effectParamIdx].configNodes[col].name)))'>{{
+                      control.effectOrHead == "head" ? 
+                    heads[control.headIdx].channelMode.channels[control.effectOrChannelIdx].configNodes[col].name :
+                      ((heads[control.headIdx].effects[control.effectOrChannelIdx].params[control.effectParamIdx].configNodes[col].name))}}</button>
+                </td>
+              </tr>
+            </table>
+            <button class="btn btn-primary" *ngFor='let node of ' >{{node.name}}</button>
           </div>
         </div>
       </div>

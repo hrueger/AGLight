@@ -89,6 +89,7 @@
     "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
     "angular-gridster2": "^8.2.0",
     "bootstrap": "^4.3.1",
+    "ng5-slider": "^1.2.4",
     "ngx-perfect-scrollbar": "^8.0.0",
     "smalltalk": "^4.0.2",
     "uninstall": "0.0.0"
