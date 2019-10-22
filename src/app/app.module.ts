@@ -3,8 +3,9 @@ import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { GridsterModule } from "angular-gridster2";
-import { PERFECT_SCROLLBAR_CONFIG } from "ngx-perfect-scrollbar";
+import { Ng5SliderModule } from "ng5-slider";
 import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
+import { PERFECT_SCROLLBAR_CONFIG } from "ngx-perfect-scrollbar";
 import { PerfectScrollbarConfigInterface } from "ngx-perfect-scrollbar";
 import "reflect-metadata";
 import "../polyfills";
@@ -57,6 +58,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     HttpClientModule,
     AppRoutingModule,
     GridsterModule,
+    Ng5SliderModule,
   ],
   providers: [
     {
