@@ -1,15 +1,23 @@
-const controls = [
+const controls: Array<{type: string, usefulWidgets: string[]}> = [
   {
-    usefulFor: ["Linear"],
-    widget: "Fader",
+    type: "Linear",
+    usefulWidgets: ["Fader", "Button"],
   },
   {
-    usefulFor: ["Color RGB"],
-    widget: "Colorpicker",
+    type: "Steps",
+    usefulWidgets: ["Fader", "Button", "Buttongrid"],
   },
   {
-    usefulFor: ["Rotation", "Detailed Rotation"],
-    widget: "ToDo",
+    type: "Color RGB",
+    usefulWidgets: ["Colorpicker", "Button"],
+  },
+  {
+    type: "Rotation",
+    usefulWidgets: ["Joystick", "Button"],
+  },
+  {
+    type: "Detailed Rotation",
+    usefulWidgets: ["Joystick", "Button"],
   },
 ];
 export { controls };

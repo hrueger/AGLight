@@ -1,4 +1,4 @@
-const configNodeModes  = [
+const configNodeModes: Array<{description: string, name: string, value: string}>  = [
   {
     description: "All values in this range will have the same meaning.",
     name: "Equal mode",
