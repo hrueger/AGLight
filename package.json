@@ -88,6 +88,7 @@
     "@fortawesome/fontawesome-free": "^5.11.2",
     "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
     "angular-gridster2": "^8.2.0",
+    "babylonjs": "^4.0.3",
     "bootstrap": "^4.3.1",
     "ng5-slider": "^1.2.4",
     "ngx-perfect-scrollbar": "^8.0.0",

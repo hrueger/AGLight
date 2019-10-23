@@ -26,6 +26,7 @@ import { FirstLetterUppercasePipe } from "./_pipes/first-letter-uppercase.pipe";
 import { NumberArrayPipe } from "./_pipes/number-array.pipe";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { ViewerComponent } from './_components/viewer/viewer.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -50,6 +51,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     EffectAffectsSumPipe,
     FirstLetterUppercasePipe,
     NumberArrayPipe,
+    ViewerComponent,
   ],
   imports: [
     BrowserModule,
