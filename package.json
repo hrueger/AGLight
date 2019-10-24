@@ -90,6 +90,7 @@
     "angular-gridster2": "^8.2.0",
     "babylonjs": "^4.0.3",
     "bootstrap": "^4.3.1",
+    "dmx": "github:hrueger/dmx#socketio-driver",
     "ng5-slider": "^1.2.4",
     "ngx-perfect-scrollbar": "^8.0.0",
     "smalltalk": "^4.0.2",
