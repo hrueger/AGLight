@@ -42,7 +42,6 @@ export class ViewerComponent implements OnInit {
 
   public ngOnInit() {
     this.heads = this.showService.getData("usedHeads");
-    console.log(this.heads);
     this.canvas = document.getElementById("renderCanvas") as HTMLCanvasElement;
     this.engine = new Engine(this.canvas, true);
     this.createScene();
@@ -247,7 +246,7 @@ export class ViewerComponent implements OnInit {
 
 // tslint:disable-next-line: max-classes-per-file
 class FreeCameraKeyboardMoveInput implements ICameraInput<Camera> {
-  public _keys = [];
+  public keys = [];
 
   public keysRotateLeft = [37];
   public keysRotateRight = [39];
@@ -264,9 +263,9 @@ class FreeCameraKeyboardMoveInput implements ICameraInput<Camera> {
 
   public sensibility = 0.01;
   public camera: FreeCamera;
-  _onKeyDown: any;
-  _onKeyUp: (evt: any) => void;
-  _onLostFocus: (e: FocusEvent) => any;
+  public onKeyDown: (evt: any) => void;
+  public onKeyUp: (evt: any) => void;
+  public onLostFocus: (e: FocusEvent) => any;
 
   public getTypeName(): string {
     return "typeName";
@@ -282,9 +281,9 @@ class FreeCameraKeyboardMoveInput implements ICameraInput<Camera> {
 
   public attachControl(element: HTMLElement, noPreventDefault?: boolean) {
     const that = this;
-    if (!this._onKeyDown) {
+    if (!this.onKeyDown) {
         element.tabIndex = 1;
-        this._onKeyDown = (evt) => {
+        this.onKeyDown = (evt) => {
             if (that.keysRotateLeft.indexOf(evt.keyCode) !== -1 ||
                 that.keysRotateUp.indexOf(evt.keyCode) !== -1 ||
                 that.keysRotateDown.indexOf(evt.keyCode) !== -1 ||
@@ -296,16 +295,16 @@ class FreeCameraKeyboardMoveInput implements ICameraInput<Camera> {
                 that.keysMoveUp.indexOf(evt.keyCode) !== -1 ||
                 that.keysMoveDown.indexOf(evt.keyCode) !== -1
                 ) {
-                const index = that._keys.indexOf(evt.keyCode);
+                const index = that.keys.indexOf(evt.keyCode);
                 if (index === -1) {
-                    that._keys.push(evt.keyCode);
+                    that.keys.push(evt.keyCode);
                 }
                 if (!noPreventDefault) {
                     evt.preventDefault();
                 }
             }
         };
-        this._onKeyUp = (evt) => {
+        this.onKeyUp = (evt) => {
             if (that.keysRotateLeft.indexOf(evt.keyCode) !== -1 ||
                 that.keysRotateUp.indexOf(evt.keyCode) !== -1 ||
                 that.keysRotateDown.indexOf(evt.keyCode) !== -1 ||
@@ -317,9 +316,9 @@ class FreeCameraKeyboardMoveInput implements ICameraInput<Camera> {
                  that.keysMoveUp.indexOf(evt.keyCode) !== -1 ||
                  that.keysMoveDown.indexOf(evt.keyCode) !== -1
                  ) {
-                const index = that._keys.indexOf(evt.keyCode);
+                const index = that.keys.indexOf(evt.keyCode);
                 if (index >= 0) {
-                    that._keys.splice(index, 1);
+                    that.keys.splice(index, 1);
                 }
                 if (!noPreventDefault) {
                     evt.preventDefault();
@@ -327,34 +326,34 @@ class FreeCameraKeyboardMoveInput implements ICameraInput<Camera> {
             }
         };
 
-        element.addEventListener("keydown", this._onKeyDown, false);
-        element.addEventListener("keyup", this._onKeyUp, false);
+        element.addEventListener("keydown", this.onKeyDown, false);
+        element.addEventListener("keyup", this.onKeyUp, false);
         Tools.RegisterTopRootEvents([
-            { name: "blur", handler: this._onLostFocus },
+            { name: "blur", handler: this.onLostFocus },
         ]);
     }
 }
 
   public detachControl(element: HTMLElement) {
-      if (this._onKeyDown) {
-          element.removeEventListener("keydown", this._onKeyDown);
-          element.removeEventListener("keyup", this._onKeyUp);
+      if (this.onKeyDown) {
+          element.removeEventListener("keydown", this.onKeyDown);
+          element.removeEventListener("keyup", this.onKeyUp);
           Tools.UnregisterTopRootEvents([
-              { name: "blur", handler: this._onLostFocus },
+              { name: "blur", handler: this.onLostFocus },
           ]);
-          this._keys = [];
-          this._onKeyDown = null;
-          this._onKeyUp = null;
+          this.keys = [];
+          this.onKeyDown = null;
+          this.onKeyUp = null;
       }
   }
 
   public checkInputs() {
-    if (this._onKeyDown) {
+    if (this.onKeyDown) {
       const camera = this.camera;
       // Keyboard
       // tslint:disable-next-line: prefer-for-of
-      for (let index = 0; index < this._keys.length; index++) {
-          const keyCode = this._keys[index];
+      for (let index = 0; index < this.keys.length; index++) {
+          const keyCode = this.keys[index];
           if (this.keysRotateLeft.indexOf(keyCode) !== -1) {
               camera.rotation.y += this.sensibility;
           } else if (this.keysRotateRight.indexOf(keyCode) !== -1) {

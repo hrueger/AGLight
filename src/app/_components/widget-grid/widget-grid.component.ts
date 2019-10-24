@@ -23,7 +23,8 @@ export class WidgetGridComponent implements OnInit {
     effectParamIdx?: number,
   }>;
   public heads;
-  @Input() public widgets: [];
+  @Input() public widgets: [] = [];
+  @Input() public editMode: boolean = false;
 
   private readonly shadeColorFactor = 35;
 

@@ -2,7 +2,7 @@
     <gridster-item [item]="control" *ngFor="let control of widgets">
 
       <div class="content drag-handler">
-        <div class="item-buttons float-right">
+        <div class="item-buttons float-right" *ngIf="editMode">
           <button class="btn btn-danger btn-round" (click)="removeItem($event, control)" (touchstart)="removeItem($event, control)">
             <i class="fas fa-times"></i>
           </button>
