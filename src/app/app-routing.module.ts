@@ -11,6 +11,7 @@ import { LicensesComponent } from "./_components/licenses/licenses.component";
 import { ManualComponent } from "./_components/manual/manual.component";
 import { ShowComponent } from "./_components/show/show.component";
 import { ShowLoadedGuard } from "./_guards/show-loaded.guard";
+import { ViewerComponent } from "./_components/viewer/viewer.component";
 
 const routes: Routes = [
   {
@@ -52,6 +53,10 @@ const routes: Routes = [
   {
     component: InfoComponent,
     path: "info",
+  },
+  {
+    component: ViewerComponent,
+    path: "viewer",
   },
   {
     component: LicensesComponent,

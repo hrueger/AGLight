@@ -27,6 +27,7 @@ import { NumberArrayPipe } from "./_pipes/number-array.pipe";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { ViewerComponent } from './_components/viewer/viewer.component';
+import { WidgetGridComponent } from './_components/widget-grid/widget-grid.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -52,6 +53,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     FirstLetterUppercasePipe,
     NumberArrayPipe,
     ViewerComponent,
+    WidgetGridComponent,
   ],
   imports: [
     BrowserModule,

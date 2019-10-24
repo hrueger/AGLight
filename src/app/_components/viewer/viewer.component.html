@@ -1,1 +1,11 @@
 <canvas id="renderCanvas"></canvas>
+<div class="overlay" *ngIf="showTipps">
+    <button type="button" class="close" (click)="showTipps = false">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h1>Tips</h1>
+    <ul>
+        <li>Use your mouse to rotate the camera</li>
+        <li>Use arrow keys to move the camera around the scene.</li>
+    </ul>
+</div>

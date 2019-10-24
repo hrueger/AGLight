@@ -6,3 +6,22 @@
         outline: none;
     }
 }
+
+.overlay {
+    color: white;
+    background-color: rgba(88, 88, 88, 0.5);
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    padding: 10px;
+    .close {
+        span {
+            cursor: pointer;
+        }
+        float: right;
+        outline: none;
+        &:active {
+            outline: none;
+        }
+    }
+}
