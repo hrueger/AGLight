@@ -20,5 +20,4 @@ install:
 script:
   - ng lint
   - npm run test
-  - npm run e2e
   - npm run build
