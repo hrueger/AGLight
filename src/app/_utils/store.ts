@@ -7,7 +7,7 @@ class Store {
     private data: any[];
     constructor(opts: {
       configName: string,
-      defaults: any
+      defaults: any,
     }) {
         const userDataPath = (electron.app || electron.remote.app).getPath("userData");
         this.path = path.join(userDataPath, opts.configName + ".json");

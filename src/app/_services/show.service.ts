@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { remote } from "electron";
 import * as fs from "fs";
 import { RecentShowsService } from "./recent-shows.service";
-import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: "root",
