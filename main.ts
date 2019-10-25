@@ -5,7 +5,7 @@ import * as url from "url";
 let win;
 let serve;
 const args = process.argv.slice(1);
-serve = args.some(val => val === "--serve");
+serve = args.some((val) => val === "--serve");
 
 function createWindow() {
   const electronScreen = screen;
@@ -85,28 +85,28 @@ try {
   // throw e;
 }
 
-function createMenu(win) {
+function createMenu(window) {
   const template = [
     {
       label: "Über",
       role: "help",
       submenu: [
         {
-          label: "Made with ❤ and Electron",
           click: async () => {
             const { shell } = require("electron");
             await shell.openExternal("https://electronjs.org");
           },
+          label: "Made with ❤ and Electron",
         },
         {
-          label: "Über",
           click: async () => {
-            const { dialog } = require("electron");
-            dialog.showMessageBox(win, {
-              message: "© 2019, Hannes Rüger",
-              title: "Über den Pistenführerscheingenerator",
-            });
-          },
+          const { dialog } = require("electron");
+          dialog.showMessageBox(window, {
+            message: "© 2019, Hannes Rüger",
+            title: "Über den Pistenführerscheingenerator",
+          });
+        },
+          label: "Über",
         },
       ],
     },

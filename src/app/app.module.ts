@@ -20,14 +20,14 @@ import { LicensesComponent } from "./_components/licenses/licenses.component";
 import { ManualComponent } from "./_components/manual/manual.component";
 import { NavbarComponent } from "./_components/navbar/navbar.component";
 import { ShowComponent } from "./_components/show/show.component";
+import { ViewerComponent } from "./_components/viewer/viewer.component";
+import { WidgetGridComponent } from "./_components/widget-grid/widget-grid.component";
 import { ChannelNumberSumPipe } from "./_pipes/channel-number-sum.pipe";
 import { EffectAffectsSumPipe } from "./_pipes/effect-affects-sum.pipe";
 import { FirstLetterUppercasePipe } from "./_pipes/first-letter-uppercase.pipe";
 import { NumberArrayPipe } from "./_pipes/number-array.pipe";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { ViewerComponent } from './_components/viewer/viewer.component';
-import { WidgetGridComponent } from './_components/widget-grid/widget-grid.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,

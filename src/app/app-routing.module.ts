@@ -10,8 +10,8 @@ import { InfoComponent } from "./_components/info/info.component";
 import { LicensesComponent } from "./_components/licenses/licenses.component";
 import { ManualComponent } from "./_components/manual/manual.component";
 import { ShowComponent } from "./_components/show/show.component";
-import { ShowLoadedGuard } from "./_guards/show-loaded.guard";
 import { ViewerComponent } from "./_components/viewer/viewer.component";
+import { ShowLoadedGuard } from "./_guards/show-loaded.guard";
 
 const routes: Routes = [
   {

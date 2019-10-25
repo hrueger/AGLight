@@ -258,7 +258,7 @@ function closeDialog(el, dialog, ok, cancel) {
     }
 
     const value = find(dialog, ["input"])
-        .reduce((value, elem) => elem.value, null);
+        .reduce((v, elem) => elem.value, null);
     ok(JSON.parse(value));
     remove(dialog);
 }
