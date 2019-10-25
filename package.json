@@ -1,18 +1,16 @@
 {
-  "name": "angular-electron",
-  "version": "6.2.0",
-  "description": "Angular 8 with Electron (Typescript + SASS + Hot Reload)",
-  "homepage": "https://github.com/maximegris/angular-electron",
+  "name": "aglight",
+  "version": "0.0.2",
+  "description": "A intuitive software for controlling DMX lights.",
+  "homepage": "https://github.com/hrueger/AGLight",
   "author": {
-    "name": "Maxime GRIS",
-    "email": "maxime.gris@gmail.com"
+    "name": "H. Rüger"
   },
   "keywords": [
-    "angular",
-    "angular 8",
-    "electron",
-    "typescript",
-    "sass"
+    "dmx",
+    "light",
+    "controller",
+    "software"
   ],
   "main": "main.js",
   "private": true,
