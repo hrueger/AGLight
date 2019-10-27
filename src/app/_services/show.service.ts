@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { remote } from "electron";
 import * as fs from "fs";
+import * as db from "typeorm";
 import { RecentShowsService } from "./recent-shows.service";
 
 @Injectable({
@@ -11,6 +12,7 @@ export class ShowService {
   private pshowLoaded: boolean = false;
   private showData: any[] = [];
   private currentShowFilePath: string;
+  private connection: db.Connection;
 
   constructor(private recentShowsService: RecentShowsService, private router: Router) {}
 
@@ -32,13 +34,17 @@ export class ShowService {
     fs.writeFileSync(this.currentShowFilePath, JSON.stringify(this.showData));
   }
 
-  public getData(key) {
-    // console.log("get data for", key, "with result", this.showData[key]);
-    return this.showData[key];
-  }
+  public async loadShow(path: string) {
 
-  public loadShow(path: string) {
-    this.showData = this.parseDataFile(path);
+    console.log("start");
+    this.connection = await db.createConnection({
+      database: path,
+      entities: ["../_entities/*.ts"],
+      type: "sqlite",
+    });
+    console.log("done");
+    // this.showData = this.parseDataFile(path);
+    return;
     // console.log("show loaded with loaded data", this.showData)
     if (this.showData) {
       this.pshowLoaded = true;
@@ -57,17 +63,7 @@ export class ShowService {
     return this.loadShow(path);
   }
 
-  private parseDataFile(filePath: string) {
-    try {
-      const data = fs.readFileSync(filePath).toString();
-      // @ts-ignore
-      return JSON.parse(data);
-    } catch (error) {
-      remote.dialog.showMessageBoxSync(remote.getCurrentWindow(), {
-          message: error,
-          title: "Error occured",
-      });
-      return undefined;
-    }
+  public getData(a) {
+
   }
 }
