@@ -64,6 +64,6 @@ export class ShowService {
   }
 
   public getData(a) {
-
+    return a;
   }
 }

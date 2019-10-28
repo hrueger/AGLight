@@ -1,11 +1,11 @@
 {
   "productName": "AGLight",
   "directories": {
-    "output": "release/"
+    "output": "app-builds"
   },
     "files": [
         "**/*",
-        "!**/*.ts",
+        "!*.ts",
         "!*.code-workspace",
         "!LICENSE.md",
         "!package.json",
@@ -13,14 +13,14 @@
         "!src/",
         "!e2e/",
         "!hooks/",
-        "!angular.json",
+        "!.angular-cli.json",
         "!_config.yml",
         "!karma.conf.js",
         "!tsconfig.json",
         "!tslint.json"
     ],
   "win": {
-    "icon": "dist",
+    "icon": "dist/assets/icons",
     "target": [
       "portable"
     ]

@@ -47,6 +47,8 @@ export class ConfigureShowComponent implements OnInit {
       };
     });
     smalltalkSelect.select("Add control",
+    
+          // @ts-ignore
         "Choose the head from which you want to add a control.", options, {}).then((i: string) => {
           const headIdx = parseInt(i, undefined);
           options = [
@@ -96,8 +98,9 @@ export class ConfigureShowComponent implements OnInit {
                     value: index,
                   };
                 });
+                // @ts-ignore
                 effectParamIdx = parseInt(await (smalltalkSelect.select("Add control",
-                  "Choose the effect parameter to control", options, {}) as Promise<string>), undefined);
+                  "Choose the effect parameter to control", options, {})), undefined);
               }
 
               const controlType = (effectOrHead == "head" ?

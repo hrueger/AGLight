@@ -38,6 +38,7 @@ src/**/*.js
 npm-debug.log
 testem.log
 /typings
+*.gypi
 
 # e2e
 /e2e/*.js

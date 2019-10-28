@@ -1,19 +1,8 @@
-os:
-  - linux
-  - osx
-  - windows
 language: node_js
 node_js:
-  - '12'
-  - '11'
-  - '10'
-dist: xenial
+  - 10
 sudo: required
-services:
-  - xvfb
 install:
-  - npm set progress=false
   - npm install
 script:
-  - ng lint
-  - npm run build
+  - npm run build:prod
