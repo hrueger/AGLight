@@ -1,5 +1,10 @@
 # AGLight 💡
 
+![Travis ](https://img.shields.io/travis/hrueger/AGLight)
+![License](https://img.shields.io/badge/License-MIT-blue)
+![GitHub last commit](https://img.shields.io/github/last-commit/hrueger/AGLight?color=brightgreen)
+![Maintenance](https://img.shields.io/maintenance/yes/2019)
+
 ## Note: ##
 This project is in development. It can't be used as of now!
 But feel free to contribute!
