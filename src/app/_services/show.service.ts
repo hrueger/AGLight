@@ -35,14 +35,11 @@ export class ShowService {
   }
 
   public async loadShow(path: string) {
-
-    console.log("start");
     this.connection = await db.createConnection({
       database: path,
       entities: ["../_entities/*.ts"],
       type: "sqlite",
     });
-    console.log("done");
     // this.showData = this.parseDataFile(path);
     return;
     // console.log("show loaded with loaded data", this.showData)

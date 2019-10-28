@@ -47,7 +47,6 @@ export class ConfigureShowComponent implements OnInit {
       };
     });
     smalltalkSelect.select("Add control",
-    
           // @ts-ignore
         "Choose the head from which you want to add a control.", options, {}).then((i: string) => {
           const headIdx = parseInt(i, undefined);

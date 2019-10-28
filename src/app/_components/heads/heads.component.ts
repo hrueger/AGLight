@@ -14,9 +14,9 @@ import { Store } from "../../_utils/store";
 export class HeadsComponent implements OnInit {
   public searchValue: string = "";
   public usedHeads: any[] = [];
+  public displayHeads: any[];
+  public heads: any[];
   private store: Store;
-  private heads: any[];
-  private displayHeads: any[];
 
   constructor(private showService: ShowService, private router: Router) {}
 
