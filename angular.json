@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
+            "showCircularDependencies": false,
             "customWebpackConfig": {
                "path": "./extra-webpack.config.js"
             },
