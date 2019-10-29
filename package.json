@@ -5,8 +5,7 @@
   "description": "A intuitive software for controlling DMX lights.",
   "homepage": "https://github.com/hrueger/AGLight",
   "author": {
-    "name": "Vlad Haidei",
-    "email": "vlad.gaidei@gmail.com"
+    "name": "H. Rüger"
   },
   "keywords": [
     "dmx",
