@@ -1,26 +1,28 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import * as smalltalk from "smalltalk";
+import { Fixture } from "../../_entities/fixture";
+import { Head } from "../../_entities/head";
 import { effects } from "../../_ressources/effects";
 import { ShowService } from "../../_services/show.service";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
 import { Store } from "../../_utils/store";
 
 @Component({
-  selector: "app-heads",
-  styleUrls: ["./heads.component.scss"],
-  templateUrl: "./heads.component.html",
+  selector: "app-fixtures",
+  styleUrls: ["./fixtures.component.scss"],
+  templateUrl: "./fixtures.component.html",
 })
-export class HeadsComponent implements OnInit {
+export class FixturesComponent implements OnInit {
   public searchValue: string = "";
-  public usedHeads: any[] = [];
+  public fixtures: any[] = [];
   public displayHeads: any[];
   public heads: any[];
   private store: Store;
 
   constructor(private showService: ShowService, private router: Router) {}
 
-  public ngOnInit() {
+  public async ngOnInit() {
     this.store = new Store({
       configName: "heads",
       defaults: {
@@ -30,7 +32,9 @@ export class HeadsComponent implements OnInit {
     this.heads = this.store.get();
     this.displayHeads = this.heads;
     this.sortDisplayHeads();
-    this.usedHeads = this.showService.getData("usedHeads");
+    console.log(this.showService.connection);
+    this.fixtures = await this.showService.connection.getRepository(Fixture).find();
+    console.log(this.fixtures);
     /*const that = this;
     window.setTimeout(() => {
       that.ngOnInit();
@@ -52,19 +56,13 @@ export class HeadsComponent implements OnInit {
     this.sortDisplayHeads();
   }
 
-  public addHead(head) {
+  public addHead(head: Head) {
     const options = this.getSelectOptionsFromHead(head);
     smalltalk.prompt("Number of heads", "Type in the number of heads you want to add:", 2).then((n) => {
       smalltalkSelect.select("Channel mode",
       "Choose the channel mode to use for this head(s)", options, {}).then((channelMode) => {
-        this.usedHeads.push({
-          channelMode,
-          displayName: "Change this",
-          manufacturer: head.manufacturer,
-          name: head.name,
-          number: n,
-          startAddress: 1,
-        });
+        const fixture = new Fixture("Change this", n, 1, head);
+        this.fixtures.push(fixture);
         this.sortUsedHeads();
         this.save();
       }, () => undefined);
@@ -72,8 +70,8 @@ export class HeadsComponent implements OnInit {
   }
 
   public getAffectedChannel(i: number, j: number, k: number) {
-    const c = this.usedHeads[i].channelMode.channels.filter(
-      (channel) => channel.number == this.usedHeads[i].effects[j].affects[k].channel);
+    const c = this.fixtures[i].channelMode.channels.filter(
+      (channel) => channel.number == this.fixtures[i].effects[j].affects[k].channel);
     if (c && c[0]) {
         return `${c[0].number}: ${c[0].name}`;
       } else {
@@ -88,13 +86,13 @@ export class HeadsComponent implements OnInit {
         const e = this.getSelectOptionsFromEffects(g);
         smalltalkSelect.select("Add effect",
           "Choose the effect to add to this head", e, {}).then((res) => {
-            if (!this.usedHeads[i].effects) {
-              this.usedHeads[i].effects = [];
+            if (!this.fixtures[i].effects) {
+              this.fixtures[i].effects = [];
             }
             const effect = effects.filter((f) => f.name == res)[0];
             // tslint:disable-next-line: no-string-literal
             effect["guid"] = this.genGUID();
-            this.usedHeads[i].effects.push(effect);
+            this.fixtures[i].effects.push(effect);
             this.save();
           }, () => undefined);
       }, () => undefined);
@@ -112,17 +110,17 @@ export class HeadsComponent implements OnInit {
     let options = [];
     switch (field) {
       case "number":
-        val = this.usedHeads[i].number;
+        val = this.fixtures[i].number;
         title = "Change number of heads";
         message = "Enter the number of the heads:";
         break;
       case "startAddress":
-        val = this.usedHeads[i].startAddress;
+        val = this.fixtures[i].startAddress;
         title = "Change start address";
         message = "Enter the head's start address:";
         break;
       case "displayName":
-        val = this.usedHeads[i].displayName;
+        val = this.fixtures[i].displayName;
         title = "Change display name";
         message = "Enter the head's display name:";
         break;
@@ -132,8 +130,8 @@ export class HeadsComponent implements OnInit {
         message = "Choose the channel mode of that head:";
         selectBox = true;
         options = this.getSelectOptionsFromHead(
-          this.heads.filter((h) => h.name == this.usedHeads[i].name)
-          .filter((h) => h.manufacturer == this.usedHeads[i].manufacturer)[0]);
+          this.heads.filter((h) => h.name == this.fixtures[i].name)
+          .filter((h) => h.manufacturer == this.fixtures[i].manufacturer)[0]);
         break;
       case "affectedChannel":
         val = null;
@@ -149,13 +147,13 @@ export class HeadsComponent implements OnInit {
         if (res) {
           switch (field) {
             case "number":
-              this.usedHeads[i].number = parseInt(res, undefined);
+              this.fixtures[i].number = parseInt(res, undefined);
               break;
             case "displayName":
-              this.usedHeads[i].displayName = res;
+              this.fixtures[i].displayName = res;
               break;
             case "startAddress":
-              this.usedHeads[i].startAddress = parseInt(res, undefined);
+              this.fixtures[i].startAddress = parseInt(res, undefined);
               this.sortUsedHeads();
               break;
           }
@@ -172,10 +170,10 @@ export class HeadsComponent implements OnInit {
           if (res) {
             switch (field) {
               case "channelMode":
-                this.usedHeads[i].channelMode = res;
+                this.fixtures[i].channelMode = res;
                 break;
               case "affectedChannel":
-                this.usedHeads[i].effects[j].affects[k].channel = res;
+                this.fixtures[i].effects[j].affects[k].channel = res;
             }
           }
           this.save();
@@ -187,7 +185,7 @@ export class HeadsComponent implements OnInit {
   public deleteHead(i: number) {
     smalltalk.confirm("Delete head(s)",
     "Are you sure that this head(s) should be deleted? You won't be able to restore it.").then(() => {
-      this.usedHeads.splice(i, 1);
+      this.fixtures.splice(i, 1);
       this.save();
     }, () => undefined);
   }
@@ -195,18 +193,18 @@ export class HeadsComponent implements OnInit {
   public deleteEffect(i: number, j: number) {
     smalltalk.confirm("Delete effect",
     "Are you sure that this effect should be deleted? You won't be able to restore it.").then(() => {
-      this.usedHeads[i].effects.splice(j, 1);
+      this.fixtures[i].effects.splice(j, 1);
       this.save();
     }, () => undefined);
   }
 
   public save() {
     // console.log("saving");
-    this.showService.setData("usedHeads", this.usedHeads);
+    this.showService.connection.getRepository(Fixture).save(this.fixtures);
   }
 
   private sortUsedHeads() {
-    this.usedHeads.sort((a, b) => {
+    this.fixtures.sort((a, b) => {
         if (a.startAddress > b.startAddress) {
           return 1;
         }
@@ -227,8 +225,8 @@ export class HeadsComponent implements OnInit {
     //    return !channel.effect && channel.type == this.usedHeads[i].effects[j].affects[k].name;
     //  }));
 
-    return this.usedHeads[i].channelMode.channels
-    .filter((channel) => !channel.effect && channel.type == this.usedHeads[i].effects[j].affects[k].name)
+    return this.fixtures[i].channelMode.channels
+    .filter((channel) => !channel.effect && channel.type == this.fixtures[i].effects[j].affects[k].name)
     .map((channel) => {
       return {
         description: channel.name,

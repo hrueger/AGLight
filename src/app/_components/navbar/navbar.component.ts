@@ -14,8 +14,8 @@ export class NavbarComponent {
 
   public menuItems: any[] = [
     {
-      name: "Heads",
-      url: "heads",
+      name: "Fixtures",
+      url: "fixtures",
     },
     {
       seperator: true,

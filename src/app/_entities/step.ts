@@ -21,4 +21,11 @@ export class Step extends BaseEntity {
     @ManyToOne((type) => Channel, (channel) => channel.steps)
     public channel: Channel;
 
+    constructor(start: number, mode: string, name: string) {
+        super();
+        this.start = start;
+        this.mode = mode;
+        this.name = name;
+    }
+
 }

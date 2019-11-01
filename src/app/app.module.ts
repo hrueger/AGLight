@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -13,7 +13,7 @@ import { AboutComponent } from "./_components/about/about.component";
 import { AvalibleHeadsComponent } from "./_components/avalible-heads/avalible-heads.component";
 import { CloudComponent } from "./_components/cloud/cloud.component";
 import { ConfigureShowComponent } from "./_components/configure-show/configure-show.component";
-import { HeadsComponent } from "./_components/heads/heads.component";
+import { FixturesComponent } from "./_components/fixtures/fixtures.component";
 import { HomeComponent } from "./_components/home/home.component";
 import { InfoComponent } from "./_components/info/info.component";
 import { LicensesComponent } from "./_components/licenses/licenses.component";
@@ -39,7 +39,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     AppComponent,
     HomeComponent,
     NavbarComponent,
-    HeadsComponent,
+    FixturesComponent,
     AvalibleHeadsComponent,
     ConfigureShowComponent,
     ShowComponent,

@@ -1,5 +1,6 @@
-import {BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import { ChannelMode } from "./channelMode";
+import { Fixture } from "./fixture";
 
 @Entity()
 export class Head extends BaseEntity {
@@ -13,7 +14,18 @@ export class Head extends BaseEntity {
     @Column()
     public manufacturer: string;
 
-    @OneToMany((type) => ChannelMode, (channelMode) => channelMode.head)
+    @OneToMany((type) => ChannelMode, (channelMode) => channelMode.head,
+    {cascade: ["insert", "update", "remove"], eager: true})
     public channelModes: ChannelMode[];
+
+    @OneToMany((type) => Fixture, (fixture) => fixture.head)
+    public fixtures: Fixture[];
+
+    constructor(name: string, manufacturer: string, channelModes: ChannelMode[]) {
+        super();
+        this.name = name;
+        this.manufacturer = manufacturer;
+        this.channelModes = channelModes;
+    }
 
 }

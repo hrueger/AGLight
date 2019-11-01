@@ -41,7 +41,7 @@
               </tr>
           </thead>
           <tbody>
-              <tr *ngFor="let head of usedHeads; let i = index">
+              <tr *ngFor="let head of fixtures; let i = index">
                   <td><button class="action-btn red" (click)="deleteHead(i)"><i class="fas fa-times"></i></button></td>
                   <td class="editable" (click)="change('displayName', i)"><i class="fas fa-pen"></i> {{head.displayName}}</td>
                   <td>{{head.name}}</td>

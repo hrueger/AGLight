@@ -1,9 +1,16 @@
 import { Component } from "@angular/core";
+import * as electron from "electron";
+import * as path from "path";
 import * as smalltalk from "smalltalk";
+import * as db from "typeorm";
+import { Channel } from "../../_entities/channel";
+import { ChannelMode } from "../../_entities/channelMode";
+import { Fixture } from "../../_entities/fixture";
+import { Head } from "../../_entities/head";
+import { Step } from "../../_entities/step";
 import { channelTypes } from "../../_ressources/channel-types";
-import { configNodeModes } from "../../_ressources/config-node-modes";
+import { stepModes } from "../../_ressources/config-node-modes";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
-import { Store } from "../../_utils/store";
 
 @Component({
   selector: "app-avalible-heads",
@@ -13,16 +20,28 @@ import { Store } from "../../_utils/store";
 export class AvalibleHeadsComponent {
   public heads: any[] = [];
   public clipboard: any = [];
-  private store: Store;
+  public connection: db.Connection;
 
-  public ngOnInit() {
-    this.store = new Store({
-      configName: "heads",
-      defaults: {
-        heads: [],
-      },
-    });
-    this.heads = this.store.get();
+  public async ngOnInit() {
+    let storagePath = (electron.app || electron.remote.app).getPath("userData");
+    storagePath = path.join(storagePath, "heads.db");
+    try {
+      this.connection = await db.createConnection({
+        database: storagePath,
+        entities: [Head, Channel, ChannelMode, Step, Fixture],
+        type: "sqlite",
+      });
+    } catch (err) {
+      if (err.name === "AlreadyHasActiveConnectionError") {
+        this.connection = db.getConnectionManager().get("default");
+      } else {
+        throw err;
+      }
+    }
+
+    await this.connection.synchronize();
+    this.heads = await this.connection.getRepository(Head).find();
+    console.log(this.heads);
   }
 
   public toggleShowChannelModes(i: number) {
@@ -57,22 +76,16 @@ export class AvalibleHeadsComponent {
       this.save();
     }, () => undefined);
   }
-  public deleteChannelConfigNode(i: number, j: number, k: number, l: number) {
+  public deleteChannelStep(i: number, j: number, k: number, l: number) {
     smalltalk.confirm("Delete step",
     "Are you sure that this step should be deleted? You won't be able to restore it.").then(() => {
-      this.heads[i].channelModes[j].channels[k].configNodes.splice(l, 1);
+      this.heads[i].channelModes[j].channels[k].steps.splice(l, 1);
       this.save();
     }, () => undefined);
   }
 
   public addHead() {
-    this.heads.push({
-      channelModes: [
-      this.createChannelMode(),
-    ],
-      manufacturer: "Unnamed Company",
-      name: "Unnamed Head",
-    });
+    this.heads.push(new Head("Unnamed Head", "Unnamed Company", [this.createChannelMode()]));
     this.save();
   }
   public addChannelMode(i: number) {
@@ -89,27 +102,26 @@ export class AvalibleHeadsComponent {
     this.heads[i].channelModes[j].channels.push(this.createChannel(n));
     this.save();
   }
-  public addChannelConfigNode(i: number, j: number, k: number) {
+  public addChannelStep(i: number, j: number, k: number) {
     let start = 0;
-    const end = 255;
-    if (!this.heads[i].channelModes[j].channels[k].configNodes) {
-      this.heads[i].channelModes[j].channels[k].configNodes = [];
+    if (!this.heads[i].channelModes[j].channels[k].steps) {
+      this.heads[i].channelModes[j].channels[k].steps = [];
     } else {
       start = 254;
     }
-    this.heads[i].channelModes[j].channels[k].configNodes.push(this.createConfigNode(start, end));
-    this.sortConfigNodes(i, j, k);
+    this.heads[i].channelModes[j].channels[k].steps.push(this.createStep(start));
+    this.sortSteps(i, j, k);
   }
-  public autoFillConfigNodes(i: number, j: number, k: number) {
+  public autoFillSteps(i: number, j: number, k: number) {
     smalltalk.prompt("Autofill steps", "How wide should each step be?").then((res) => {
       if (res) {
         res = parseInt(res, undefined);
         if (res > 0) {
           let start;
           const end = 255;
-          if (this.heads[i].channelModes[j].channels[k].configNodes
-            && this.heads[i].channelModes[j].channels[k].configNodes.length) {
-            start = this.heads[i].channelModes[j].channels[k].configNodes.reduce((prev, curr) => {
+          if (this.heads[i].channelModes[j].channels[k].steps
+            && this.heads[i].channelModes[j].channels[k].steps.length) {
+            start = this.heads[i].channelModes[j].channels[k].steps.reduce((prev, curr) => {
               return prev.start < curr.end ? prev : curr;
             }).end + 1;
           } else {
@@ -117,8 +129,8 @@ export class AvalibleHeadsComponent {
           }
           let counter = start;
           while (counter < end) {
-            this.heads[i].channelModes[j].channels[k].configNodes.push(
-              this.createConfigNode(counter, counter + res - 1));
+            this.heads[i].channelModes[j].channels[k].steps.push(
+              this.createStep(counter));
             counter += res;
           }
         }
@@ -128,47 +140,34 @@ export class AvalibleHeadsComponent {
   }
 
   public createChannelMode() {
-    return {
-      channels: [
-      this.createChannel(),
-    ],
-    };
+    return new ChannelMode([this.createChannel()]);
   }
   public createChannel(n: number = 1) {
-    return {
-      length: 1,
-      name: "Unnamed Channel",
-      number: n,
-      type: "Please select",
-    };
+    const channel = new Channel(0, "Please select", "Unnamed channel", 1, n, [this.createStep(1)]);
+    return channel;
   }
-  public createConfigNode(start, end) {
-    return {
-      end,
-      mode: "Equal mode",
-      name: "Unnamed step",
-      start,
-    };
+  public createStep(start) {
+    return new Step(start, "Equal mode", "Unnamed step");
   }
 
-  public copyChannelConfigNodes(i: number, j: number, k: number) {
-    this.clipboard = this.heads[i].channelModes[j].channels[k].configNodes;
+  public copyChannelSteps(i: number, j: number, k: number) {
+    this.clipboard = this.heads[i].channelModes[j].channels[k].steps;
   }
-  public pasteChannelConfigNodes(i: number, j: number, k: number) {
+  public pasteChannelSteps(i: number, j: number, k: number) {
     smalltalk.confirm("Paste channel steps",
     "Are you sure that the steps sould be pasted here? You won't be able to undo it.").then(() => {
-      if (!this.heads[i].channelModes[j].channels[k].configNodes) {
-        this.heads[i].channelModes[j].channels[k].configNodes = [];
+      if (!this.heads[i].channelModes[j].channels[k].steps) {
+        this.heads[i].channelModes[j].channels[k].steps = [];
       }
-      this.heads[i].channelModes[j].channels[k].configNodes =
-        this.heads[i].channelModes[j].channels[k].configNodes.concat(this.clipboard);
+      this.heads[i].channelModes[j].channels[k].steps =
+        this.heads[i].channelModes[j].channels[k].steps.concat(this.clipboard);
       this.clipboard = [];
       this.save();
     }, () => undefined);
   }
 
   public save() {
-    this.store.set(this.heads);
+    this.connection.getRepository(Head).save(this.heads);
   }
   public change(field: string, i: number, j: number = 0, k: number = 0, l: number = 0) {
     let val;
@@ -206,29 +205,29 @@ export class AvalibleHeadsComponent {
         break;
 
       case "start":
-        val = this.heads[i].channelModes[j].channels[k].configNodes[l].start;
+        val = this.heads[i].channelModes[j].channels[k].steps[l].start;
         title = "Edit step start value";
         message = "Enter the start value of that step (0 - 255):";
         break;
-      case "configNodeName":
-        val = this.heads[i].channelModes[j].channels[k].configNodes[l].name;
+      case "stepName":
+        val = this.heads[i].channelModes[j].channels[k].steps[l].name;
         title = "Edit step name";
         message = "Enter the name of that step:";
         break;
-      case "configNodeMode":
-        val = this.heads[i].channelModes[j].channels[k].configNodes[l].mode;
+      case "stepMode":
+        val = this.heads[i].channelModes[j].channels[k].steps[l].mode;
         title = "Select step mode";
         message = "Select the mode of that step:";
         selectBox = true;
-        options = configNodeModes;
+        options = stepModes;
         break;
-      case "configNodeType":
+      case "stepType":
         return;
-        val = this.heads[i].channelModes[j].channels[k].configNodes[l].mode;
+        val = this.heads[i].channelModes[j].channels[k].steps[l].mode;
         title = "Select step mode";
         message = "Select the mode of that step:";
         selectBox = true;
-        options = configNodeModes;
+        options = stepModes;
         break;
     }
     if (!selectBox) {
@@ -250,14 +249,14 @@ export class AvalibleHeadsComponent {
               break;
 
             case "start":
-              this.heads[i].channelModes[j].channels[k].configNodes[l].start = parseInt(res, undefined);
-              this.sortConfigNodes(i, j, k);
-              if (this.heads[i].channelModes[j].channels[k].configNodes[l - 1]) {
-                this.heads[i].channelModes[j].channels[k].configNodes[l - 1].end = parseInt(res, undefined) - 1;
+              this.heads[i].channelModes[j].channels[k].steps[l].start = parseInt(res, undefined);
+              this.sortSteps(i, j, k);
+              if (this.heads[i].channelModes[j].channels[k].steps[l - 1]) {
+                this.heads[i].channelModes[j].channels[k].steps[l - 1].end = parseInt(res, undefined) - 1;
               }
               break;
-            case "configNodeName":
-              this.heads[i].channelModes[j].channels[k].configNodes[l].name = res;
+            case "stepName":
+              this.heads[i].channelModes[j].channels[k].steps[l].name = res;
               break;
           }
           this.save();
@@ -267,12 +266,12 @@ export class AvalibleHeadsComponent {
       smalltalkSelect.select(title, message, options, {}).then((res) => {
         if (res) {
           switch (field) {
-            case "configNodeMode":
-              this.heads[i].channelModes[j].channels[k].configNodes[l].mode =
+            case "stepMode":
+              this.heads[i].channelModes[j].channels[k].steps[l].mode =
               options.filter((o) => o.value == res)[0].name;
               break;
-            case "configNodeType":
-              this.heads[i].channelModes[j].channels[k].configNodes[l].type =
+            case "stepType":
+              this.heads[i].channelModes[j].channels[k].steps[l].type =
               options.filter((o) => o.value == res)[0].name;
               break;
             case "channelType":
@@ -286,9 +285,9 @@ export class AvalibleHeadsComponent {
     }
   }
 
-  private sortConfigNodes(i: number, j: number, k: number) {
-    this.heads[i].channelModes[j].channels[k].configNodes =
-      this.heads[i].channelModes[j].channels[k].configNodes.sort((a, b) => {
+  private sortSteps(i: number, j: number, k: number) {
+    this.heads[i].channelModes[j].channels[k].steps =
+      this.heads[i].channelModes[j].channels[k].steps.sort((a, b) => {
         if (a.start > b.start) {
           return 1;
         }
