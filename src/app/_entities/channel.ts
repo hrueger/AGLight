@@ -9,7 +9,7 @@ export class Channel extends BaseEntity {
     public id: number;
 
     @Column()
-    public startAdress: number;
+    public startAddress: number;
 
     @Column()
     public type: string;
@@ -20,31 +20,27 @@ export class Channel extends BaseEntity {
     @Column()
     public length: number;
 
-    @Column()
-    public number: number;
-
     @OneToMany((type) => Step, (step) => step.channel,
-    {cascade: ["insert", "update", "remove"], eager: true})
+    {nullable: true, cascade: ["insert", "update", "remove"], eager: true, onDelete: "CASCADE" })
     public steps: Step[];
 
-    @ManyToOne((type) => ChannelMode, (channelMode) => channelMode.channels)
+    @ManyToOne((type) => ChannelMode, (channelMode) => channelMode.channels, {nullable: true, onDelete: "CASCADE" })
     public channelMode: ChannelMode;
 
+    public showChannelConfig?: boolean;
+
     constructor(
-        startAdress: number,
+        startAddress: number,
         type: string,
         name: string,
         length: number,
-        // tslint:disable-next-line: variable-name
-        number: number,
         steps: Step[]) {
 
         super();
-        this.startAdress = startAdress;
+        this.startAddress = startAddress;
         this.type = type;
         this.name = name;
         this.length = length;
         this.steps = steps;
-        this.number = number;
     }
 }

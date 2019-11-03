@@ -18,7 +18,7 @@ export class Step extends BaseEntity {
     @Column()
     public name: string;
 
-    @ManyToOne((type) => Channel, (channel) => channel.steps)
+    @ManyToOne((type) => Channel, (channel) => channel.steps, {nullable: true, onDelete: "CASCADE" })
     public channel: Channel;
 
     constructor(start: number, mode: string, name: string) {

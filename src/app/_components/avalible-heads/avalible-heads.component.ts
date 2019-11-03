@@ -18,7 +18,7 @@ import * as smalltalkSelect from "../../_utils/smalltalk-select";
   templateUrl: "./avalible-heads.component.html",
 })
 export class AvalibleHeadsComponent {
-  public heads: any[] = [];
+  public heads: Head[] = [];
   public clipboard: any = [];
   public connection: db.Connection;
 
@@ -29,6 +29,7 @@ export class AvalibleHeadsComponent {
       this.connection = await db.createConnection({
         database: storagePath,
         entities: [Head, Channel, ChannelMode, Step, Fixture],
+        // logging: true,
         type: "sqlite",
       });
     } catch (err) {
@@ -38,10 +39,8 @@ export class AvalibleHeadsComponent {
         throw err;
       }
     }
-
     await this.connection.synchronize();
     this.heads = await this.connection.getRepository(Head).find();
-    console.log(this.heads);
   }
 
   public toggleShowChannelModes(i: number) {
@@ -57,28 +56,32 @@ export class AvalibleHeadsComponent {
 
   public deleteHead(i: number) {
     smalltalk.confirm("Delete head",
-    "Are you sure that this head should be deleted? You won't be able to restore it.").then(() => {
+    "Are you sure that this head should be deleted? You won't be able to restore it.").then(async () => {
+      await this.connection.getRepository(Head).remove(this.heads[i]);
       this.heads.splice(i, 1);
       this.save();
     }, () => undefined);
   }
   public deleteChannelMode(i: number, j: number) {
     smalltalk.confirm("Detele channel mode",
-    "Are you sure that this channel mode should be deleted? You won't be able to restore it.").then(() => {
+    "Are you sure that this channel mode should be deleted? You won't be able to restore it.").then(async () => {
+      await this.connection.getRepository(ChannelMode).remove(this.heads[i].channelModes[j]);
       this.heads[i].channelModes.splice(j, 1);
       this.save();
     }, () => undefined);
   }
   public deleteChannel(i: number, j: number, k: number) {
     smalltalk.confirm("Delete channel",
-    "Are you sure that this channel should be deleted? You won't be able to restore it.").then(() => {
+    "Are you sure that this channel should be deleted? You won't be able to restore it.").then(async () => {
+      await this.connection.getRepository(Channel).remove(this.heads[i].channelModes[j].channels[k]);
       this.heads[i].channelModes[j].channels.splice(k, 1);
       this.save();
     }, () => undefined);
   }
   public deleteChannelStep(i: number, j: number, k: number, l: number) {
     smalltalk.confirm("Delete step",
-    "Are you sure that this step should be deleted? You won't be able to restore it.").then(() => {
+    "Are you sure that this step should be deleted? You won't be able to restore it.").then(async () => {
+      await this.connection.getRepository(Step).remove(this.heads[i].channelModes[j].channels[k].steps[l]);
       this.heads[i].channelModes[j].channels[k].steps.splice(l, 1);
       this.save();
     }, () => undefined);
@@ -95,7 +98,7 @@ export class AvalibleHeadsComponent {
   public addChannel(i: number, j: number) {
     let n;
     if (this.heads[i].channelModes[j].channels && this.heads[i].channelModes[j].channels.length > 0) {
-      n = this.heads[i].channelModes[j].channels[this.heads[i].channelModes[j].channels.length - 1].number + 1;
+      n = this.heads[i].channelModes[j].channels[this.heads[i].channelModes[j].channels.length - 1].startAddress + 1;
     } else {
       n = 1;
     }
@@ -122,8 +125,8 @@ export class AvalibleHeadsComponent {
           if (this.heads[i].channelModes[j].channels[k].steps
             && this.heads[i].channelModes[j].channels[k].steps.length) {
             start = this.heads[i].channelModes[j].channels[k].steps.reduce((prev, curr) => {
-              return prev.start < curr.end ? prev : curr;
-            }).end + 1;
+              return prev.start < (curr.start + 1) ? prev : curr;
+            }).start + 2;
           } else {
             start = 0;
           }
@@ -143,7 +146,7 @@ export class AvalibleHeadsComponent {
     return new ChannelMode([this.createChannel()]);
   }
   public createChannel(n: number = 1) {
-    const channel = new Channel(0, "Please select", "Unnamed channel", 1, n, [this.createStep(1)]);
+    const channel = new Channel(n, "Please select", "Unnamed channel", 1, [this.createStep(1)]);
     return channel;
   }
   public createStep(start) {
@@ -168,7 +171,15 @@ export class AvalibleHeadsComponent {
 
   public save() {
     this.connection.getRepository(Head).save(this.heads);
+    console.log("saved");
   }
+
+  public async ngOnDestroy() {
+    if (this.connection) {
+      await this.connection.close();
+    }
+  }
+
   public change(field: string, i: number, j: number = 0, k: number = 0, l: number = 0) {
     let val;
     let title;
@@ -199,7 +210,7 @@ export class AvalibleHeadsComponent {
         message = "Enter the channel name:";
         break;
       case "channelNumber":
-        val = this.heads[i].channelModes[j].channels[k].number;
+        val = this.heads[i].channelModes[j].channels[k].startAddress;
         title = "Edit channel number";
         message = "Enter the channel number:";
         break;
@@ -244,16 +255,13 @@ export class AvalibleHeadsComponent {
               this.heads[i].channelModes[j].channels[k].name = res;
               break;
             case "channelNumber":
-              this.heads[i].channelModes[j].channels[k].number = parseInt(res, undefined);
+              this.heads[i].channelModes[j].channels[k].startAddress = parseInt(res, undefined);
               this.sortChannels(i, j);
               break;
 
             case "start":
               this.heads[i].channelModes[j].channels[k].steps[l].start = parseInt(res, undefined);
               this.sortSteps(i, j, k);
-              if (this.heads[i].channelModes[j].channels[k].steps[l - 1]) {
-                this.heads[i].channelModes[j].channels[k].steps[l - 1].end = parseInt(res, undefined) - 1;
-              }
               break;
             case "stepName":
               this.heads[i].channelModes[j].channels[k].steps[l].name = res;
@@ -271,7 +279,7 @@ export class AvalibleHeadsComponent {
               options.filter((o) => o.value == res)[0].name;
               break;
             case "stepType":
-              this.heads[i].channelModes[j].channels[k].steps[l].type =
+              this.heads[i].channelModes[j].channels[k].steps[l].mode =
               options.filter((o) => o.value == res)[0].name;
               break;
             case "channelType":
@@ -294,22 +302,16 @@ export class AvalibleHeadsComponent {
         if (a.start < b.start) {
           return -1;
         }
-        if (a.end > b.end) {
-          return 1;
-        }
-        if (a.end < b.end) {
-          return -1;
-        }
         return 0;
     });
   }
   private sortChannels(i: number, j: number) {
     this.heads[i].channelModes[j].channels =
       this.heads[i].channelModes[j].channels.sort((a, b) => {
-        if (a.number > b.number) {
+        if (a.startAddress > b.startAddress) {
           return 1;
         }
-        if (a.number < b.number) {
+        if (a.startAddress < b.startAddress) {
           return -1;
         }
         return 0;

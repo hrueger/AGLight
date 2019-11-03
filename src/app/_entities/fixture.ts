@@ -17,15 +17,15 @@ export class Fixture extends BaseEntity {
     public startAddress: number;
 
     @ManyToOne((type) => Head, (head) => head.fixtures,
-    {cascade: ["insert", "update", "remove"], eager: true})
+    {nullable: true, cascade: ["insert", "update", "remove"], eager: true, onDelete: "CASCADE" })
     public head: Head;
 
     // tslint:disable-next-line: variable-name
-    constructor(displayName: string, number: number, startAdress: number, head: Head) {
+    constructor(displayName: string, number: number, startAddress: number, head: Head) {
         super();
         this.displayName = displayName;
         this.number = number;
-        this.startAddress = startAdress;
+        this.startAddress = startAddress;
     }
 
 }

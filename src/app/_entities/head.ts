@@ -15,11 +15,13 @@ export class Head extends BaseEntity {
     public manufacturer: string;
 
     @OneToMany((type) => ChannelMode, (channelMode) => channelMode.head,
-    {cascade: ["insert", "update", "remove"], eager: true})
+    {nullable: true, cascade: ["insert", "update", "remove"], eager: true})
     public channelModes: ChannelMode[];
 
-    @OneToMany((type) => Fixture, (fixture) => fixture.head)
+    @OneToMany((type) => Fixture, (fixture) => fixture.head, {nullable: true, onDelete: "CASCADE" })
     public fixtures: Fixture[];
+
+    public showChannelModes?: boolean;
 
     constructor(name: string, manufacturer: string, channelModes: ChannelMode[]) {
         super();

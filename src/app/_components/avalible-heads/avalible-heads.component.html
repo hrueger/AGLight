@@ -46,7 +46,7 @@
                                     <tbody>
                                         <tr *ngFor="let channel of channelMode.channels; let k = index">
                                             <td><button class="action-btn red" (click)="deleteChannel(i, j, k)"><i class="fas fa-times"></i></button></td>
-                                            <td class="editable" (click)="change('channelNumber', i, j, k)"><i class="fas fa-pen"></i> {{channel.number}}{{channel.length > 1 ? " - " + (channel.number + channel.length - 1) : ""}}</td>
+                                            <td class="editable" (click)="change('channelNumber', i, j, k)"><i class="fas fa-pen"></i> {{channel.startAddress}}{{channel.length > 1 ? " - " + (channel.startAddress + channel.length - 1) : ""}}</td>
                                             <td class="editable" (click)="change('channelType', i, j, k)"><i class="fas fa-pen"></i> {{channel.type}}</td>
                                             <td class="editable" (click)="change('channelName', i, j, k)"><i class="fas fa-pen"></i> {{channel.name}}</td>
                                             <td><button *ngIf="channel.type == 'Steps'" class="action-btn blue" (click)="toggleShowChannelConfig(i,j,k)"><i [class]='channel.showChannelConfig ? "fas fa-eye-slash" : "fas fa-eye"'></i></button></td>
