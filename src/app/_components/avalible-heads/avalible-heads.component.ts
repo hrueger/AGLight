@@ -171,7 +171,6 @@ export class AvalibleHeadsComponent {
 
   public save() {
     this.connection.getRepository(Head).save(this.heads);
-    console.log("saved");
   }
 
   public async ngOnDestroy() {

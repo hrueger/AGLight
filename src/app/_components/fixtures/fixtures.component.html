@@ -6,7 +6,7 @@
             <input class="form-control" type="text" placeholder="Search" [(ngModel)]="searchValue" (ngModelChange)="search($event)">
         </div>
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-            <span>{{ (displayHeads.length == heads.length ? "All heads" : (displayHeads.length && searchValue != "" ? "Search results" : "No heads found")) }}</span>
+            <span>{{ ( displayHeads && heads && displayHeads.length == heads.length ? "All heads" : (displayHeads && displayHeads.length && searchValue != "" ? "Search results" : "No heads found")) }}</span>
           </h6>
         <ul class="nav flex-column">
           <li class="nav-item" *ngFor="let head of displayHeads">
@@ -41,18 +41,18 @@
               </tr>
           </thead>
           <tbody>
-              <tr *ngFor="let head of fixtures; let i = index">
-                  <td><button class="action-btn red" (click)="deleteHead(i)"><i class="fas fa-times"></i></button></td>
-                  <td class="editable" (click)="change('displayName', i)"><i class="fas fa-pen"></i> {{head.displayName}}</td>
-                  <td>{{head.name}}</td>
-                  <td>{{head.manufacturer}}</td>
-                  <td class="editable" (click)="change('channelMode', i)"><i class="fas fa-pen"></i> {{head.channelMode.channels | channelNumberSum}}</td>
-                  <td class="editable" (click)="change('number', i)"><i class="fas fa-pen"></i> {{head.number}}</td>
-                  <td>{{head.number * (head.channelMode.channels | channelNumberSum)}}</td>
-                  <td class="editable" (click)="change('startAddress', i)"><i class="fas fa-pen"></i> {{head.startAddress}}</td>
-                  <td>{{head.startAddress + (head.number * (head.channelMode.channels | channelNumberSum)) - 1}}</td>
+              <tr *ngFor="let fixture of fixtures; let i = index">
+                  <td><button class="action-btn red" (click)="deleteFixture(i)"><i class="fas fa-times"></i></button></td>
+                  <td class="editable" (click)="change('displayName', i)"><i class="fas fa-pen"></i> {{fixture.displayName}}</td>
+                  <td>{{fixture.head.name}}</td>
+                  <td>{{fixture.head.manufacturer}}</td>
+                  <td class="editable" (click)="change('channelMode', i)"><i class="fas fa-pen"></i> {{fixture.channelMode.channels | channelNumberSum}}</td>
+                  <td class="editable" (click)="change('number', i)"><i class="fas fa-pen"></i> {{fixture.number}}</td>
+                  <td>{{fixture.number * (fixture.channelMode.channels | channelNumberSum)}}</td>
+                  <td class="editable" (click)="change('startAddress', i)"><i class="fas fa-pen"></i> {{fixture.startAddress}}</td>
+                  <td>{{fixture.startAddress + (fixture.number * (fixture.channelMode.channels | channelNumberSum)) - 1}}</td>
                   <td>
-                    <table>
+                    <!--<table>
                       <thead>
                         <tr>
                           <td class="verysmallwidth"><button class="action-btn green" (click)="addEffect(i)"><i class="fas fa-plus"></i></button></td>
@@ -62,7 +62,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let effect of head.effects; let j = index">
+                        <tr *ngFor="let effect of fixture.effects; let j = index">
                           <td><button class="action-btn red" (click)="deleteEffect(i, j)"><i class="fas fa-times"></i></button></td>
                           <td class="editable" (click)="change('effect', i, j)"><i class="fas fa-pen"></i> {{effect.name}}</td>
                           <td>{{effect.group | firstLetterUppercase}}</td>
@@ -84,7 +84,7 @@
                           </td>
                         </tr>
                       </tbody>
-                    </table>
+                    </table>-->
                   </td>
               </tr>
           </tbody>

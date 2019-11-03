@@ -14,6 +14,7 @@ import {
   Tools,
   Vector3,
 } from "babylonjs";
+import { Fixture } from "../../_entities/fixture";
 import { colors } from "../../_ressources/colors";
 import { ShowService } from "../../_services/show.service";
 
@@ -33,15 +34,15 @@ export class ViewerComponent implements OnInit {
   private ground: Mesh;
   private light: HemisphericLight;
 
-  private heads: any[] = [];
+  private fixtures: any[] = [];
   private numberOfFixtures: number = 0;
 
   private readonly fixtureSpace = 40;
 
   constructor(private showService: ShowService) {}
 
-  public ngOnInit() {
-    this.heads = this.showService.getData("usedHeads");
+  public async ngOnInit() {
+    this.fixtures = await this.showService.connection.getRepository(Fixture).find();
     this.canvas = document.getElementById("renderCanvas") as HTMLCanvasElement;
     this.engine = new Engine(this.canvas, true);
     this.createScene();
@@ -67,7 +68,7 @@ export class ViewerComponent implements OnInit {
     const centerbox = Mesh.CreateBox("centerbox", 1, this.scene);
     centerbox.position = new Vector3(0, 0, 0);
 
-    this.heads.forEach((head, idx: number) => {
+    this.fixtures.forEach((head, idx: number) => {
       this.createFixture(idx);
     });
   }
@@ -116,7 +117,7 @@ export class ViewerComponent implements OnInit {
     fixtureLight.parent = fixture;
     fixtureLight.position.y -= 42;
     this.numberOfFixtures++;
-    this.heads[headIdx].viewer = {
+    this.fixtures[headIdx].viewer = {
       fixture,
       fixtureLight,
     }; /*

@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { GridsterConfig } from "angular-gridster2";
+import { Fixture } from "../../_entities/fixture";
+import { Widget } from "../../_entities/widget";
 import { colors } from "../../_ressources/colors";
 import { ShowService } from "../../_services/show.service";
 
@@ -11,18 +13,7 @@ import { ShowService } from "../../_services/show.service";
 export class WidgetGridComponent implements OnInit {
 
   public options: GridsterConfig;
-  public ui: Array<{
-    x: number,
-    y: number,
-    rows: number,
-    cols: number,
-    widget: string,
-    effectOrHead: string,
-    headIdx: number,
-    effectOrChannelIdx: number,
-    effectParamIdx?: number,
-  }>;
-  public heads;
+  public heads = [];
   @Input() public widgets: [] = [];
   @Input() public editMode: boolean = false;
 
@@ -30,9 +21,8 @@ export class WidgetGridComponent implements OnInit {
 
   constructor(private showService: ShowService) {}
 
-  public ngOnInit() {
+  public async ngOnInit() {
     const that = this;
-    this.heads = this.showService.getData("usedHeads");
     this.options = {
       displayGrid: "onDrag&Resize",
       draggable: {enabled: true},
@@ -42,10 +32,12 @@ export class WidgetGridComponent implements OnInit {
       mobileBreakpoint: 0,
       resizable: {enabled: true},
     };
+    this.heads = await this.showService.connection.getRepository(Fixture).find();
+    
   }
 
   public save() {
-    this.showService.setData("ui", this.ui);
+    this.showService.connection.getRepository(Widget).save(this.widgets);
   }
 
   public getButtongridRowArray(control) {

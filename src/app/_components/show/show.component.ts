@@ -1,4 +1,6 @@
 import { Component, OnInit } from "@angular/core";
+import { Fixture } from "../../_entities/fixture";
+import { Widget } from "../../_entities/widget";
 import { ShowService } from "../../_services/show.service";
 
 @Component({
@@ -7,24 +9,11 @@ import { ShowService } from "../../_services/show.service";
   templateUrl: "./show.component.html",
 })
 export class ShowComponent implements OnInit {
-
-  public heads;
-  public ui: Array<{
-    x: number,
-    y: number,
-    rows: number,
-    cols: number,
-    widget: string,
-    effectOrHead: string,
-    headIdx: number,
-    effectOrChannelIdx: number,
-    effectParamIdx?: number,
-  }>;
+  public widgets: Widget[] = [];
 
   constructor(private showService: ShowService) {}
 
-  public ngOnInit() {
-    this.heads = this.showService.getData("usedHeads");
-    this.ui = this.showService.getData("ui") || [];
+  public async ngOnInit() {
+    this.widgets = await this.showService.connection.getRepository(Widget).find();
   }
 }

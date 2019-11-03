@@ -1,6 +1,7 @@
 import {BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import { Channel } from "./channel";
 import { Head } from "./head";
+import { Fixture } from "./fixture";
 
 @Entity()
 export class ChannelMode extends BaseEntity {
@@ -14,6 +15,9 @@ export class ChannelMode extends BaseEntity {
 
     @ManyToOne((type) => Head, (head) => head.channelModes, {nullable: true, onDelete: "CASCADE" })
     public head: Head;
+
+    @OneToMany((type) => Fixture, (fixture) => fixture.channelMode, {nullable: true, onDelete: "CASCADE" })
+    public fixtures: Fixture[];
 
     constructor(channels: Channel[]) {
         super();

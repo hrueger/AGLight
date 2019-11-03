@@ -1,12 +1,17 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import * as electron from "electron";
+import * as path from "path";
 import * as smalltalk from "smalltalk";
+import * as db from "typeorm";
+import { Channel } from "../../_entities/channel";
+import { ChannelMode } from "../../_entities/channelMode";
 import { Fixture } from "../../_entities/fixture";
 import { Head } from "../../_entities/head";
+import { Step } from "../../_entities/step";
 import { effects } from "../../_ressources/effects";
 import { ShowService } from "../../_services/show.service";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
-import { Store } from "../../_utils/store";
 
 @Component({
   selector: "app-fixtures",
@@ -15,26 +20,18 @@ import { Store } from "../../_utils/store";
 })
 export class FixturesComponent implements OnInit {
   public searchValue: string = "";
-  public fixtures: any[] = [];
-  public displayHeads: any[];
-  public heads: any[];
-  private store: Store;
+  public fixtures: Fixture[] = [];
+  public displayHeads: Head[];
+  public heads: Head[];
 
   constructor(private showService: ShowService, private router: Router) {}
 
   public async ngOnInit() {
-    this.store = new Store({
-      configName: "heads",
-      defaults: {
-        heads: [],
-      },
-    });
-    this.heads = this.store.get();
+
+    this.heads = await this.getHeads();
     this.displayHeads = this.heads;
     this.sortDisplayHeads();
-    console.log(this.showService.connection);
-    this.fixtures = await this.showService.connection.getRepository(Fixture).find();
-    console.log(this.fixtures);
+    this.fixtures = await (this.showService.connection.getRepository(Fixture).find());
     /*const that = this;
     window.setTimeout(() => {
       that.ngOnInit();
@@ -42,26 +39,53 @@ export class FixturesComponent implements OnInit {
     }, 1500)*/
   }
 
-  public search(e) {
-    this.displayHeads = this.heads.filter((h) => {
-      const toSearch = h.name.toLowerCase() + " " + h.manufacturer.toLowerCase();
-      let notFound: boolean = false;
-      for (const q of e.split(" "))  {
-        if (toSearch.indexOf(q.toLowerCase()) == -1) {
-            notFound = true;
-        }
+  public async getHeads(): Promise<Head[]> {
+    let storagePath = (electron.app || electron.remote.app).getPath("userData");
+    storagePath = path.join(storagePath, "heads.db");
+    let connection;
+    try {
+      connection = await db.createConnection({
+        // logging: true,
+        database: storagePath,
+        entities: [Head, Channel, ChannelMode, Step, Fixture],
+        name: "headLib",
+        type: "sqlite",
+      });
+    } catch (err) {
+      if (err.name === "AlreadyHasActiveConnectionError") {
+        connection = db.getConnectionManager().get("headLib");
+      } else {
+        throw err;
       }
-      return (notFound ? false : true);
-    });
-    this.sortDisplayHeads();
+    }
+    await connection.synchronize();
+    const heads = connection.getRepository(Head).find();
+    return heads;
+  }
+
+  public search(e) {
+    if (this.heads) {
+        this.displayHeads = this.heads.filter((h) => {
+        const toSearch = h.name.toLowerCase() + " " + h.manufacturer.toLowerCase();
+        let notFound: boolean = false;
+        for (const q of e.split(" "))  {
+          if (toSearch.indexOf(q.toLowerCase()) == -1) {
+              notFound = true;
+          }
+        }
+        return (notFound ? false : true);
+      });
+        this.sortDisplayHeads();
+    }
+
   }
 
   public addHead(head: Head) {
     const options = this.getSelectOptionsFromHead(head);
     smalltalk.prompt("Number of heads", "Type in the number of heads you want to add:", 2).then((n) => {
       smalltalkSelect.select("Channel mode",
-      "Choose the channel mode to use for this head(s)", options, {}).then((channelMode) => {
-        const fixture = new Fixture("Change this", n, 1, head);
+      "Choose the channel mode to use for this head(s)", options, {}).then((channelMode: ChannelMode) => {
+        const fixture = new Fixture("Change this", n, 1, head, channelMode);
         this.fixtures.push(fixture);
         this.sortUsedHeads();
         this.save();
@@ -70,16 +94,18 @@ export class FixturesComponent implements OnInit {
   }
 
   public getAffectedChannel(i: number, j: number, k: number) {
-    const c = this.fixtures[i].channelMode.channels.filter(
-      (channel) => channel.number == this.fixtures[i].effects[j].affects[k].channel);
+    /* const c = this.fixtures[i].channelMode.channels.filter(
+      (channel) => channel.startAddress == this.fixtures[i].effects[j].affects[k].channel);
     if (c && c[0]) {
-        return `${c[0].number}: ${c[0].name}`;
+        return `${c[0].startAddress}: ${c[0].name}`;
       } else {
         return "Please select";
-      }
+      } */
   }
 
   public addEffect(i: number) {
+    return;
+    /*
     const groups = this.getSelectOptionsFromEffectGroups();
     smalltalkSelect.select("Add effect",
       "Choose the effect group to see the effects listed in there", groups, {}).then((g: string) => {
@@ -90,16 +116,14 @@ export class FixturesComponent implements OnInit {
               this.fixtures[i].effects = [];
             }
             const effect = effects.filter((f) => f.name == res)[0];
-            // tslint:disable-next-line: no-string-literal
-            effect["guid"] = this.genGUID();
             this.fixtures[i].effects.push(effect);
             this.save();
           }, () => undefined);
-      }, () => undefined);
+      }, () => undefined);*/
   }
 
   public configureEffect(i: number, j: number) {
-    this.router.navigate(["configureEffect", i, j]);
+    // this.router.navigate(["configureEffect", i, j]);
   }
 
   public change(field: string, i: number, j: number = null, k: number = null) {
@@ -129,16 +153,15 @@ export class FixturesComponent implements OnInit {
         title = "Choose channel mode";
         message = "Choose the channel mode of that head:";
         selectBox = true;
-        options = this.getSelectOptionsFromHead(
-          this.heads.filter((h) => h.name == this.fixtures[i].name)
-          .filter((h) => h.manufacturer == this.fixtures[i].manufacturer)[0]);
+        options = this.getSelectOptionsFromHead(this.heads.filter((h) => (h.name == this.fixtures[i].head.name))
+          .filter((h) => h.manufacturer == this.fixtures[i].head.manufacturer)[0]);
         break;
       case "affectedChannel":
         val = null;
         title = "Choose affected channel";
         message = "Choose the channel which this effect should affect:";
         selectBox = true;
-        options = this.getPossibleChannelsToAffect(i, j, k);
+        // options = this.getPossibleChannelsToAffect(i, j, k);
         break;
 
     }
@@ -166,14 +189,14 @@ export class FixturesComponent implements OnInit {
           smalltalk.alert("Error", "Unfortunately, this effect can't be applied to this head(s).");
         }
       } else {
-        smalltalkSelect.select(title, message, options, {}).then((res) => {
+        smalltalkSelect.select(title, message, options, {}).then((res: ChannelMode) => {
           if (res) {
             switch (field) {
               case "channelMode":
                 this.fixtures[i].channelMode = res;
                 break;
               case "affectedChannel":
-                this.fixtures[i].effects[j].affects[k].channel = res;
+                // this.fixtures[i].effects[j].affects[k].channel = res;
             }
           }
           this.save();
@@ -182,9 +205,10 @@ export class FixturesComponent implements OnInit {
     }
   }
 
-  public deleteHead(i: number) {
-    smalltalk.confirm("Delete head(s)",
-    "Are you sure that this head(s) should be deleted? You won't be able to restore it.").then(() => {
+  public deleteFixture(i: number) {
+    smalltalk.confirm("Delete fixture(s)",
+    "Are you sure that this fixture(s) should be deleted? You won't be able to restore it.").then(async () => {
+      await this.showService.connection.getRepository(Fixture).remove(this.fixtures[i]);
       this.fixtures.splice(i, 1);
       this.save();
     }, () => undefined);
@@ -193,7 +217,7 @@ export class FixturesComponent implements OnInit {
   public deleteEffect(i: number, j: number) {
     smalltalk.confirm("Delete effect",
     "Are you sure that this effect should be deleted? You won't be able to restore it.").then(() => {
-      this.fixtures[i].effects.splice(j, 1);
+      // this.fixtures[i].effects.splice(j, 1);
       this.save();
     }, () => undefined);
   }
@@ -225,15 +249,15 @@ export class FixturesComponent implements OnInit {
     //    return !channel.effect && channel.type == this.usedHeads[i].effects[j].affects[k].name;
     //  }));
 
-    return this.fixtures[i].channelMode.channels
+    /* return this.fixtures[i].channelMode.channels
     .filter((channel) => !channel.effect && channel.type == this.fixtures[i].effects[j].affects[k].name)
     .map((channel) => {
       return {
         description: channel.name,
         name: channel.name,
-        value: channel.number,
+        value: channel.startAddress,
       };
-    });
+    }); */
   }
 
   private getSelectOptionsFromHead(head: any) {

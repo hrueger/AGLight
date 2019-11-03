@@ -11,11 +11,10 @@ export class ShowLoadedGuard implements CanActivate {
   public canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): boolean {
-      /*if (this.showService.showLoaded) {
+      if (this.showService.showLoaded) {
         return true;
       } else {
         this.router.navigate(["home"]);
-      }*/
-      return true;
+      }
   }
 }

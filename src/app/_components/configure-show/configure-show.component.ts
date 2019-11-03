@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { GridsterConfig } from "angular-gridster2";
 import * as smalltalk from "smalltalk";
-import { colors } from "../../_ressources/colors";
+import { Channel } from "../../_entities/channel";
+import { Fixture } from "../../_entities/fixture";
+import { Widget } from "../../_entities/widget";
 import { controls } from "../../_ressources/controls";
 import { ShowService } from "../../_services/show.service";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
@@ -12,45 +13,35 @@ import * as smalltalkSelect from "../../_utils/smalltalk-select";
   templateUrl: "./configure-show.component.html",
 })
 export class ConfigureShowComponent implements OnInit {
-  public heads;
-  public ui: Array<{
-    x: number,
-    y: number,
-    rows: number,
-    cols: number,
-    widget: string,
-    effectOrHead: string,
-    headIdx: number,
-    effectOrChannelIdx: number,
-    effectParamIdx?: number,
-  }>;
+  public fixtures: Fixture[] = [];
+  public widgets: Widget[] = [];
 
   constructor(private showService: ShowService) {}
 
-  public ngOnInit() {
-    this.heads = this.showService.getData("usedHeads");
-    this.ui = this.showService.getData("ui") || [];
+  public async ngOnInit() {
+    this.fixtures = await this.showService.connection.getRepository(Fixture).find();
+    this.widgets = await this.showService.connection.getRepository(Widget).find();
   }
 
   public removeItem($event, item) {
     $event.preventDefault();
     $event.stopPropagation();
-    this.ui.splice(this.ui.indexOf(item), 1);
+    this.widgets.splice(this.widgets.indexOf(item), 1);
   }
 
   public addItem() {
-    let options = this.heads.map((head, i) => {
+    const opts1 = this.fixtures.map((fixture) => {
       return {
-        description: `${head.number}x ${head.manufacturer} ${head.name}`,
-        name: head.displayName,
-        value: i,
+        description: `${fixture.number}x ${fixture.head.manufacturer} ${fixture.head.name}`,
+        name: fixture.displayName,
+        value: fixture,
       };
     });
     smalltalkSelect.select("Add control",
           // @ts-ignore
-        "Choose the head from which you want to add a control.", options, {}).then((i: string) => {
-          const headIdx = parseInt(i, undefined);
-          options = [
+        "Choose the head from which you want to add a control.", opts1, {}).then((fixture: Fixture) => {
+          console.log("chosen: ", fixture);
+          const opts2 = [
             {
               description: "Add a control from a channel.",
               name: "Channel",
@@ -63,88 +54,82 @@ export class ConfigureShowComponent implements OnInit {
             },
           ];
           smalltalkSelect.select("Add control",
-          "Choose the general type from which you want to add a control.", options, {}).then((effectOrHead: string) => {
-          let msg;
-          if (effectOrHead == "head") {
-            msg = "Choose the channel:";
-            options = this.heads[headIdx].channelMode.channels.map((channel, index) => {
-              return {
-                description: `Type: ${channel.type}`,
-                name: `${channel.number + "" +
-                  (channel.length > 1 ? "-" + (channel.length + channel.number - 1) : "")}: ${channel.name}`,
-                value: index,
-              };
-            });
-          } else {
-            msg = "Choose the effect:";
-            options = this.heads[headIdx].effects.map((effect, index) => {
-              return {
-                description: `Group: ${effect.group}`,
-                name: `Effect: ${effect.name}`,
-                value: index,
-              };
-            });
-          }
-          if (options.length) {
-            smalltalkSelect.select("Add control", msg, options, {}).then(async (j: string) => {
-              const effectOrChannelIdx = parseInt(j, undefined);
-              let effectParamIdx;
-              if (effectOrHead == "effect") {
-                options = this.heads[headIdx].effects[effectOrChannelIdx].params.map((param, index) => {
-                  return {
-                    description: `Type: ${param.type}`,
-                    name: `${param.name}`,
-                    value: index,
-                  };
-                });
-                // @ts-ignore
-                effectParamIdx = parseInt(await (smalltalkSelect.select("Add control",
-                  "Choose the effect parameter to control", options, {})), undefined);
-              }
-
-              const controlType = (effectOrHead == "head" ?
-              this.heads[headIdx].channelMode.channels[effectOrChannelIdx].type :
-              this.heads[headIdx].effects[effectOrChannelIdx].params[effectParamIdx].type);
-
-              options = controls.filter((control) => {
-                return control.type == controlType;
-              })[0].usefulWidgets.map((widget) => {
+          "Choose the general type from which you want to add a control.", opts2, {}).then((effectOrHead: string) => {
+            console.log("chosen: ", effectOrHead);
+            let msg;
+            let opts3;
+            if (effectOrHead == "head") {
+              msg = "Choose the channel:";
+              opts3 = fixture.channelMode.channels.map((channel) => {
                 return {
-                  description: `Add a ${widget}.`,
-                  name: widget,
-                  value: widget,
+                  description: `Type: ${channel.type}`,
+                  name: `${channel.startAddress + "" +
+                    (channel.length > 1 ? "-" + (channel.length + channel.startAddress - 1) : "")}: ${channel.name}`,
+                  value: channel,
                 };
               });
-              if (options.length) {
-                smalltalkSelect.select("Add control",
-                  "Choose the control you want to add:", options, {}).then((widget: string) => {
-                  this.ui.push({
-                    cols: 1,
-                    effectOrChannelIdx,
-                    effectOrHead,
-                    effectParamIdx,
-                    headIdx,
-                    rows: 1,
-                    widget,
-                    x: 0,
-                    y: 0,
+            } else {
+              msg = "Choose the effect:";
+              opts3 = []; /*fixture.effects.map((effect, index) => {
+                return {
+                  description: `Group: ${effect.group}`,
+                  name: `Effect: ${effect.name}`,
+                  value: index,
+                };
+              });*/
+            }
+            if (opts3.length) {
+              smalltalkSelect.select("Add control", msg, opts3, {}).then(async (channel: Channel) => {
+                let effectParamIdx;
+                if (effectOrHead == "effect") {
+                  /*opts = this.fixtures[headIdx].effects[effectOrChannelIdx].params.map((param, index) => {
+                    return {
+                      description: `Type: ${param.type}`,
+                      name: `${param.name}`,
+                      value: index,
+                    };
                   });
-                  this.save();
-                }, () => undefined);
-              } else {
-                this.alertNothingToDisplay();
-              }
-            }, () => undefined);
-          } else {
-            this.alertNothingToDisplay();
-          }
-        }, () => undefined);
+                  // @ts-ignore
+                  effectParamIdx = parseInt(await (smalltalkSelect.select("Add control",
+                    "Choose the effect parameter to control", opts, {})), undefined);*/
+                }
+
+                const controlType = /*(effectOrHead == "head" ?*/
+                channel.type/* :
+                this.fixtures[headIdx].effects[effectOrChannelIdx].params[effectParamIdx].type)*/;
+
+                const opts4 = controls.filter((control) => {
+                  return control.type == controlType;
+                })[0].usefulWidgets.map((widget) => {
+                  return {
+                    description: `Add a ${widget}.`,
+                    name: widget,
+                    value: widget,
+                  };
+                });
+                if (opts4.length) {
+                  smalltalkSelect.select("Add control",
+                    "Choose the control you want to add:", opts4, {}).then((control: string) => {
+                      console.log(fixture, channel, effectOrHead, control);
+                      // this.widgets.push(new Widget(0, 0, 1, 1, widget, effectOrHead));
+                      this.fixtures.find((f) => f.id == fixture.id).channelMode.channels.find((c) => c.id == channel.id)
+                        .widget = new Widget(0, 0, 1, 1, control, effectOrHead);
+                      this.save();
+                  }, () => undefined);
+                } else {
+                  this.alertNothingToDisplay();
+                }
+              }, () => undefined);
+            } else {
+              this.alertNothingToDisplay();
+            }
+          }, () => undefined);
 
    }, () => undefined);
   }
 
   public save() {
-    this.showService.setData("ui", this.ui);
+    this.showService.connection.getRepository(Widget).save(this.widgets);
   }
 
   private alertNothingToDisplay() {
