@@ -19,8 +19,7 @@ export class ConfigureShowComponent implements OnInit {
   constructor(private showService: ShowService) {}
 
   public async ngOnInit() {
-    this.fixtures = await this.showService.connection.getRepository(Fixture).find();
-    this.widgets = await this.showService.connection.getRepository(Widget).find();
+    await this.loadAll();
   }
 
   public removeItem($event, item) {
@@ -40,7 +39,6 @@ export class ConfigureShowComponent implements OnInit {
     smalltalkSelect.select("Add control",
           // @ts-ignore
         "Choose the head from which you want to add a control.", opts1, {}).then((fixture: Fixture) => {
-          console.log("chosen: ", fixture);
           const opts2 = [
             {
               description: "Add a control from a channel.",
@@ -55,7 +53,6 @@ export class ConfigureShowComponent implements OnInit {
           ];
           smalltalkSelect.select("Add control",
           "Choose the general type from which you want to add a control.", opts2, {}).then((effectOrHead: string) => {
-            console.log("chosen: ", effectOrHead);
             let msg;
             let opts3;
             if (effectOrHead == "head") {
@@ -80,7 +77,7 @@ export class ConfigureShowComponent implements OnInit {
             }
             if (opts3.length) {
               smalltalkSelect.select("Add control", msg, opts3, {}).then(async (channel: Channel) => {
-                let effectParamIdx;
+                // let effectParamIdx;
                 if (effectOrHead == "effect") {
                   /*opts = this.fixtures[headIdx].effects[effectOrChannelIdx].params.map((param, index) => {
                     return {
@@ -109,12 +106,11 @@ export class ConfigureShowComponent implements OnInit {
                 });
                 if (opts4.length) {
                   smalltalkSelect.select("Add control",
-                    "Choose the control you want to add:", opts4, {}).then((control: string) => {
-                      console.log(fixture, channel, effectOrHead, control);
-                      // this.widgets.push(new Widget(0, 0, 1, 1, widget, effectOrHead));
-                      this.fixtures.find((f) => f.id == fixture.id).channelMode.channels.find((c) => c.id == channel.id)
-                        .widget = new Widget(0, 0, 1, 1, control, effectOrHead);
-                      this.save();
+                    "Choose the control you want to add:", opts4, {}).then(async (control: string) => {
+                      const w = new Widget(0, 0, 1, 1, control, effectOrHead, channel);
+                      this.showService.connection.manager.save(w);
+                      this.widgets.push(w);
+                      this.loadAll();
                   }, () => undefined);
                 } else {
                   this.alertNothingToDisplay();
@@ -130,6 +126,11 @@ export class ConfigureShowComponent implements OnInit {
 
   public save() {
     this.showService.connection.getRepository(Widget).save(this.widgets);
+  }
+
+  private async loadAll() {
+    this.widgets = await this.showService.connection.getRepository(Widget).find();
+    this.fixtures = await this.showService.connection.getRepository(Fixture).find();
   }
 
   private alertNothingToDisplay() {

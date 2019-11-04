@@ -8,6 +8,7 @@ import { ChannelMode } from "../../_entities/channelMode";
 import { Fixture } from "../../_entities/fixture";
 import { Head } from "../../_entities/head";
 import { Step } from "../../_entities/step";
+import { Widget } from "../../_entities/widget";
 import { channelTypes } from "../../_ressources/channel-types";
 import { stepModes } from "../../_ressources/config-node-modes";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
@@ -28,7 +29,7 @@ export class AvalibleHeadsComponent {
     try {
       this.connection = await db.createConnection({
         database: storagePath,
-        entities: [Head, Channel, ChannelMode, Step, Fixture],
+        entities: [Head, Channel, ChannelMode, Step, Fixture, Widget],
         // logging: true,
         type: "sqlite",
       });

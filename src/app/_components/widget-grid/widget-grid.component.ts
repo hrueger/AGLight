@@ -14,7 +14,7 @@ export class WidgetGridComponent implements OnInit {
 
   public options: GridsterConfig;
   public heads = [];
-  @Input() public widgets: [] = [];
+  public widgets: Widget[] = [];
   @Input() public editMode: boolean = false;
 
   private readonly shadeColorFactor = 35;
@@ -33,7 +33,12 @@ export class WidgetGridComponent implements OnInit {
       resizable: {enabled: true},
     };
     this.heads = await this.showService.connection.getRepository(Fixture).find();
-    
+    this.widgets = await this.showService.connection.getRepository(Widget)
+    .createQueryBuilder("widget")
+    .leftJoinAndSelect("widget.channel", "channel")
+    .leftJoinAndSelect("channel.channelMode", "channelMode")
+    .leftJoinAndSelect("channelMode.fixtures", "fixture")
+    .getMany();
   }
 
   public save() {

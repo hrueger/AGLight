@@ -1,7 +1,7 @@
-import {BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import { Channel } from "./channel";
-import { Head } from "./head";
 import { Fixture } from "./fixture";
+import { Head } from "./head";
 
 @Entity()
 export class ChannelMode extends BaseEntity {

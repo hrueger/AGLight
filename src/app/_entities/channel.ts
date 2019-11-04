@@ -1,4 +1,4 @@
-import {BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, OneToOne} from "typeorm";
+import {BaseEntity, Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import { ChannelMode } from "./channelMode";
 import { Head } from "./head";
 import { Step } from "./step";
@@ -30,9 +30,8 @@ export class Channel extends BaseEntity {
 
     public showChannelConfig?: boolean;
 
-    @OneToOne((type) => Widget, (widget) => widget.channel,
-    {nullable: true, cascade: ["insert", "update", "remove"], eager: true, onDelete: "CASCADE" })
-    public widget: Widget;
+    @OneToMany((type) => Widget, (widget) => widget.channel, {nullable: true, onDelete: "CASCADE"})
+    public widgets: Widget[];
 
     constructor(
         startAddress: number,

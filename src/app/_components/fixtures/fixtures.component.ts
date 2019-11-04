@@ -9,6 +9,7 @@ import { ChannelMode } from "../../_entities/channelMode";
 import { Fixture } from "../../_entities/fixture";
 import { Head } from "../../_entities/head";
 import { Step } from "../../_entities/step";
+import { Widget } from "../../_entities/widget";
 import { effects } from "../../_ressources/effects";
 import { ShowService } from "../../_services/show.service";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
@@ -31,7 +32,7 @@ export class FixturesComponent implements OnInit {
     this.heads = await this.getHeads();
     this.displayHeads = this.heads;
     this.sortDisplayHeads();
-    this.fixtures = await (this.showService.connection.getRepository(Fixture).find());
+    this.fixtures = await (this.showService.connection.getRepository(Fixture).find({relations: ["channelMode"]}));
     /*const that = this;
     window.setTimeout(() => {
       that.ngOnInit();
@@ -47,7 +48,7 @@ export class FixturesComponent implements OnInit {
       connection = await db.createConnection({
         // logging: true,
         database: storagePath,
-        entities: [Head, Channel, ChannelMode, Step, Fixture],
+        entities: [Head, Channel, ChannelMode, Step, Fixture, Widget],
         name: "headLib",
         type: "sqlite",
       });

@@ -22,29 +22,24 @@ export class ShowService {
   }
   public connection: db.Connection;
   private pshowLoaded: boolean = false;
-  private showData: any[] = [];
   private currentShowFilePath: string;
 
   constructor(private recentShowsService: RecentShowsService, private router: Router) {}
 
   public async loadShow(path: string) {
-    console.log("beginning of load show");
     if (this.connection) {
       this.connection.close();
       this.connection = undefined;
     }
     this.connection = await db.createConnection({
       database: path,
-      entities: [Head, Channel, ChannelMode, Step, Widget, Fixture],
+      entities: [Head, Widget, Channel, ChannelMode, Step, Fixture],
       type: "sqlite",
     });
     await this.connection.synchronize();
-
-    console.log("after sync");
     this.pshowLoaded = true;
     this.recentShowsService.add(path);
     this.currentShowFilePath = path;
-    console.log("returning", true, "connection is now", this.connection);
     this.router.navigate(["fixtures"]);
   }
 

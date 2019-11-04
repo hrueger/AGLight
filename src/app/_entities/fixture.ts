@@ -1,8 +1,6 @@
-import {BaseEntity, Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn, OneToMany} from "typeorm";
+import {BaseEntity, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import { ChannelMode } from "./channelMode";
-import { Effect } from "./effect";
 import { Head } from "./head";
-import { Widget } from "./widget";
 
 @Entity()
 export class Fixture extends BaseEntity {

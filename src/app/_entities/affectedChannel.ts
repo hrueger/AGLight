@@ -1,4 +1,4 @@
-import {BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, ManyToMany} from "typeorm";
+import {BaseEntity, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import { Channel } from "./channel";
 import { Fixture } from "./fixture";
 import { Head } from "./head";

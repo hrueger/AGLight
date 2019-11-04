@@ -1,40 +1,34 @@
 <gridster [options]="options">
-    <gridster-item [item]="control" *ngFor="let control of widgets">
-
+    <gridster-item [item]="widget" *ngFor="let widget of widgets">
       <div class="content drag-handler">
         <div class="item-buttons float-right" *ngIf="editMode">
-          <button class="btn btn-danger btn-round" (click)="removeItem($event, control)" (touchstart)="removeItem($event, control)">
+          <button class="btn btn-danger btn-round" (click)="removeItem($event, widget)" (touchstart)="removeItem($event, widget)">
             <i class="fas fa-times"></i>
           </button>
         </div>
         <div class="widget">
-          {{ 
-            control.effectOrHead == "head" ? 
-            (fixtures[control.headIdx].channelMode.channels[control.effectOrChannelIdx].name):
-            ("Effect: "+ fixtures[control.headIdx].effects[control.effectOrChannelIdx].name + ": " + (fixtures[control.headIdx].effects[control.effectOrChannelIdx].params[control.effectParamIdx].name | firstLetterUppercase))
-          }} - {{fixtures[control.headIdx].displayName}}
-          <div class="widget-slider d-flex" *ngIf="control.widget == 'Fader'">
+          {{widget.channel.name}} - {{ widget.channel.channelMode.fixtures[0].displayName }}
+          <div class="widget-slider d-flex" *ngIf="widget.type == 'Fader'">
             <ng5-slider  [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: false}"></ng5-slider>
           </div>
 
-          <div class="widget-button" *ngIf="control.widget == 'Button'">
+          <div class="widget-button" *ngIf="widget.type == 'Button'">
             <button class="btn btn-primary gridster-item-content">Button</button>
           </div>
 
-          <div class="widget-buttongrid" *ngIf="control.widget == 'Buttongrid'">
+          <div class="widget-buttongrid" *ngIf="widget.type == 'Buttongrid'">
             <table class="gridster-item-content">
-              <tr *ngFor="let row of getButtongridRowArray(control); let i = index">
-                <td *ngFor="let col of getButtongridColArray(control, i); let j = index">
-                  <button class="btn btn-primary" [ngStyle]='tryGetBackgroundColor(control.effectOrHead == "head" ? 
-                  fixtures[control.headIdx].channelMode.channels[control.effectOrChannelIdx].configNodes[col].name :
-                    ((fixtures[control.headIdx].effects[control.effectOrChannelIdx].params[control.effectParamIdx].configNodes[col].name)))'>{{
-                      control.effectOrHead == "head" ? 
-                    fixtures[control.headIdx].channelMode.channels[control.effectOrChannelIdx].configNodes[col].name :
-                      ((fixtures[control.headIdx].effects[control.effectOrChannelIdx].params[control.effectParamIdx].configNodes[col].name))}}</button>
+              <tr *ngFor="let row of getButtongridRowArray(widget); let i = index">
+                <td *ngFor="let col of getButtongridColArray(widget, i); let j = index">
+                  <button class="btn btn-primary" [ngStyle]='tryGetBackgroundColor(widget.effectOrHead == "head" ? 
+                  fixtures[widget.headIdx].channelMode.channels[widget.effectOrChannelIdx].configNodes[col].name :
+                    ((fixtures[widget.headIdx].effects[widget.effectOrChannelIdx].params[widget.effectParamIdx].configNodes[col].name)))'>{{
+                      widget.effectOrHead == "head" ? 
+                    fixtures[widget.headIdx].channelMode.channels[widget.effectOrChannelIdx].configNodes[col].name :
+                      ((fixtures[widget.headIdx].effects[widget.effectOrChannelIdx].params[widget.effectParamIdx].configNodes[col].name))}}</button>
                 </td>
               </tr>
             </table>
-            <button class="btn btn-primary" *ngFor='let node of ' >{{node.name}}</button>
           </div>
         </div>
       </div>

@@ -31,17 +31,11 @@ export class HomeComponent {
       message: "Create show file",
       title: "Create show file",
     });
-    if (path && this.showService.createShow(path)) {
-      console.log("Erfolg3");
-    }
+    this.showService.createShow(path);
   }
   public recentShow(i) {
     const path = this.recentShows[i];
-    console.log("before navigating");
-    if (this.showService.loadShow(path)) {
-      console.log("now navigating");
-      console.log("Erfolg3");
-    }
+    this.showService.loadShow(path);
   }
   public openShow() {
     const path = remote.dialog.showOpenDialogSync(remote.getCurrentWindow(), {
@@ -56,8 +50,6 @@ export class HomeComponent {
       properties: ["openFile"],
       title: "Open show file",
     })[0];
-    if (path && this.showService.loadShow(path)) {
-      console.log("Erfolg3");
-    }
+    this.showService.loadShow(path);
   }
 }
