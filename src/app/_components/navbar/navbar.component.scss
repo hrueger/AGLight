@@ -36,6 +36,7 @@
             padding-top: 3px;
             margin-left: 20px;
             margin-right: 20px;
+            cursor: pointer;
         }
         &.wi { 
             padding-left: 0px;
@@ -54,7 +55,7 @@
         }
     }
     .nav-item.disabled:hover {
-        background-color: #3C3C3C;
+        background-color: #343a40;
     }
     .nav-item.disabled {
         cursor: auto;
