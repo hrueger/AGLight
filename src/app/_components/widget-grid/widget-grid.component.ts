@@ -36,8 +36,7 @@ export class WidgetGridComponent implements OnInit {
     this.widgets = await this.showService.connection.getRepository(Widget)
     .createQueryBuilder("widget")
     .leftJoinAndSelect("widget.channel", "channel")
-    .leftJoinAndSelect("channel.channelMode", "channelMode")
-    .leftJoinAndSelect("channelMode.fixtures", "fixture")
+    .leftJoinAndSelect("channel.fixture", "fixture")
     .getMany();
   }
 

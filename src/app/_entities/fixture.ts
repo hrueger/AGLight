@@ -1,4 +1,5 @@
-import {BaseEntity, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, Entity, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import { Channel } from "./channel";
 import { ChannelMode } from "./channelMode";
 import { Head } from "./head";
 
@@ -21,18 +22,18 @@ export class Fixture extends BaseEntity {
     {nullable: true, cascade: ["insert", "update", "remove"], eager: true, onDelete: "CASCADE" })
     public head: Head;
 
-    @ManyToOne((type) => ChannelMode, (channelMode) => channelMode.fixtures,
+    @OneToMany((type) => Channel, (channel) => channel.fixture,
     {nullable: true, cascade: ["insert", "update", "remove"], eager: true, onDelete: "CASCADE" })
-    public channelMode: ChannelMode;
+    public channels: Channel[];
 
     // tslint:disable-next-line: variable-name
-    constructor(displayName: string, number: number, startAddress: number, head: Head, channelMode: ChannelMode) {
+    constructor(displayName: string, number: number, startAddress: number, head: Head, channels: Channel[]) {
         super();
         this.displayName = displayName;
         this.number = number;
         this.startAddress = startAddress;
         this.head = head;
-        this.channelMode = channelMode;
+        this.channels = channels;
     }
 
 }

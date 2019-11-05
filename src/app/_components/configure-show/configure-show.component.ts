@@ -57,7 +57,7 @@ export class ConfigureShowComponent implements OnInit {
             let opts3;
             if (effectOrHead == "head") {
               msg = "Choose the channel:";
-              opts3 = fixture.channelMode.channels.map((channel) => {
+              opts3 = fixture.channels.map((channel) => {
                 return {
                   description: `Type: ${channel.type}`,
                   name: `${channel.startAddress + "" +

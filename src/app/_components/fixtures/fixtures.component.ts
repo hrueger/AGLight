@@ -32,7 +32,7 @@ export class FixturesComponent implements OnInit {
     this.heads = await this.getHeads();
     this.displayHeads = this.heads;
     this.sortDisplayHeads();
-    this.fixtures = await (this.showService.connection.getRepository(Fixture).find({relations: ["channelMode"]}));
+    this.fixtures = await (this.showService.connection.getRepository(Fixture).find());
     /*const that = this;
     window.setTimeout(() => {
       that.ngOnInit();
@@ -86,7 +86,8 @@ export class FixturesComponent implements OnInit {
     smalltalk.prompt("Number of heads", "Type in the number of heads you want to add:", 2).then((n) => {
       smalltalkSelect.select("Channel mode",
       "Choose the channel mode to use for this head(s)", options, {}).then((channelMode: ChannelMode) => {
-        const fixture = new Fixture("Change this", n, 1, head, channelMode);
+        channelMode.channels.map((channel) => { channel.id = undefined; return channel; });
+        const fixture = new Fixture("Change this", n, 1, head, channelMode.channels);
         this.fixtures.push(fixture);
         this.sortUsedHeads();
         this.save();
@@ -194,7 +195,8 @@ export class FixturesComponent implements OnInit {
           if (res) {
             switch (field) {
               case "channelMode":
-                this.fixtures[i].channelMode = res;
+                res.channels.map((channel) => { channel.id = undefined; return channel; });
+                this.fixtures[i].channels = res.channels;
                 break;
               case "affectedChannel":
                 // this.fixtures[i].effects[j].affects[k].channel = res;

@@ -1,5 +1,6 @@
 import {BaseEntity, Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import { ChannelMode } from "./channelMode";
+import { Fixture } from "./fixture";
 import { Head } from "./head";
 import { Step } from "./step";
 import { Widget } from "./widget";
@@ -32,6 +33,9 @@ export class Channel extends BaseEntity {
 
     @OneToMany((type) => Widget, (widget) => widget.channel, {nullable: true, onDelete: "CASCADE"})
     public widgets: Widget[];
+
+    @ManyToOne((type) => Fixture, (fixture) => fixture.channels, {nullable: true, onDelete: "CASCADE" })
+    public fixture: Fixture;
 
     constructor(
         startAddress: number,
