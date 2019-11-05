@@ -52,6 +52,9 @@
         &.close:hover {
             background-color: red;
             opacity: 1;
+            img {
+                opacity: 1;
+            }
         }
     }
     .nav-item.disabled:hover {
