@@ -1,4 +1,5 @@
-import { app, BrowserWindow, globalShortcut, Menu, screen } from "electron";
+import { app, BrowserWindow, globalShortcut, ipcMain, screen } from "electron";
+import { initSplashScreen, OfficeTemplate } from "electron-splashscreen";
 import * as path from "path";
 import * as url from "url";
 
@@ -21,8 +22,6 @@ function createWindow() {
     x: 0,
     y: 0,
   });
-  win.maximize();
-  win.show();
   if (serve) {
     require("electron-reload")(__dirname, {
       electron: require(`${__dirname}/node_modules/electron`),
@@ -37,7 +36,6 @@ function createWindow() {
       }),
     );
   }
-  createMenu(win);
   globalShortcut.register("CommandOrControl+Shift+R", () => {
     win.reload();
   });
@@ -46,72 +44,42 @@ function createWindow() {
   });
 
   if (serve) {
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
   }
+  const hideSplashscreen = initSplashScreen({
+    brand: "H. Rüger",
+    color: "#3283a8",
+    height: 300,
+    logo: path.join(__dirname, "src/favicon.png"),
+    mainWindow: win,
+    productName: "AGLight",
+    text: "Initializing ...",
+    url: OfficeTemplate,
+    website: "https://github.com/hrueger/AGLight",
+    width: 500,
+  });
 
-  // Emitted when the window is closed.
+  ipcMain.on("ready", hideSplashscreen);
+
   win.on("closed", () => {
-    // Dereference the window object, usually you would store window
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
     win = null;
   });
 }
 
 try {
-  // This method will be called when Electron has finished
-  // initialization and is ready to create browser windows.
-  // Some APIs can only be used after this event occurs.
   app.on("ready", createWindow);
-
-  // Quit when all windows are closed.
   app.on("window-all-closed", () => {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== "darwin") {
       app.quit();
     }
   });
 
   app.on("activate", () => {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
     if (win === null) {
       createWindow();
     }
   });
 } catch (e) {
-  // Catch Error
-  // throw e;
-}
-
-function createMenu(window) {
-  const template = [
-    {
-      label: "Über",
-      role: "help",
-      submenu: [
-        {
-          click: async () => {
-            const { shell } = require("electron");
-            await shell.openExternal("https://electronjs.org");
-          },
-          label: "Made with ❤ and Electron",
-        },
-        {
-          click: async () => {
-          const { dialog } = require("electron");
-          dialog.showMessageBox(window, {
-            message: "© 2019, Hannes Rüger",
-            title: "Über den Pistenführerscheingenerator",
-          });
-        },
-          label: "Über",
-        },
-      ],
-    },
-  ];
-  // @ts-ignore
-  const menu = Menu.buildFromTemplate(template);
-  Menu.setApplicationMenu(menu);
+  // tslint:disable-next-line: no-console
+  console.error(e);
 }

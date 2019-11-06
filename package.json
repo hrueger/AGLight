@@ -37,6 +37,7 @@
     "angular-gridster2": "^8.2.0",
     "babylonjs": "^4.0.3",
     "bootstrap": "^4.3.1",
+    "electron-splashscreen": "^1.0.0",
     "jquery": "^3.4.1",
     "ng5-slider": "^1.2.4",
     "ngx-perfect-scrollbar": "^8.0.0",

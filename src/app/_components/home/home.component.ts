@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { remote } from "electron";
+import { ipcRenderer, remote } from "electron";
 import { RecentShowsService } from "../../_services/recent-shows.service";
 import { ShowService } from "../../_services/show.service";
 
@@ -12,11 +12,15 @@ import { ShowService } from "../../_services/show.service";
 export class HomeComponent {
   public recentShows: any[] = [];
   public showRecentDropdown: boolean = false;
+  private readonly waitTime: number = 3000;
   constructor(private showService: ShowService,
               private router: Router,
               private recentShowsService: RecentShowsService) {}
 
   public ngOnInit() {
+    setTimeout(() => {
+      ipcRenderer.send("ready");
+    }, this.waitTime);
     this.recentShows = this.recentShowsService.get();
   }
   public newShow() {
