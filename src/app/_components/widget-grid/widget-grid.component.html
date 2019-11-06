@@ -9,7 +9,7 @@
         <div class="widget">
           {{widget.channel.name}} - {{ widget.channel.fixture.displayName }}
           <div class="widget-slider d-flex" *ngIf="widget.type == 'Fader'">
-            <ng5-slider  [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: false}"></ng5-slider>
+            <ng5-slider  [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: false}" (valueChange)="action('slider', widget, $event)"></ng5-slider>
           </div>
 
           <div class="widget-button" *ngIf="widget.type == 'Button'">
@@ -20,12 +20,8 @@
             <table class="gridster-item-content">
               <tr *ngFor="let row of getButtongridRowArray(widget); let i = index">
                 <td *ngFor="let col of getButtongridColArray(widget, i); let j = index">
-                  <button class="btn btn-primary" [ngStyle]='tryGetBackgroundColor(widget.effectOrHead == "head" ? 
-                  fixtures[widget.headIdx].channelMode.channels[widget.effectOrChannelIdx].configNodes[col].name :
-                    ((fixtures[widget.headIdx].effects[widget.effectOrChannelIdx].params[widget.effectParamIdx].configNodes[col].name)))'>{{
-                      widget.effectOrHead == "head" ? 
-                    fixtures[widget.headIdx].channelMode.channels[widget.effectOrChannelIdx].configNodes[col].name :
-                      ((fixtures[widget.headIdx].effects[widget.effectOrChannelIdx].params[widget.effectParamIdx].configNodes[col].name))}}</button>
+                  <button class="btn btn-primary" [ngStyle]='tryGetBackgroundColor(widget.channel.steps[col].name)'
+                    (click)="action('buttongrid', widget, $event, col)">{{widget.channel.steps[col].name}}</button>
                 </td>
               </tr>
             </table>

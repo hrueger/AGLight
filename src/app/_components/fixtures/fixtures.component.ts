@@ -86,7 +86,14 @@ export class FixturesComponent implements OnInit {
     smalltalk.prompt("Number of heads", "Type in the number of heads you want to add:", 2).then((n) => {
       smalltalkSelect.select("Channel mode",
       "Choose the channel mode to use for this head(s)", options, {}).then((channelMode: ChannelMode) => {
-        channelMode.channels.map((channel) => { channel.id = undefined; return channel; });
+        channelMode.channels.map((channel) => {
+          channel.id = undefined;
+          channel.steps = channel.steps.map((step) => {
+            step.id = undefined;
+            return step;
+          });
+          return channel;
+        });
         const fixture = new Fixture("Change this", n, 1, head, channelMode.channels);
         this.fixtures.push(fixture);
         this.sortUsedHeads();
@@ -323,13 +330,4 @@ export class FixturesComponent implements OnInit {
       return 0;
     });
   }
-
-  private genGUID() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-      // tslint:disable-next-line: one-variable-per-declaration no-bitwise
-      const r = Math.random() * 16 | 0, v = c == "x" ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
-
 }

@@ -1,9 +1,11 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { GridsterConfig } from "angular-gridster2";
 import { Fixture } from "../../_entities/fixture";
+import { Step } from "../../_entities/step";
 import { Widget } from "../../_entities/widget";
 import { colors } from "../../_ressources/colors";
 import { ShowService } from "../../_services/show.service";
+const DMX = require("dmx");
 
 @Component({
   selector: "widget-grid",
@@ -16,6 +18,8 @@ export class WidgetGridComponent implements OnInit {
   public heads = [];
   public widgets: Widget[] = [];
   @Input() public editMode: boolean = false;
+  private dmx: any;
+  private universe: any;
 
   private readonly shadeColorFactor = 35;
 
@@ -37,26 +41,41 @@ export class WidgetGridComponent implements OnInit {
     .createQueryBuilder("widget")
     .leftJoinAndSelect("widget.channel", "channel")
     .leftJoinAndSelect("channel.fixture", "fixture")
+    .leftJoinAndSelect("channel.steps", "step")
     .getMany();
+    if (!this.editMode) {
+      this.setupDmx();
+    }
+  }
+
+  public action(type: string, widget: Widget, event: Event) {
+    if (this.editMode) {
+      return;
+    }
+    switch (type) {
+      case "slider":
+        break;
+      case "button":
+        break;
+      case "buttongrid":
+        break;
+      default:
+        break;
+    }
   }
 
   public save() {
     this.showService.connection.getRepository(Widget).save(this.widgets);
   }
 
-  public getButtongridRowArray(control) {
-    const nodes: [] = (control.effectOrHead == "head" ?
-    (this.heads[control.headIdx].channelMode.channels[control.effectOrChannelIdx].configNodes) :
-    ((this.heads[control.headIdx].effects[control.effectOrChannelIdx].params[control.effectParamIdx].configNodes)));
+  public getButtongridRowArray(widget: Widget) {
+    const nodes: Step[] = widget.channel.steps;
     const rows = Math.floor(Math.sqrt(nodes.length));
-    // const cols = nodes.length / rows;
     return Array.from(Array(rows).keys());
   }
 
-  public getButtongridColArray(control, i) {
-    const nodes: [] = (control.effectOrHead == "head" ?
-    (this.heads[control.headIdx].channelMode.channels[control.effectOrChannelIdx].configNodes) :
-    ((this.heads[control.headIdx].effects[control.effectOrChannelIdx].params[control.effectParamIdx].configNodes)));
+  public getButtongridColArray(widget: Widget, i: number) {
+    const nodes: Step[] = widget.channel.steps;
     const rows = Math.floor(Math.sqrt(nodes.length));
     const cols = nodes.length / rows;
     return Array.from(Array(cols).keys()).map((n) => n + (i * rows) + i);
@@ -186,6 +205,12 @@ export class WidgetGridComponent implements OnInit {
     const BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
 
     return "#" + RR + GG + BB;
+  }
+
+  private setupDmx() {
+    this.dmx = new DMX();
+    this.universe = this.dmx.addUniverse("AGLight universe #1", "null");
+    this.universe.updateAll(0); // ToDo init
   }
 
 }
