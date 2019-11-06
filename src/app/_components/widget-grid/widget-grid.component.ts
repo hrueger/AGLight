@@ -25,12 +25,12 @@ export class WidgetGridComponent implements OnInit {
     const that = this;
     this.options = {
       displayGrid: "onDrag&Resize",
-      draggable: {enabled: true},
+      draggable: {enabled: this.editMode},
       itemChangeCallback: () => {
         that.save();
       },
       mobileBreakpoint: 0,
-      resizable: {enabled: true},
+      resizable: {enabled: this.editMode},
     };
     this.heads = await this.showService.connection.getRepository(Fixture).find();
     this.widgets = await this.showService.connection.getRepository(Widget)
