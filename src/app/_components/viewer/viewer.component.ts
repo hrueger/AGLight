@@ -14,12 +14,12 @@ import {
   Tools,
   Vector3,
 } from "babylonjs";
+import { ipcRenderer } from "electron";
 import * as socketIo from "socket.io-client";
+import { isDeepStrictEqual } from "util";
 import { Fixture } from "../../_entities/fixture";
 import { colors } from "../../_ressources/colors";
 import { ShowService } from "../../_services/show.service";
-import { ipcRenderer } from "electron";
-import { isDeepStrictEqual } from "util";
 
 @Component({
   selector: "viewer",
@@ -47,7 +47,7 @@ export class ViewerComponent implements OnInit {
     ipcRenderer.send("viewerEvent", "viewerIsReady");
     const client = socketIo.connect(`http://localhost:${this.socketIoPort}`);
     client.on("update", (universe) => {
-      console.log("universe");
+      // console.log("universe");
     });
 
     ipcRenderer.on("getFixtures", (e, a) => {
