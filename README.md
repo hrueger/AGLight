@@ -5,6 +5,8 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/hrueger/AGLight?color=brightgreen)
 ![Maintenance](https://img.shields.io/maintenance/yes/2019)
 
+> Travis CI build fails because of compiling native serialport module. Still searching for a solution...
+
 ## Note: ##
 This project is in development. It can't be used as of now!
 But feel free to contribute!
