@@ -34,10 +34,11 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.11.2",
     "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
+    "@types/socket.io-client": "^1.4.32",
     "angular-gridster2": "^8.2.0",
     "babylonjs": "^4.0.3",
     "bootstrap": "^4.3.1",
-    "dmx": "github:hrueger/dmx",
+    "dmx": "github:hrueger/dmx#update-serialport",
     "electron-splashscreen": "^1.0.0",
     "jquery": "^3.4.1",
     "ng5-slider": "^1.2.4",
@@ -45,6 +46,7 @@
     "popper.js": "^1.16.0",
     "reflect-metadata": "^0.1.13",
     "smalltalk": "^4.0.2",
+    "socket.io-client": "^2.3.0",
     "sqlite3": "4.1.0",
     "typeorm": "0.2.20"
   },
