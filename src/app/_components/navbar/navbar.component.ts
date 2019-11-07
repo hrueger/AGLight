@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { Router, RouterEvent } from "@angular/router";
 import { remote } from "electron";
 import { ShowService } from "../../_services/show.service";
 
@@ -10,7 +11,8 @@ import { ShowService } from "../../_services/show.service";
 export class NavbarComponent {
   public isMaximized: boolean = true;
   public showLoaded: boolean = false;
-  public showSettingsDropdown = false;
+  public showSettingsDropdown: boolean = false;
+  public canNavigate: boolean = true;
 
   public menuItems: any[] = [
     {
@@ -33,10 +35,15 @@ export class NavbarComponent {
     },
   ];
   private win: any;
-  constructor(private showService: ShowService) {}
+  constructor(private showService: ShowService, private router: Router) {}
 
   public ngOnInit() {
     this.win =  remote.getCurrentWindow();
+    this.router.events.subscribe((event: RouterEvent) => {
+      if (event.url && event.url.endsWith("viewer")) {
+        this.canNavigate = false;
+      }
+    });
   }
   public ngAfterContentChecked() {
     this.showLoaded = this.showService.showLoaded;

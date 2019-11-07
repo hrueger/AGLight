@@ -4,6 +4,7 @@ import * as path from "path";
 import * as url from "url";
 
 let win;
+let viewerWindow;
 let serve;
 const args = process.argv.slice(1);
 serve = args.some((val) => val === "--serve");
@@ -60,6 +61,19 @@ function createWindow() {
   });
 
   ipcMain.on("ready", hideSplashscreen);
+  ipcMain.on("viewerEvent", (e, a, arg) => {
+    switch (a) {
+      case "viewerIsReady":
+        win.webContents.send("viewerIsReady");
+        break;
+      case "showWindow":
+        showViewerWindow();
+        break;
+      case "getFixtures":
+        viewerWindow.webContents.send("getFixtures", arg);
+        break;
+    }
+  });
 
   win.on("closed", () => {
     win = null;
@@ -82,4 +96,26 @@ try {
 } catch (e) {
   // tslint:disable-next-line: no-console
   console.error(e);
+}
+
+function showViewerWindow() {
+  viewerWindow = new BrowserWindow({
+    frame: false,
+    webPreferences: { nodeIntegration: true },
+  });
+  if (serve) {
+    require("electron-reload")(__dirname, {
+      electron: require(`${__dirname}/node_modules/electron`),
+    });
+    viewerWindow.loadURL("http://localhost:4200/#/viewer");
+    viewerWindow.webContents.openDevTools();
+  } else {
+    viewerWindow.loadURL(
+      url.format({
+        pathname: path.join(__dirname, "dist/index.html#/viewer"),
+        protocol: "file:",
+        slashes: true,
+      }),
+    );
+  }
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { ipcRenderer } from "electron";
 import { Fixture } from "../../_entities/fixture";
 import { Widget } from "../../_entities/widget";
 import { ShowService } from "../../_services/show.service";
@@ -15,5 +16,12 @@ export class ShowComponent implements OnInit {
 
   public async ngOnInit() {
     this.widgets = await this.showService.connection.getRepository(Widget).find();
+  }
+
+  public async showViewerWindow() {
+    ipcRenderer.send("viewerEvent", "showWindow");
+    ipcRenderer.on("viewerIsReady", async () => {
+      ipcRenderer.send("viewerEvent", "getFixtures", await this.showService.connection.getRepository(Fixture).find());
+    });
   }
 }

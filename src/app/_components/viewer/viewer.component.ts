@@ -14,12 +14,15 @@ import {
   Tools,
   Vector3,
 } from "babylonjs";
+import * as socketIo from "socket.io-client";
 import { Fixture } from "../../_entities/fixture";
 import { colors } from "../../_ressources/colors";
 import { ShowService } from "../../_services/show.service";
+import { ipcRenderer } from "electron";
+import { isDeepStrictEqual } from "util";
 
 @Component({
-  selector: "app-viewer",
+  selector: "viewer",
   styleUrls: ["./viewer.component.scss"],
   templateUrl: "./viewer.component.html",
 })
@@ -37,21 +40,27 @@ export class ViewerComponent implements OnInit {
   private fixtures: any[] = [];
   private numberOfFixtures: number = 0;
 
-  private readonly fixtureSpace = 40;
-
-  constructor(private showService: ShowService) {}
+  private readonly fixtureSpace: number = 40;
+  private readonly socketIoPort: number = 18909;
 
   public async ngOnInit() {
-    this.fixtures = await this.showService.connection.getRepository(Fixture).find();
-    this.canvas = document.getElementById("renderCanvas") as HTMLCanvasElement;
-    this.engine = new Engine(this.canvas, true);
-    this.createScene();
-    this.camera.position = new Vector3(this.numberOfFixtures * this.fixtureSpace * 0.5, 60, -200);
-    this.camera.rotation = this.vectorFromAngles(0, 0, 0);
-    this.setupResizeListeners();
-    this.setupKeyEvents();
-    this.engine.runRenderLoop(() => this.scene.render());
+    ipcRenderer.send("viewerEvent", "viewerIsReady");
+    const client = socketIo.connect(`http://localhost:${this.socketIoPort}`);
+    client.on("update", (universe) => {
+      console.log("universe");
+    });
 
+    ipcRenderer.on("getFixtures", (e, a) => {
+      this.fixtures = a;
+      this.canvas = document.getElementById("renderCanvas") as HTMLCanvasElement;
+      this.engine = new Engine(this.canvas, true);
+      this.createScene();
+      this.camera.position = new Vector3(this.numberOfFixtures * this.fixtureSpace * 0.5, 60, -200);
+      this.camera.rotation = this.vectorFromAngles(0, 0, 0);
+      this.setupResizeListeners();
+      this.setupKeyEvents();
+      this.engine.runRenderLoop(() => this.scene.render());
+    });
   }
   private createScene(): void {
     this.scene = new Scene(this.engine);

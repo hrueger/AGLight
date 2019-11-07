@@ -1,7 +1,8 @@
 <nav class="navbar navbar-expand navbar-dark bg-dark fixed-top titlebar">
-  <a class="navbar-brand nav-link" href="#">AGLight</a>
+  <a class="navbar-brand nav-link" href="#" *ngIf="canNavigate">AGLight</a>
+  <a class="navbar-brand nav-link" (click)="$event.preventDefault();" *ngIf="!canNavigate">3D Viewer</a>
   <div class="collapse navbar-collapse" id="navbarCollapse">
-    <ul class="navbar-nav mr-auto">
+    <ul class="navbar-nav mr-auto" *ngIf="canNavigate">
       <ng-container *ngFor="let item of menuItems">
         <li *ngIf="item && !item.seperator" class="nav-item" routerLinkActive="active">
           <a class="nav-link" *ngIf="showLoaded" routerLink="{{ item.url }}">{{
@@ -14,7 +15,7 @@
       </ng-container>
     </ul>
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item dropdown">
+      <li class="nav-item dropdown" *ngIf="canNavigate">
         <a class="nav-link icon" href (click)="toggleSettingsDropdown($event)">
           <i class="fas fa-cog clickable"></i>
         </a>

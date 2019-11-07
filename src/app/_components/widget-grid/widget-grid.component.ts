@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { GridsterConfig } from "angular-gridster2";
+import { ipcRenderer } from "electron";
 import { Fixture } from "../../_entities/fixture";
 import { Step } from "../../_entities/step";
 import { Widget } from "../../_entities/widget";
@@ -209,7 +210,7 @@ export class WidgetGridComponent implements OnInit {
 
   private setupDmx() {
     this.dmx = new DMX();
-    this.universe = this.dmx.addUniverse("AGLight universe #1", "null");
+    this.universe = this.dmx.addUniverse("AGLight universe #1", "socketio", undefined, {debug: true});
     this.universe.updateAll(0); // ToDo init
   }
 
