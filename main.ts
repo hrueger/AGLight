@@ -101,6 +101,7 @@ try {
 function showViewerWindow() {
   viewerWindow = new BrowserWindow({
     frame: false,
+    parent: win,
     webPreferences: { nodeIntegration: true },
   });
   if (serve) {
