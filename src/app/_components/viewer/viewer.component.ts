@@ -16,10 +16,7 @@ import {
 } from "babylonjs";
 import { ipcRenderer } from "electron";
 import * as socketIo from "socket.io-client";
-import { isDeepStrictEqual } from "util";
-import { Fixture } from "../../_entities/fixture";
 import { colors } from "../../_ressources/colors";
-import { ShowService } from "../../_services/show.service";
 
 @Component({
   selector: "viewer",
@@ -29,7 +26,6 @@ import { ShowService } from "../../_services/show.service";
 export class ViewerComponent implements OnInit {
   public showTipps: boolean = true;
   private readonly shadeColorFactor: number = 35;
-  private readonly cameraMoveFactor: number = 0.5;
   private canvas: HTMLCanvasElement;
   private engine: Engine;
   private scene: Scene;
@@ -47,7 +43,10 @@ export class ViewerComponent implements OnInit {
     ipcRenderer.send("viewerEvent", "viewerIsReady");
     const client = socketIo.connect(`http://localhost:${this.socketIoPort}`);
     client.on("update", (universe) => {
-      // console.log("universe");
+      universe.forEach((e, i) => {
+        // tslint:disable-next-line: no-console
+        if (e != 0) { console.log("found with non zero:", e, "idx", i); }
+      });
     });
 
     ipcRenderer.on("getFixtures", (e, a) => {
@@ -271,7 +270,8 @@ class FreeCameraKeyboardMoveInput implements ICameraInput<Camera> {
   public keysMoveUp = [32];
   public keysMoveDown = [16];
 
-  public sensibility = 0.01;
+  public rotationSensibility = 0.01;
+  public movementSensibility = 1;
   public camera: FreeCamera;
   public onKeyDown: (evt: any) => void;
   public onKeyUp: (evt: any) => void;
@@ -365,27 +365,31 @@ class FreeCameraKeyboardMoveInput implements ICameraInput<Camera> {
       for (let index = 0; index < this.keys.length; index++) {
           const keyCode = this.keys[index];
           if (this.keysRotateLeft.indexOf(keyCode) !== -1) {
-              camera.rotation.y += this.sensibility;
+              camera.rotation.y += this.rotationSensibility;
           } else if (this.keysRotateRight.indexOf(keyCode) !== -1) {
-              camera.rotation.y -= this.sensibility;
+              camera.rotation.y -= this.rotationSensibility;
           } else if (this.keysRotateUp.indexOf(keyCode) !== -1) {
-            camera.rotation.x -= this.sensibility;
+            camera.rotation.x -= this.rotationSensibility;
           } else if (this.keysRotateDown.indexOf(keyCode) !== -1) {
-            camera.rotation.x += this.sensibility;
+            camera.rotation.x += this.rotationSensibility;
             // now movements
           } else if (this.keysMoveForward.indexOf(keyCode) !== -1) {
-            camera.position.z += this.sensibility * 100;
+            camera.position.x += Math.sin(camera.rotation.y) * this.movementSensibility;
+            camera.position.z += Math.cos(camera.rotation.y) * this.movementSensibility;
           } else if (this.keysMoveBackward.indexOf(keyCode) !== -1) {
-            camera.position.z -= this.sensibility * 100;
+            camera.position.x -= Math.sin(camera.rotation.y) * this.movementSensibility;
+            camera.position.z -= Math.cos(camera.rotation.y) * this.movementSensibility;
           } else if (this.keysMoveLeft.indexOf(keyCode) !== -1) {
-            camera.position.x -= this.sensibility * 100;
+            camera.position.x += Math.cos(camera.rotation.y) * this.movementSensibility;
+            camera.position.z += Math.sin(camera.rotation.y) * this.movementSensibility;
           } else if (this.keysMoveRight.indexOf(keyCode) !== -1) {
-            camera.position.x += this.sensibility * 100;
+            camera.position.x -= Math.cos(camera.rotation.y) * this.movementSensibility;
+            camera.position.z -= Math.sin(camera.rotation.y) * this.movementSensibility;
             // now up and down
           } else if (this.keysMoveUp.indexOf(keyCode) !== -1) {
-            camera.position.y += this.sensibility * 100;
+            camera.position.y += this.movementSensibility;
           } else if (this.keysMoveDown.indexOf(keyCode) !== -1) {
-            camera.position.y -= this.sensibility * 100;
+            camera.position.y -= this.movementSensibility;
           }
       }
   }

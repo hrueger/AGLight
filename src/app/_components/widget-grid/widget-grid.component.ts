@@ -164,8 +164,7 @@ export class WidgetGridComponent implements OnInit {
       case "slider":
         chl = widget.channel.startAddress + widget.channel.fixture.startAddress - 1;
         val = event;
-        this.universe.update(chl, val);
-        console.info("updated", chl, "to", val);
+        this.universe.update({[chl]: val});
         break;
       case "button":
         break;
@@ -174,10 +173,10 @@ export class WidgetGridComponent implements OnInit {
           case "Color Wheel":
             chl = widget.channel.startAddress + widget.channel.fixture.startAddress - 1;
             val = widget.channel.steps[idx].start;
-            this.universe.update(chl, val);
-            console.info("updated", chl, "to", val);
+            this.universe.update({[chl]: val});
             break;
           default:
+            // tslint:disable-next-line: no-console
             console.log(widget.channel.name);
             break;
         }
@@ -206,6 +205,7 @@ export class WidgetGridComponent implements OnInit {
 
   public ngOnDestroy() {
     if (this.universe) {
+      // tslint:disable-next-line: no-console
       console.log(this.universe.server.close());
       this.universe.close(() => undefined);
     }
