@@ -1,11 +1,14 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { GridsterConfig } from "angular-gridster2";
-import { ipcRenderer } from "electron";
+import * as smalltalk from "smalltalk";
+import { Channel } from "../../_entities/channel";
 import { Fixture } from "../../_entities/fixture";
 import { Step } from "../../_entities/step";
 import { Widget } from "../../_entities/widget";
 import { colors } from "../../_ressources/colors";
+import { controls } from "../../_ressources/controls";
 import { ShowService } from "../../_services/show.service";
+import * as smalltalkSelect from "../../_utils/smalltalk-select";
 const DMX = require("dmx");
 
 @Component({
@@ -16,7 +19,7 @@ const DMX = require("dmx");
 export class WidgetGridComponent implements OnInit {
 
   public options: GridsterConfig;
-  public heads = [];
+  public fixtures = [];
   public widgets: Widget[] = [];
   @Input() public editMode: boolean = false;
   private dmx: any;
@@ -37,7 +40,7 @@ export class WidgetGridComponent implements OnInit {
       mobileBreakpoint: 0,
       resizable: {enabled: this.editMode},
     };
-    this.heads = await this.showService.connection.getRepository(Fixture).find();
+    this.fixtures = await this.showService.connection.getRepository(Fixture).find();
     this.widgets = await this.showService.connection.getRepository(Widget)
     .createQueryBuilder("widget")
     .leftJoinAndSelect("widget.channel", "channel")
@@ -49,16 +52,135 @@ export class WidgetGridComponent implements OnInit {
     }
   }
 
-  public action(type: string, widget: Widget, event: Event) {
+  public async removeItem($event, item: Widget) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    await this.showService.connection.getRepository(Widget).remove(item);
+    this.widgets.splice(this.widgets.indexOf(item), 1);
+  }
+
+  public addItem() {
+    const opts1 = this.fixtures.map((fixture) => {
+      return {
+        description: `${fixture.number}x ${fixture.head.manufacturer} ${fixture.head.name}`,
+        name: fixture.displayName,
+        value: fixture,
+      };
+    });
+    smalltalkSelect.select("Add control",
+          // @ts-ignore
+        "Choose the head from which you want to add a control.", opts1, {}).then((fixture: Fixture) => {
+          const opts2 = [
+            {
+              description: "Add a control from a channel.",
+              name: "Channel",
+              value: "head",
+            },
+            {
+              description: "Add a control from a effect.",
+              name: "Effect",
+              value: "effect",
+            },
+          ];
+          smalltalkSelect.select("Add control",
+          "Choose the general type from which you want to add a control.", opts2, {}).then((effectOrHead: string) => {
+            let msg;
+            let opts3;
+            if (effectOrHead == "head") {
+              msg = "Choose the channel:";
+              opts3 = fixture.channels.map((channel) => {
+                return {
+                  description: `Type: ${channel.type}`,
+                  name: `${channel.startAddress + "" +
+                    (channel.length > 1 ? "-" + (channel.length + channel.startAddress - 1) : "")}: ${channel.name}`,
+                  value: channel,
+                };
+              });
+            } else {
+              msg = "Choose the effect:";
+              opts3 = []; /*fixture.effects.map((effect, index) => {
+                return {
+                  description: `Group: ${effect.group}`,
+                  name: `Effect: ${effect.name}`,
+                  value: index,
+                };
+              });*/
+            }
+            if (opts3.length) {
+              smalltalkSelect.select("Add control", msg, opts3, {}).then(async (channel: Channel) => {
+                // let effectParamIdx;
+                if (effectOrHead == "effect") {
+                  /*opts = this.fixtures[headIdx].effects[effectOrChannelIdx].params.map((param, index) => {
+                    return {
+                      description: `Type: ${param.type}`,
+                      name: `${param.name}`,
+                      value: index,
+                    };
+                  });
+                  // @ts-ignore
+                  effectParamIdx = parseInt(await (smalltalkSelect.select("Add control",
+                    "Choose the effect parameter to control", opts, {})), undefined);*/
+                }
+
+                const controlType = /*(effectOrHead == "head" ?*/
+                channel.type/* :
+                this.fixtures[headIdx].effects[effectOrChannelIdx].params[effectParamIdx].type)*/;
+
+                const opts4 = controls.filter((control) => {
+                  return control.type == controlType;
+                })[0].usefulWidgets.map((widget) => {
+                  return {
+                    description: `Add a ${widget}.`,
+                    name: widget,
+                    value: widget,
+                  };
+                });
+                if (opts4.length) {
+                  smalltalkSelect.select("Add control",
+                    "Choose the control you want to add:", opts4, {}).then(async (control: string) => {
+                      const w = new Widget(0, 0, 1, 1, control, effectOrHead, channel);
+                      this.showService.connection.manager.save(w);
+                      this.widgets.push(w);
+                  }, () => undefined);
+                } else {
+                  this.alertNothingToDisplay();
+                }
+              }, () => undefined);
+            } else {
+              this.alertNothingToDisplay();
+            }
+          }, () => undefined);
+
+   }, () => undefined);
+  }
+
+  public action(type: string, widget: Widget, event: Event | number, idx?: number) {
     if (this.editMode) {
       return;
     }
+    let chl: number;
+    let val;
     switch (type) {
       case "slider":
+        chl = widget.channel.startAddress + widget.channel.fixture.startAddress - 1;
+        val = event;
+        this.universe.update(chl, val);
+        console.info("updated", chl, "to", val);
         break;
       case "button":
         break;
       case "buttongrid":
+        switch (widget.channel.name) {
+          case "Color Wheel":
+            chl = widget.channel.startAddress + widget.channel.fixture.startAddress - 1;
+            val = widget.channel.steps[idx].start;
+            this.universe.update(chl, val);
+            console.info("updated", chl, "to", val);
+            break;
+          default:
+            console.log(widget.channel.name);
+            break;
+        }
         break;
       default:
         break;
@@ -80,6 +202,13 @@ export class WidgetGridComponent implements OnInit {
     const rows = Math.floor(Math.sqrt(nodes.length));
     const cols = nodes.length / rows;
     return Array.from(Array(cols).keys()).map((n) => n + (i * rows) + i);
+  }
+
+  public ngOnDestroy() {
+    if (this.universe) {
+      console.log(this.universe.server.close());
+      this.universe.close(() => undefined);
+    }
   }
 
   public tryGetBackgroundColor(name: string) {
@@ -214,4 +343,7 @@ export class WidgetGridComponent implements OnInit {
     this.universe.updateAll(0); // ToDo init
   }
 
+  private alertNothingToDisplay() {
+    smalltalk.alert("Error", "Unfortunately there is nothing to display... Please try other options!");
+  }
 }

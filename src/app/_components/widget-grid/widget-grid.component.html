@@ -1,3 +1,4 @@
+<button *ngIf="editMode" class="btn btn-round btn-success" (click)="addItem()"><i class="fas fa-plus"></i></button>
 <gridster [options]="options">
     <gridster-item [item]="widget" *ngFor="let widget of widgets">
       <div class="content drag-handler">
