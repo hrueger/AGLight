@@ -1,9 +1,10 @@
-name: Node CI
+name: Production build
 
 on: [push]
 
 jobs:
   build_on_mac:
+    name: Build on MacOS
     runs-on: macOS-latest
     steps:
     - uses: actions/checkout@master
@@ -16,6 +17,7 @@ jobs:
       run: npm run build:prod
       
   build_on_linux:
+    name: Build on Linux
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
@@ -28,6 +30,7 @@ jobs:
       run: npm run build:prod
  
   build_on_win:
+    name: Build on Windows
     runs-on: windows-2016
     steps:
     - uses: actions/checkout@master  
