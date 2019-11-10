@@ -1,9 +1,10 @@
 # AGLight 💡
 
-![Travis ](https://img.shields.io/travis/hrueger/AGLight)
-![License](https://img.shields.io/badge/License-MIT-blue)
-![GitHub last commit](https://img.shields.io/github/last-commit/hrueger/AGLight?color=brightgreen)
-![Maintenance](https://img.shields.io/maintenance/yes/2019)
+[![Production build](https://github.com/hrueger/AGLight/workflows/Production%20build/badge.svg)](https://github.com/hrueger/AGLight/actions)
+[![Lint](https://github.com/hrueger/AGLight/workflows/Lint/badge.svg)](https://github.com/hrueger/AGLight/actions)
+[![License](https://img.shields.io/badge/License-MIT-blue)](./LICENSE.md)
+[![GitHub last commit](https://img.shields.io/github/last-commit/hrueger/AGLight?color=brightgreen)](https://github.com/hrueger/AGLight/commits)
+[![Maintenance](https://img.shields.io/maintenance/yes/2019)](https://github.com/hrueger/AGLight/commits)
 
 ## Note: ##
 This project is in development. It can't be used as of now!
