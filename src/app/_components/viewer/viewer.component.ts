@@ -92,13 +92,17 @@ export class ViewerComponent implements OnInit {
                   });
                 } else if (c.type == "Rotation") {
                   if (c.startAddress == f.startAddress) {
+                    // tslint:disable-next-line: no-console
                     console.log("first one");
                   } else if (c.startAddress == f.startAddress + 1) {
+                    // tslint:disable-next-line: no-console
                     console.log("second");
                   } else {
+                    // tslint:disable-next-line: no-console
                     console.log("anders");
                   }
                 } else {
+                  // tslint:disable-next-line: no-console
                   console.log("non step channel found!", c);
                 }
               }
