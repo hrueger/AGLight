@@ -17,6 +17,10 @@
             <button class="btn btn-primary gridster-item-content">Button</button>
           </div>
 
+          <div class="widget-button" *ngIf="widget.type == 'Colorpicker'">
+            <color-circle class="gridster-item-content">Colorpicker</color-circle>
+          </div>
+
           <div class="widget-buttongrid" *ngIf="widget.type == 'Buttongrid'">
             <table class="gridster-item-content">
               <tr *ngFor="let row of getButtongridRowArray(widget); let i = index">

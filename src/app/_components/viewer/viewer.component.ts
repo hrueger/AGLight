@@ -16,6 +16,8 @@ import {
 } from "babylonjs";
 import { ipcRenderer } from "electron";
 import * as socketIo from "socket.io-client";
+import { Channel } from "../../_entities/channel";
+import { Fixture } from "../../_entities/fixture";
 import { colors } from "../../_ressources/colors";
 
 @Component({
@@ -25,6 +27,7 @@ import { colors } from "../../_ressources/colors";
 })
 export class ViewerComponent implements OnInit {
   public showTipps: boolean = true;
+  private readonly rainbowColors: string[] = ["red", "yellow", "green", "blue", "purple"];
   private readonly shadeColorFactor: number = 35;
   private canvas: HTMLCanvasElement;
   private engine: Engine;
@@ -33,19 +36,75 @@ export class ViewerComponent implements OnInit {
   private ground: Mesh;
   private light: HemisphericLight;
 
-  private fixtures: any[] = [];
+  private fixtures: Fixture[] = [];
   private numberOfFixtures: number = 0;
 
   private readonly fixtureSpace: number = 40;
   private readonly socketIoPort: number = 18909;
 
+  private readonly maxLightMaterialOpacity = 0.5;
+
   public async ngOnInit() {
     ipcRenderer.send("viewerEvent", "viewerIsReady");
     const client = socketIo.connect(`http://localhost:${this.socketIoPort}`);
     client.on("update", (universe) => {
-      universe.forEach((e, i) => {
-        // tslint:disable-next-line: no-console
-        if (e != 0) { console.log("found with non zero:", e, "idx", i); }
+      universe.forEach((channelVal, channelNr) => {
+        this.fixtures.forEach((f) => {
+          let totalChannelLength = 0;
+          f.channels.forEach((c) => {
+            totalChannelLength += c.length;
+          });
+          if (f.startAddress <= channelNr && f.startAddress + totalChannelLength - 1 >= channelNr) {
+            f.channels.forEach((c: Channel) => {
+              if (f.startAddress + c.startAddress - 1 <= channelNr &&
+                  f.startAddress + c.startAddress + c.length - 2 >= channelNr) {
+                // if (value != 0) console.log("found fixture", f.displayName, "with", c.name);
+                if (c.type == "Steps") {
+                  c.steps.forEach((step, idx) => {
+                    if (step.start <= channelVal && (!c.steps[idx + 1] || c.steps[idx + 1].start > channelVal)) {
+                      if (this.colorNameToHex(step.name) == "rainbow") {
+                        f.object.currentRainbowColorIndex = 0;
+                        const that = this;
+                        f.object.rainbowInterval = setInterval(() => {
+                          f.object.currentRainbowColorIndex += 1;
+                          if (f.object.currentRainbowColorIndex == that.rainbowColors.length) {
+                            f.object.currentRainbowColorIndex = 0;
+                          }
+                          f.object.fixtureLight.material =
+                            that.createMaterial(
+                              that.color3FromHex(
+                                that.colorNameToHex(that.rainbowColors[f.object.currentRainbowColorIndex]),
+                              ),
+                            that.maxLightMaterialOpacity);
+                            }, 500);
+                      } else {
+                        if (f.object.rainbowInterval) {
+                          clearInterval(f.object.rainbowInterval);
+                        }
+                        f.object.fixtureLight.material =
+                        this.createMaterial(
+                          this.color3FromHex(
+                            this.colorNameToHex(step.name),
+                          ),
+                        this.maxLightMaterialOpacity);
+                      }
+                    }
+                  });
+                } else if (c.type == "Rotation") {
+                  if (c.startAddress == f.startAddress) {
+                    console.log("first one");
+                  } else if (c.startAddress == f.startAddress + 1) {
+                    console.log("second");
+                  } else {
+                    console.log("anders");
+                  }
+                } else {
+                  console.log("non step channel found!", c);
+                }
+              }
+            });
+          }
+        });
       });
     });
 
@@ -121,11 +180,12 @@ export class ViewerComponent implements OnInit {
     fixture.rotation = this.vectorFromAngles(0, -90, 90);
     const fixtureLight = Mesh.CreateCylinder(`fixtureLight_${Math.random().toString()}`,
       80, 0, 40, 64, 16, this.scene, false);
-    fixtureLight.material = this.createMaterial(this.color3FromHex(this.colorNameToHex("orange")), 0.2);
+    fixtureLight.material =
+      this.createMaterial(this.color3FromHex(this.colorNameToHex("white")), this.maxLightMaterialOpacity);
     fixtureLight.parent = fixture;
     fixtureLight.position.y -= 42;
     this.numberOfFixtures++;
-    this.fixtures[headIdx].viewer = {
+    this.fixtures[headIdx].object = {
       fixture,
       fixtureLight,
     }; /*
@@ -170,7 +230,7 @@ export class ViewerComponent implements OnInit {
     if (c) { // color found in list
       return c.hex;
     } else if (name.startsWith("rainbow")) { // check for special words
-      return "#f54a1b"; // ToDo
+      return "rainbow";
     } else {
       const parts = name.split("+");
       const clrs: string[] = [];

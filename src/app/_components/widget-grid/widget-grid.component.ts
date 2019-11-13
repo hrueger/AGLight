@@ -40,13 +40,7 @@ export class WidgetGridComponent implements OnInit {
       mobileBreakpoint: 0,
       resizable: {enabled: this.editMode},
     };
-    this.fixtures = await this.showService.connection.getRepository(Fixture).find();
-    this.widgets = await this.showService.connection.getRepository(Widget)
-    .createQueryBuilder("widget")
-    .leftJoinAndSelect("widget.channel", "channel")
-    .leftJoinAndSelect("channel.fixture", "fixture")
-    .leftJoinAndSelect("channel.steps", "step")
-    .getMany();
+    await this.loadAll();
     if (!this.editMode) {
       this.setupDmx();
     }
@@ -139,8 +133,9 @@ export class WidgetGridComponent implements OnInit {
                   smalltalkSelect.select("Add control",
                     "Choose the control you want to add:", opts4, {}).then(async (control: string) => {
                       const w = new Widget(0, 0, 1, 1, control, effectOrHead, channel);
-                      this.showService.connection.manager.save(w);
-                      this.widgets.push(w);
+                      await this.showService.connection.manager.save(w);
+                      await this.loadAll();
+                      // this.widgets.push(w);
                   }, () => undefined);
                 } else {
                   this.alertNothingToDisplay();
@@ -254,6 +249,16 @@ export class WidgetGridComponent implements OnInit {
         };
       }
     }
+  }
+
+  private async loadAll() {
+    this.fixtures = await this.showService.connection.getRepository(Fixture).find();
+    this.widgets = await this.showService.connection.getRepository(Widget)
+      .createQueryBuilder("widget")
+      .leftJoinAndSelect("widget.channel", "channel")
+      .leftJoinAndSelect("channel.fixture", "fixture")
+      .leftJoinAndSelect("channel.steps", "step")
+      .getMany();
   }
 
   private replaceDarkOrLight(name) {

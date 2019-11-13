@@ -26,6 +26,13 @@ export class Fixture extends BaseEntity {
     {nullable: true, cascade: ["insert", "update", "remove"], eager: true, onDelete: "CASCADE" })
     public channels: Channel[];
 
+    public object?: {
+        fixture: import("babylonjs/Meshes/mesh").Mesh;
+        fixtureLight: import("babylonjs/Meshes/mesh").Mesh;
+        rainbowInterval?: any;
+        currentRainbowColorIndex?: number;
+    };
+
     // tslint:disable-next-line: variable-name
     constructor(displayName: string, number: number, startAddress: number, head: Head, channels: Channel[]) {
         super();

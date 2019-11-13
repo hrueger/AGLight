@@ -9,7 +9,7 @@ const controls: Array<{type: string, usefulWidgets: string[]}> = [
   },
   {
     type: "Color RGB",
-    usefulWidgets: ["Colorpicker", "Button"],
+    usefulWidgets: ["Colorpicker", "RGB Colorpicker", "Button"],
   },
   {
     type: "Rotation",

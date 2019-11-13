@@ -43,6 +43,7 @@
     "electron-splashscreen": "^1.0.0",
     "jquery": "^3.4.1",
     "ng5-slider": "^1.2.4",
+    "ngx-color": "^4.1.0",
     "ngx-perfect-scrollbar": "^8.0.0",
     "popper.js": "^1.16.0",
     "reflect-metadata": "^0.1.13",

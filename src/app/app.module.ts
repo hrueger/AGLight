@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { GridsterModule } from "angular-gridster2";
 import { Ng5SliderModule } from "ng5-slider";
+import { ColorCircleModule } from "ngx-color/circle";
 import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
 import { PERFECT_SCROLLBAR_CONFIG } from "ngx-perfect-scrollbar";
 import { PerfectScrollbarConfigInterface } from "ngx-perfect-scrollbar";
@@ -63,6 +64,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     AppRoutingModule,
     GridsterModule,
     Ng5SliderModule,
+    ColorCircleModule,
   ],
   providers: [
     {
