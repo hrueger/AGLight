@@ -68,4 +68,45 @@ gridster {
         padding: 0;
       }
     }
+
+    .widget-colorpicker {
+      height: 100%;
+      color-circle {
+        .circle-picker {
+          height: 100%;
+          width: 100% !important;
+          margin: 0 !important;
+        }
+      }
+    }
+
+    .widget-rgb-colorpicker {
+      height: 100%;
+      color-swatches {
+        height: 100%;
+        width: 100%;
+        .swatches-picker {
+          height: 100% !important;
+          width: 100% !important;
+          color-raised {
+            height: 100%;
+            .raised-wrap {
+              height: 100%;
+              .raised-bg {
+                box-shadow: none !important;
+                height: 100%;
+                background-color: transparent !important;
+              }
+              .raised-content {
+                height: 100%;
+                .swatches-overflow {
+                  height: 100% !important;
+                  overflow-y: auto;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }

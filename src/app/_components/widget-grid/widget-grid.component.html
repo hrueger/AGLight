@@ -8,6 +8,7 @@
           </button>
         </div>
         <div class="widget">
+          {{ widget.type }}
           {{widget.channel.name}} - {{ widget.channel.fixture.displayName }}
           <div class="widget-slider d-flex" *ngIf="widget.type == 'Fader'">
             <ng5-slider  [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: false}" (valueChange)="action('slider', widget, $event)"></ng5-slider>
@@ -17,8 +18,12 @@
             <button class="btn btn-primary gridster-item-content">Button</button>
           </div>
 
-          <div class="widget-button" *ngIf="widget.type == 'Colorpicker'">
-            <color-circle class="gridster-item-content">Colorpicker</color-circle>
+          <div class="widget-colorpicker" *ngIf="widget.type == 'Colorpicker'">
+            <color-circle circleSize="50" (onChangeComplete)="action('colorpicker', widget, $event)" class="gridster-item-content"></color-circle>
+          </div>
+
+          <div class="widget-rgb-colorpicker" *ngIf="widget.type == 'RGB Colorpicker'">
+            <color-swatches (onChangeComplete)="action('colorpicker', widget, $event)" class="gridster-item-content"></color-swatches>
           </div>
 
           <div class="widget-buttongrid" *ngIf="widget.type == 'Buttongrid'">

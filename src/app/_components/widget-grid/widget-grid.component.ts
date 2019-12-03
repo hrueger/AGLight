@@ -149,7 +149,7 @@ export class WidgetGridComponent implements OnInit {
    }, () => undefined);
   }
 
-  public action(type: string, widget: Widget, event: Event | number, idx?: number) {
+  public action(type: string, widget: Widget, event: Event | number | any, idx?: number) {
     if (this.editMode) {
       return;
     }
@@ -164,17 +164,17 @@ export class WidgetGridComponent implements OnInit {
       case "button":
         break;
       case "buttongrid":
-        switch (widget.channel.name) {
-          case "Color Wheel":
-            chl = widget.channel.startAddress + widget.channel.fixture.startAddress - 1;
-            val = widget.channel.steps[idx].start;
-            this.universe.update({[chl]: val});
-            break;
-          default:
-            // tslint:disable-next-line: no-console
-            console.log(widget.channel.name);
-            break;
-        }
+        chl = widget.channel.startAddress + widget.channel.fixture.startAddress - 1;
+        val = widget.channel.steps[idx].start;
+        this.universe.update({[chl]: val});
+        break;
+      case "colorpicker":
+        chl = widget.channel.startAddress + widget.channel.fixture.startAddress - 1;
+        this.universe.update({
+          [chl]: event.color.rgb.r,
+          [chl + 1]: event.color.rgb.g,
+          [chl + 2]: event.color.rgb.b,
+        });
         break;
       default:
         break;

@@ -101,6 +101,19 @@ export class ViewerComponent implements OnInit {
                     // tslint:disable-next-line: no-console
                     console.log("anders");
                   }
+                } else if (c.type == "Colorpicker" || c.type == "RGB Colorpicker") {
+                  if (c.startAddress == f.startAddress) {
+                    f.object.currentRGBColor.r = channelVal / 255;
+                  } else if (c.startAddress == f.startAddress + 1) {
+                    f.object.currentRGBColor.g = channelVal / 255;
+                  } else if (c.startAddress == f.startAddress + 2) {
+                    f.object.currentRGBColor.b = channelVal / 255;
+                  } else {
+                    console.warn("Fehler", c.startAddress, f.startAddress);
+                  }
+                  f.object.fixtureLight.material =
+                        this.createMaterial(new Color3(50, 50, 50),
+                        this.maxLightMaterialOpacity);
                 } else {
                   // tslint:disable-next-line: no-console
                   console.log("non step channel found!", c);
