@@ -56,7 +56,7 @@
     "smalltalk": "^4.0.2",
     "socket.io-client": "^2.3.0",
     "sqlite3": "4.1.0",
-    "typeorm": "0.2.20"
+    "typeorm": "0.2.21"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^8.0.2",
