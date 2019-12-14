@@ -31,6 +31,11 @@ export class Fixture extends BaseEntity {
         fixtureLight: import("babylonjs/Meshes/mesh").Mesh;
         rainbowInterval?: any;
         currentRainbowColorIndex?: number;
+        currentRGBColor?: {
+            r: number,
+            b: number,
+            g: number,
+        }
     };
 
     // tslint:disable-next-line: variable-name

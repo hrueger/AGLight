@@ -109,6 +109,7 @@ export class ViewerComponent implements OnInit {
                   } else if (c.startAddress == f.startAddress + 2) {
                     f.object.currentRGBColor.b = channelVal / 255;
                   } else {
+                    // tslint:disable-next-line: no-console
                     console.warn("Fehler", c.startAddress, f.startAddress);
                   }
                   f.object.fixtureLight.material =
