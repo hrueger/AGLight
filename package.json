@@ -77,7 +77,7 @@
     "@angular/platform-browser": "^8.0.1",
     "@angular/platform-browser-dynamic": "^8.0.1",
     "@angular/router": "^8.0.1",
-    "@types/node": "~12.12.7",
+    "@types/node": "~13.1.0",
     "angular-cli-builders": "^2.1.2",
     "codelyzer": "~5.2.0",
     "commonjs": "0.0.1",
