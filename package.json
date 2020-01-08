@@ -82,7 +82,7 @@
     "codelyzer": "~5.2.0",
     "commonjs": "0.0.1",
     "copy-webpack-plugin": "^5.0.3",
-    "electron": "7.1.7",
+    "electron": "7.1.8",
     "core-js": "3.6.1",
     "electron-builder": "22.1.0",
     "electron-rebuild": "^1.8.6",
