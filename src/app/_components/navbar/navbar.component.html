@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand navbar-dark bg-dark fixed-top titlebar">
-  <a class="navbar-brand nav-link" href="#" *ngIf="canNavigate">AGLight</a>
+  <a class="navbar-brand nav-link pl-0" href="#" *ngIf="canNavigate"><img class="img-fluid brand-logo" src="assets/logo.png" alt="Logo">AGLight</a>
   <a class="navbar-brand nav-link" (click)="$event.preventDefault();" *ngIf="!canNavigate">3D Viewer</a>
   <div class="collapse navbar-collapse" id="navbarCollapse">
     <ul class="navbar-nav mr-auto" *ngIf="canNavigate">
@@ -15,30 +15,25 @@
       </ng-container>
     </ul>
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item dropdown" *ngIf="canNavigate">
-        <a class="nav-link icon" href (click)="toggleSettingsDropdown($event)">
-          <i class="fas fa-cog clickable"></i>
-        </a>
-        <div
-          class="dropdown-menu dropdown-menu-right"
-          [class.show]="showSettingsDropdown"
+      <li class="nav-icon">
+        <a
+          class="nav-link"
+          routerLinkActive="active"
+          (click)="toggleSettingsDropdown($event)"
+          routerLink="avalibleHeads"
+          ><i class="fa fa-lightbulb"></i></a
         >
-          <a
-            class="dropdown-item"
-            routerLinkActive="active"
-            (click)="toggleSettingsDropdown($event)"
-            routerLink="avalibleHeads"
-            >Heads</a
-          >
-          <a
-            class="dropdown-item"
-            routerLinkActive="active"
-            (click)="toggleSettingsDropdown($event)"
-            routerLink="cloud"
-            >Cloud</a
-          >
-        </div>
       </li>
+      <li class="nav-icon mr-3">
+        <a
+          class="nav-link"
+          routerLinkActive="active"
+          (click)="toggleSettingsDropdown($event)"
+          routerLink="cloud"
+          ><i class="fa fa-sync"></i></a
+        >
+      </li>
+    
       <li class="nav-icon">
         <a class="nav-link wi down" (click)="minWindow()">
           <img class="window-icon" src="data:image/svg+xml;charset=utf-8,%3Csvg width='11' height='11' viewBox='0 0 11 11' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 4.399V5.5H0V4.399h11z' fill='%23fff'/%3E%3C/svg%3E">

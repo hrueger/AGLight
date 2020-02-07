@@ -3,56 +3,60 @@
     <nav class="col-md-2 d-none d-md-block bg-dark sidebar">
       <div class="sidebar-sticky">
         <div class="p-3">
-            <input class="form-control" type="text" placeholder="Search" [(ngModel)]="searchValue" (ngModelChange)="search($event)">
+          <input class="form-control" type="text" placeholder="Search" [(ngModel)]="searchValue"
+            (ngModelChange)="search($event)">
         </div>
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-            <span>{{ ( displayHeads && heads && displayHeads.length == heads.length ? "All heads" : (displayHeads && displayHeads.length && searchValue != "" ? "Search results" : "No heads found")) }}</span>
-          </h6>
-        <ul class="nav flex-column">
-          <li class="nav-item" *ngFor="let head of displayHeads">
-            <a class="nav-link clickable" (click)="addHead(head)">
-              {{head.name}} | {{head.manufacturer}}
-            </a>
-          </li>
-          
-        </ul>
+          <span>{{ ( displayHeads && heads && displayHeads.length == heads.length ? "All heads" : (displayHeads && displayHeads.length && searchValue != "" ? "Search results" : "No heads found")) }}</span>
+        </h6>
+        
+          <ul class="nav flex-column">
+            <li class="nav-item" *ngFor="let head of displayHeads">
+              <a class="nav-link clickable" (click)="addHead(head)">
+                {{head.name}} | {{head.manufacturer.name}}
+              </a>
+            </li>
+          </ul>
       </div>
     </nav>
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
       <div class="pt-3 pb-2 mb-3">
-          <div class="action-bar">
-              <button class="btn btn-success" (click)="save()">Save</button>
-              <a class="btn btn-primary" routerLink="/cloud">Sync...</a>
-          </div>
-      <table class="table table-striped table-sm table-fit table-dark">
+        <div class="action-bar">
+          <button class="btn btn-outline-success" (click)="save()">Save</button>
+          <a class="btn btn-outline-primary" routerLink="/cloud">Sync...</a>
+        </div>
+        <table class="table table-striped table-sm table-fit table-dark">
           <thead>
-              <tr>
-                  <td class="verysmallwidth"></td>
-                  <td>Name</td>
-                  <td>Product</td>
-                  <td>Manufacturer</td>
-                  <td>Channel mode</td>
-                  <td>Number</td>
-                  <td class="">TAS</td>
-                  <td>Start addr.</td>
-                  <td>End addr.</td>
-                  <td>Effects</td>
-              </tr>
+            <tr>
+              <td class="verysmallwidth"></td>
+              <td>Name</td>
+              <td>Product</td>
+              <td>Manufacturer</td>
+              <td>Channel mode</td>
+              <td>Number</td>
+              <td class="">TAS</td>
+              <td>Start addr.</td>
+              <td>End addr.</td>
+              <td>Effects</td>
+            </tr>
           </thead>
           <tbody>
-              <tr *ngFor="let fixture of fixtures; let i = index">
-                  <td><button class="action-btn red" (click)="deleteFixture(i)"><i class="fas fa-times"></i></button></td>
-                  <td class="editable" (click)="change('displayName', i)"><i class="fas fa-pen"></i> {{fixture.displayName}}</td>
-                  <td>{{fixture.head.name}}</td>
-                  <td>{{fixture.head.manufacturer}}</td>
-                  <td class="editable" (click)="change('channelMode', i)"><i class="fas fa-pen"></i> {{fixture.channels | channelNumberSum}}</td>
-                  <td class="editable" (click)="change('number', i)"><i class="fas fa-pen"></i> {{fixture.number}}</td>
-                  <td>{{fixture.number * (fixture.channels | channelNumberSum)}}</td>
-                  <td class="editable" (click)="change('startAddress', i)"><i class="fas fa-pen"></i> {{fixture.startAddress}}</td>
-                  <td>{{fixture.startAddress + (fixture.number * (fixture.channels | channelNumberSum)) - 1}}</td>
-                  <td>
-                    <!--<table>
+            <tr *ngFor="let fixture of fixtures; let i = index">
+              <td><button class="action-btn red" (click)="deleteFixture(i)"><i class="fas fa-times"></i></button></td>
+              <td class="editable" (click)="change('displayName', i)"><i class="fas fa-pen"></i> {{fixture.displayName}}
+              </td>
+              <td>{{fixture.head.name}}</td>
+              <td>{{fixture.head.manufacturer}}</td>
+              <td class="editable" (click)="change('channelMode', i)"><i class="fas fa-pen"></i>
+                {{fixture.channels | channelNumberSum}}</td>
+              <td class="editable" (click)="change('number', i)"><i class="fas fa-pen"></i> {{fixture.number}}</td>
+              <td>{{fixture.number * (fixture.channels | channelNumberSum)}}</td>
+              <td class="editable" (click)="change('startAddress', i)"><i class="fas fa-pen"></i>
+                {{fixture.startAddress}}</td>
+              <td>{{fixture.startAddress + (fixture.number * (fixture.channels | channelNumberSum)) - 1}}</td>
+              <td>
+                <!--<table>
                       <thead>
                         <tr>
                           <td class="verysmallwidth"><button class="action-btn green" (click)="addEffect(i)"><i class="fas fa-plus"></i></button></td>
@@ -85,11 +89,11 @@
                         </tr>
                       </tbody>
                     </table>-->
-                  </td>
-              </tr>
+              </td>
+            </tr>
           </tbody>
-      </table>
-    </div>
+        </table>
+      </div>
     </main>
   </div>
 </div>

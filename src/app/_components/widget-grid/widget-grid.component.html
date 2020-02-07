@@ -1,9 +1,9 @@
-<button *ngIf="editMode" class="btn btn-round btn-success" (click)="addItem()"><i class="fas fa-plus"></i></button>
+<button *ngIf="editMode" class="btn btn-round btn-outline-success" (click)="addItem()"><i class="fas fa-plus"></i></button>
 <gridster [options]="options">
     <gridster-item [item]="widget" *ngFor="let widget of widgets">
       <div class="content drag-handler">
         <div class="item-buttons float-right" *ngIf="editMode">
-          <button class="btn btn-danger btn-round" (click)="removeItem($event, widget)" (touchstart)="removeItem($event, widget)">
+          <button class="btn btn-outline-danger btn-round" (click)="removeItem($event, widget)" (touchstart)="removeItem($event, widget)">
             <i class="fas fa-times"></i>
           </button>
         </div>
@@ -15,7 +15,7 @@
           </div>
 
           <div class="widget-button" *ngIf="widget.type == 'Button'">
-            <button class="btn btn-primary gridster-item-content">Button</button>
+            <button class="btn btn-outline-primary gridster-item-content">Button</button>
           </div>
 
           <div class="widget-colorpicker" *ngIf="widget.type == 'Colorpicker'">
@@ -30,7 +30,7 @@
             <table class="gridster-item-content">
               <tr *ngFor="let row of getButtongridRowArray(widget); let i = index">
                 <td *ngFor="let col of getButtongridColArray(widget, i); let j = index">
-                  <button class="btn btn-primary" [ngStyle]='tryGetBackgroundColor(widget.channel.steps[col].name)'
+                  <button class="btn btn-outline-primary" [ngStyle]='tryGetBackgroundColor(widget.channel.steps[col].name)'
                     (click)="action('buttongrid', widget, $event, col)">{{widget.channel.steps[col].name}}</button>
                 </td>
               </tr>

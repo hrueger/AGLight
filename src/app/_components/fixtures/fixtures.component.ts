@@ -12,6 +12,7 @@ import { Step } from "../../_entities/step";
 import { Widget } from "../../_entities/widget";
 import { effects } from "../../_ressources/effects";
 import { ShowService } from "../../_services/show.service";
+import { LibraryService } from "../../_services/library.service";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
 
 @Component({
@@ -22,14 +23,14 @@ import * as smalltalkSelect from "../../_utils/smalltalk-select";
 export class FixturesComponent implements OnInit {
   public searchValue: string = "";
   public fixtures: Fixture[] = [];
-  public displayHeads: Head[];
-  public heads: Head[];
+  public displayHeads: any[];
+  public heads: any[];
 
-  constructor(private showService: ShowService, private router: Router) {}
+  constructor(private showService: ShowService, private libraryService: LibraryService) {}
 
   public async ngOnInit() {
 
-    this.heads = await this.getHeads();
+    this.heads = this.getHeads();
     this.displayHeads = this.heads;
     this.sortDisplayHeads();
     this.fixtures = await (this.showService.connection.getRepository(Fixture).find());
@@ -40,28 +41,8 @@ export class FixturesComponent implements OnInit {
     }, 1500)*/
   }
 
-  public async getHeads(): Promise<Head[]> {
-    let storagePath = (electron.app || electron.remote.app).getPath("userData");
-    storagePath = path.join(storagePath, "heads.db");
-    let connection;
-    try {
-      connection = await db.createConnection({
-        // logging: true,
-        database: storagePath,
-        entities: [Head, Channel, ChannelMode, Step, Fixture, Widget],
-        name: "headLib",
-        type: "sqlite",
-      });
-    } catch (err) {
-      if (err.name === "AlreadyHasActiveConnectionError") {
-        connection = db.getConnectionManager().get("headLib");
-      } else {
-        throw err;
-      }
-    }
-    await connection.synchronize();
-    const heads = connection.getRepository(Head).find();
-    return heads;
+  public getHeads(): any[] {
+    return this.libraryService.getFixtures();
   }
 
   public search(e) {

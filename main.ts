@@ -18,7 +18,7 @@ function createWindow() {
     frame: false,
     height: size.height,
     icon: path.join(__dirname, "src/favicon.png"),
-    show: false,
+    show: true,
     webPreferences: { nodeIntegration: true },
     width: size.width,
     x: 0,
@@ -48,9 +48,9 @@ function createWindow() {
   if (serve) {
     // win.webContents.openDevTools();
   }
-  const hideSplashscreen = initSplashScreen({
+  /*const hideSplashscreen = initSplashScreen({
     brand: "H. Rüger",
-    color: "#3283a8",
+    color: "#f1c40f",
     height: 300,
     logo: path.join(__dirname, "src/favicon.png"),
     mainWindow: win,
@@ -59,9 +59,9 @@ function createWindow() {
     url: OfficeTemplate,
     website: "https://github.com/hrueger/AGLight",
     width: 500,
-  });
+  });*/
 
-  ipcMain.on("ready", hideSplashscreen);
+  // ipcMain.on("ready", hideSplashscreen);
   ipcMain.on("viewerEvent", (e, a, arg) => {
     switch (a) {
       case "viewerIsReady":

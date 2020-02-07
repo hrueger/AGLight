@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import { ipcRenderer, remote } from "electron";
 import { RecentShowsService } from "../../_services/recent-shows.service";
 import { ShowService } from "../../_services/show.service";
+import { LibraryService } from "../../_services/library.service";
 
 @Component({
   selector: "app-home",
@@ -15,13 +16,15 @@ export class HomeComponent {
   private readonly waitTime: number = 3000;
   constructor(private showService: ShowService,
               private router: Router,
-              private recentShowsService: RecentShowsService) {}
+              private recentShowsService: RecentShowsService,
+              private libraryService: LibraryService) {}
 
-  public ngOnInit() {
+  public async ngOnInit() {
     setTimeout(() => {
       ipcRenderer.send("ready");
     }, this.waitTime);
     this.recentShows = this.recentShowsService.get();
+    await this.libraryService.loadIntoCache();
   }
   public newShow() {
     const path = remote.dialog.showSaveDialogSync(remote.getCurrentWindow(), {

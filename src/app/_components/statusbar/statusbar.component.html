@@ -1,0 +1,18 @@
+<nav class="navbar navbar-expand navbar-dark bg-primary fixed-bottom statusbar">
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-icon dropup" *ngFor="let item of menuItems">
+        <a class="nav-link" (click)="clicked(item)">
+          <i [class]="'fa fa-' + item.icon"></i> {{item.name}}
+        </a>
+        <div class="dropdown-menu" [class.show]="item.showDropup" *ngIf="item.dropup">
+          <h5>{{item.dropup.title}}</h5>
+          <p>{{item.dropup.content}}</p>
+          <button *ngFor="let btn of item.dropup.actions" [class]="'btn btn-outline-' + btn.type" (click)="btnClicked(btn)">
+            {{btn.text}}
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>

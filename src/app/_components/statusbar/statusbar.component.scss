@@ -1,0 +1,43 @@
+.statusbar {
+    font-size: 0.9em;
+    padding: 0;
+    height: 23px;
+    .nav-link, .nav-link * {
+        margin-top: 0;
+        margin-bottom: 0;
+        color: #ffffff;
+    }
+    .nav-link {
+        height: 23px;
+        padding: 0;
+        padding-left: 10px;
+        padding-right: 10px;
+        &.icon {
+            padding-top: 3px;
+            margin-left: 20px;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+        &:hover {
+            background-color: #498ebd;
+        }
+    }
+    .nav-item.disabled:hover {
+        background-color: transparent;
+    }
+    .nav-item.disabled {
+        cursor: auto;
+    }
+    .nav-link.close {
+        opacity: 1;
+    }
+    .dropdown-menu {
+        right: 0;
+        left: unset;
+        margin-right: 1px;
+        padding: 10px;
+    }
+    .dropup {
+        cursor: pointer;
+    }
+}

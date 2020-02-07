@@ -14,13 +14,6 @@
             outline: none !important;
         }
     }
-    .clps {
-        display: flex !important;
-        flex-basis: auto;
-        flex-basis: 100%;
-        flex-grow: 1;
-        align-items: center;
-    }
     .nav-link, .nav-link * {
         -webkit-app-region: no-drag !important;
         margin-top: 0;
@@ -71,5 +64,10 @@
     }
     .nav-link.close {
         opacity: 1;
+    }
+    .brand-logo {
+        height: 100%;
+        width: auto;
+        margin: 1px;
     }
 }
