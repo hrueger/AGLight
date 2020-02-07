@@ -11,7 +11,7 @@ module.exports.getConfigs = function(){
                 reject(err);
             }
 
-            var extra = data.match(regex)[1];
+            var extra = data.match(regex)[1].replace("__dirname", __dirname);
 
             const electronConfig = 'target: "electron-renderer", ' + extra + ',';
             const webConfig = 'target: "web", ' + extra + ',';
