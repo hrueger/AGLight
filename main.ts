@@ -3,7 +3,7 @@ import { initSplashScreen, OfficeTemplate } from "electron-splashscreen";
 import * as path from "path";
 import * as url from "url";
 
-let win;
+let win: BrowserWindow;
 let viewerWindow;
 let serve;
 const args = process.argv.slice(1);
@@ -16,14 +16,13 @@ function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
     frame: false,
-    height: size.height,
     icon: path.join(__dirname, "src/favicon.png"),
     show: true,
     webPreferences: { nodeIntegration: true },
-    width: size.width,
     x: 0,
     y: 0,
   });
+  win.maximize();
   if (serve) {
     require("electron-reload")(__dirname, {
       electron: require(`${__dirname}/node_modules/electron`),
