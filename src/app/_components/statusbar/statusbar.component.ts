@@ -1,6 +1,7 @@
 import { Component, ChangeDetectorRef } from "@angular/core";
 import { StatusbarService } from "../../_services/statusbar.service";
 import { LibraryService } from "../../_services/library.service";
+import { DmxService } from "../../_services/dmx.service";
 
 @Component({
   selector: "app-statusbar",
@@ -12,7 +13,11 @@ export class StatusbarComponent {
   public canNavigate: boolean = true;
 
   public menuItems: any[] = [];
-  constructor(private cdr: ChangeDetectorRef, private statusbarService: StatusbarService, private libraryService: LibraryService) {}
+  constructor(private cdr: ChangeDetectorRef,
+    private statusbarService: StatusbarService,
+    private libraryService: LibraryService,
+    private dmxService: DmxService
+    ) {}
 
   public ngOnInit() {
     this.statusbarService.data.subscribe((d) => {
@@ -25,6 +30,10 @@ export class StatusbarComponent {
     if (item.showDropup) {
       item.showDropup = false;
     } else {
+      this.menuItems = this.menuItems.map((i) => {
+        i.showDropup = false;
+        return i;
+      });
       item.showDropup = true;
     }
     this.cdr.detectChanges();

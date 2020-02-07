@@ -4,6 +4,7 @@ import { ipcRenderer, remote } from "electron";
 import { RecentShowsService } from "../../_services/recent-shows.service";
 import { ShowService } from "../../_services/show.service";
 import { LibraryService } from "../../_services/library.service";
+import { DmxService } from "../../_services/dmx.service";
 
 @Component({
   selector: "app-home",
@@ -17,13 +18,16 @@ export class HomeComponent {
   constructor(private showService: ShowService,
               private router: Router,
               private recentShowsService: RecentShowsService,
-              private libraryService: LibraryService) {}
+              private libraryService: LibraryService,
+              private dmxService: DmxService,
+              ) {}
 
   public async ngOnInit() {
     setTimeout(() => {
       ipcRenderer.send("ready");
     }, this.waitTime);
     this.recentShows = this.recentShowsService.get();
+    this.dmxService.init();
     await this.libraryService.loadIntoCache();
   }
   public newShow() {
