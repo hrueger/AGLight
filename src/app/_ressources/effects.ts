@@ -1,11 +1,10 @@
-const effects: Array<
-  {
-    affects: Array<{ name: string }>,
+const effects: {
+    affects: { name: string }[],
     get: string,
     group: string,
     name: string,
-    params: Array<{name: string, type: string}>,
-  }> = [
+    params: {name: string, type: string}[],
+  }[] = [
   {
     affects: [{ name: "Color RGB" }],
     get: "(t) => {return t;}",

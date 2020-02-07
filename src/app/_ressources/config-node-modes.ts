@@ -1,4 +1,4 @@
-const stepModes: Array<{description: string, name: string, value: string}>  = [
+const stepModes: {description: string, name: string, value: string}[]  = [
   {
     description: "All values in this range will have the same meaning.",
     name: "Equal mode",

@@ -1,4 +1,4 @@
-const channelTypes: Array<{description: string, length: number, name: string, value: string}>  = [
+const channelTypes: {description: string, length: number, name: string, value: string}[]  = [
   {
     description: "3 Chanels used for changing the color of the head.",
     length: 3,

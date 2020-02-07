@@ -1,7 +1,7 @@
-const colors: Array<{
+const colors: {
   name: string; // tslint:disable-next-line: object-literal-sort-keys
   hex: string;
-}> = [
+}[] = [
   {
     name: "Abbey",
     // tslint:disable-next-line: object-literal-sort-keys

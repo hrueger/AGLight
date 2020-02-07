@@ -1,4 +1,4 @@
-const controls: Array<{type: string, usefulWidgets: string[]}> = [
+const controls: {type: string, usefulWidgets: string[]}[] = [
   {
     type: "Linear",
     usefulWidgets: ["Fader", "Button"],
