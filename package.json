@@ -42,7 +42,7 @@
     "@fortawesome/fontawesome-free": "^5.12.1",
     "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
     "@types/socket.io-client": "^1.4.32",
-    "angular-gridster2": "^8.3.0",
+    "angular-gridster2": "^9.0.0",
     "babylonjs": "^4.0.3",
     "bootstrap": "^4.4.1",
     "dmx": "0.2.4",
