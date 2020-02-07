@@ -24,4 +24,8 @@ export class AvalibleHeadsComponent {
   public sync() {
     this.libraryService.sync();
   }
+
+  public save() {
+    //
+  }
 }
