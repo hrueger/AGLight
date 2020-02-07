@@ -35,7 +35,15 @@
         right: 0;
         left: unset;
         margin-right: 1px;
-        padding: 10px;
+        min-height: 200px;
+        min-width: 300px;
+        padding: 0;
+        .header {
+            background-color: rgb(61, 61, 61);
+            * {
+                margin-bottom: 0;
+            }
+        }
     }
     .dropup {
         cursor: pointer;

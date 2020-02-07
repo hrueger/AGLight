@@ -6,11 +6,15 @@
           <i [class]="'fa fa-' + item.icon"></i> {{item.name}}
         </a>
         <div class="dropdown-menu" [class.show]="item.showDropup" *ngIf="item.dropup">
-          <h5>{{item.dropup.title}}</h5>
-          <p>{{item.dropup.content}}</p>
-          <button *ngFor="let btn of item.dropup.actions" [class]="'btn btn-outline-' + btn.type" (click)="btnClicked(btn)">
-            {{btn.text}}
-          </button>
+          <div class="header p-2">
+            <h5>{{item.dropup.title}}</h5>
+          </div>
+          <div class="content p-2">
+            <p>{{item.dropup.content}}</p>
+            <button *ngFor="let btn of item.dropup.actions" [class]="'btn btn-outline-' + btn.type" (click)="btnClicked(btn)">
+              {{btn.text}}
+            </button>
+          </div>
         </div>
       </li>
     </ul>
