@@ -72,7 +72,7 @@ export class FixturesComponent implements OnInit {
   public addHead(head: Head, content) {
     this.currentHead = head;
     this.modalService.open(content, {size: "xl"}).result.then((result) => {
-      console.log(result);
+      // console.log(result);
     }, () => {
       //
     });

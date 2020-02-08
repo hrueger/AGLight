@@ -25,7 +25,7 @@ export class LibraryService {
     }
 
     public getFixtures(): any[] {
-        return Object.keys(this.fixtureCache).map((k) => {return this.fixtureCache[k];}).filter((f) => 
+        return Object.keys(this.fixtureCache).map((k) => {return this.fixtureCache[k];}).filter((f) =>
             f.name && f.manufacturer && f.manufacturer.name
         );
     }
