@@ -14,6 +14,8 @@ import { effects } from "../../_ressources/effects";
 import { ShowService } from "../../_services/show.service";
 import { LibraryService } from "../../_services/library.service";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { shell } from "electron";
 
 @Component({
   selector: "app-fixtures",
@@ -25,8 +27,9 @@ export class FixturesComponent implements OnInit {
   public fixtures: Fixture[] = [];
   public displayHeads: any[];
   public heads: any[];
+  public currentHead: any;
 
-  constructor(private showService: ShowService, private libraryService: LibraryService) {}
+  constructor(private showService: ShowService, private modalService: NgbModal, private libraryService: LibraryService) {}
 
   public async ngOnInit() {
 
@@ -48,7 +51,7 @@ export class FixturesComponent implements OnInit {
   public search(e) {
     if (this.heads) {
         this.displayHeads = this.heads.filter((h) => {
-        const toSearch = h.name.toLowerCase() + " " + h.manufacturer.toLowerCase();
+        const toSearch = h.name.toLowerCase() + " " + h.manufacturer.name.toLowerCase();
         let notFound: boolean = false;
         for (const q of e.split(" "))  {
           if (toSearch.indexOf(q.toLowerCase()) == -1) {
@@ -59,10 +62,21 @@ export class FixturesComponent implements OnInit {
       });
         this.sortDisplayHeads();
     }
-
   }
 
-  public addHead(head: Head) {
+  public openBrowser(event: Event, url: string) {
+    event.preventDefault();
+    shell.openExternal(url);
+  }
+
+  public addHead(head: Head, content) {
+    this.currentHead = head;
+    this.modalService.open(content, {size: "xl"}).result.then((result) => {
+      console.log(result);
+    }, () => {
+      //
+    });
+    return;
     const options = this.getSelectOptionsFromHead(head);
     smalltalk.prompt("Number of heads", "Type in the number of heads you want to add:", 2).then((n) => {
       smalltalkSelect.select("Channel mode",
@@ -296,19 +310,21 @@ export class FixturesComponent implements OnInit {
 
   private sortDisplayHeads() {
     this.displayHeads.sort((a, b) => {
-      if ([a.manufacturer, b.manufacturer].sort()[0] == b.manufacturer) {
-        return 1;
+      if (a && b && a.name && b.name && a.manufacturer && b.manufacturer && a.manufacturer.name && b.manufacturer.name) {
+        if ([a.manufacturer.name, b.manufacturer.name].sort()[0] == b.manufacturer.name) {
+          return 1;
+        }
+        if ([a.manufacturer.name, b.manufacturer.name].sort()[0] == a.manufacturer.name) {
+          return -1;
+        }
+        if ([a.name, b.name].sort()[0] == a.name) {
+          return 1;
+        }
+        if ([a.name, b.name].sort()[0] == b.name) {
+          return -1;
+        }
+        return 0;
       }
-      if ([a.manufacturer, b.manufacturer].sort()[0] == a.manufacturer) {
-        return -1;
-      }
-      if ([a.name, b.name].sort()[0] == a.name) {
-        return 1;
-      }
-      if ([a.name, b.name].sort()[0] == b.name) {
-        return -1;
-      }
-      return 0;
     });
   }
 }

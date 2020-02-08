@@ -11,6 +11,7 @@ import { PERFECT_SCROLLBAR_CONFIG } from "ngx-perfect-scrollbar";
 import { PerfectScrollbarConfigInterface } from "ngx-perfect-scrollbar";
 import "reflect-metadata";
 import "../polyfills";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AboutComponent } from "./_components/about/about.component";
 import { AvalibleHeadsComponent } from "./_components/avalible-heads/avalible-heads.component";
 import { CloudComponent } from "./_components/cloud/cloud.component";
@@ -28,6 +29,7 @@ import { ChannelNumberSumPipe } from "./_pipes/channel-number-sum.pipe";
 import { EffectAffectsSumPipe } from "./_pipes/effect-affects-sum.pipe";
 import { FirstLetterUppercasePipe } from "./_pipes/first-letter-uppercase.pipe";
 import { NumberArrayPipe } from "./_pipes/number-array.pipe";
+import { TruncatePipe } from "./_pipes/truncate.pipe";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { StatusbarComponent } from "./_components/statusbar/statusbar.component";
@@ -48,6 +50,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     ShowComponent,
     CloudComponent,
     ChannelNumberSumPipe,
+    TruncatePipe,
     AboutComponent,
     InfoComponent,
     LicensesComponent,
@@ -61,6 +64,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   ],
   imports: [
     BrowserModule,
+    NgbModule,
     PerfectScrollbarModule,
     FormsModule,
     HttpClientModule,

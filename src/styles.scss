@@ -214,6 +214,20 @@ thead tr td {
   }
 }
 
+.modal-content {
+  border-radius: 0;
+  background-color: #3a3a3a;
+  .modal-body {
+    max-height: calc(100vh - 14rem);
+    overflow: auto;
+  }
+  .close {
+    span {
+      color: #fff;
+    }
+  }
+}
+
 .smalltalk {
   background-color: rgba(0, 0, 0, 0.9) !important;
   .page {

@@ -12,7 +12,7 @@
         
           <ul class="nav flex-column">
             <li class="nav-item" *ngFor="let head of displayHeads">
-              <a class="nav-link clickable" (click)="addHead(head)">
+              <a class="nav-link clickable" (click)="addHead(head, addFixtureModal)" *ngIf="head.name && head.manufacturer && head.manufacturer.name">
                 {{head.name}} | {{head.manufacturer.name}}
               </a>
             </li>
@@ -97,3 +97,101 @@
     </main>
   </div>
 </div>
+
+<ng-template #addFixtureModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{currentHead.name}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="my-2">
+      <span *ngFor="let category of currentHead.categories" class="badge badge-light mr-2">{{category}}</span>
+    </div>
+    <table class="table table-dark mb-0">
+      <tr>
+        <td rowspan="2"><b>General</b></td>
+        <td><b>Manual</b></td>
+        <td><b>Product page</b></td>
+        <td><b>Video</b></td>
+        <td *ngIf="currentHead.links.other"><b>Other</b></td>
+      </tr>
+      <tr>
+        <td>
+          <a [routerLink]="" *ngFor="let manual of currentHead.links.manual" [title]="manual" (click)="openBrowser($event, manual)">{{manual | truncate}}<br></a>
+          <p *ngIf="!currentHead.links.manual">not avalible</p>
+        </td>
+        <td>
+          <a [routerLink]="" *ngFor="let productPage of currentHead.links.productPage" [title]="productPage" (click)="openBrowser($event, productPage)">{{productPage | truncate}}<br></a>
+          <p *ngIf="!currentHead.links.productPage">not avalible</p>
+        </td>
+        <td>
+          <a [routerLink]="" *ngFor="let video of currentHead.links.video" [title]="video" (click)="openBrowser($event, video)">{{video | truncate}}<br></a>
+          <p *ngIf="!currentHead.links.video">not avalible</p>
+        </td>
+        <td *ngIf="currentHead.links.other">
+          <a [routerLink]="" *ngFor="let other of currentHead.links.other" [title]="other" (click)="openBrowser($event, other)">{{other | truncate}}<br></a>
+        </td>
+      </tr>
+      <tr>
+        <td rowspan="2"><b>Physical</b></td>
+        <td><b>Power</b></td>
+        <td><b>Size</b></td>
+        <td><b>Weight</b></td>
+        <td *ngIf="currentHead.links.other"></td>
+      </tr>
+      <tr>
+        <td>{{currentHead.physical && currentHead.physical.power ? currentHead.physical.power + " W" : "not avalible"}}</td>
+        <td>{{currentHead.physical && currentHead.physical.dimensions ? currentHead.physical.dimensions[0] + " x " + currentHead.physical.dimensions[1] + " x " + currentHead.physical.dimensions[2] : "not avalible" }}</td>
+        <td>{{currentHead.physical && currentHead.physical.weight ? currentHead.physical.weight + " kg" : "not avalible"}}</td>
+        <td *ngIf="currentHead.links.other"></td>
+      </tr>
+      <tr>
+        <td rowspan="2"><b>Bulb</b></td>
+        <td><b>Type</b></td>
+        <td><b>Color temperature</b></td>
+        <td><b>Lumens</b></td>
+        <td *ngIf="currentHead.links.other"></td>
+      </tr>
+      <tr>
+        <td>{{currentHead.physical && currentHead.physical.bulb && currentHead.physical.bulb.type ? currentHead.physical.bulb.type : "not avalible"}}</td>
+        <td>{{currentHead.physical && currentHead.physical.bulb && currentHead.physical.bulb.colorTemperature ? currentHead.physical.bulb.colorTemperature + " K" : "not avalible" }}</td>
+        <td>{{currentHead.physical && currentHead.physical.bulb && currentHead.physical.bulb.lumens ? currentHead.physical.bulb.lumens + " lm" : "not avalible"}}</td>
+        <td *ngIf="currentHead.links.other"></td>
+      </tr>
+      <tr>
+        <td rowspan="2"><b>Lens</b></td>
+        <td><b>Name</b></td>
+        <td><b>Min</b></td>
+        <td><b>Max</b></td>
+        <td *ngIf="currentHead.links.other"></td>
+      </tr>
+      <tr>
+        <td>{{currentHead.physical && currentHead.physical.lens && currentHead.physical.lens.name ? currentHead.physical.lens.name : "not avalible"}}</td>
+        <td>{{currentHead.physical && currentHead.physical.lens && currentHead.physical.lens.degreesMinMax ? currentHead.physical.lens.degreesMinMax[0] + " °" : "not avalible" }}</td>
+        <td>{{currentHead.physical && currentHead.physical.lens && currentHead.physical.lens.degreesMinMax ? currentHead.physical.lens.degreesMinMax[1] + " °" : "not avalible"}}</td>
+        <td *ngIf="currentHead.links.other"></td>
+      </tr>
+      <tr>
+        <td rowspan="2"><b>Plug</b></td>
+        <td><b>DMX Connector</b></td>
+        <td></td>
+        <td></td>
+        <td *ngIf="currentHead.links.other"></td>
+      </tr>
+      <tr>
+        <td>{{currentHead.physical && currentHead.physical.DMXconnector ? currentHead.physical.DMXconnector : "not avalible"}}</td>
+        <td></td>
+        <td></td>
+        <td *ngIf="currentHead.links.other"></td>
+      </tr>
+    </table>
+    <pre>
+      {{currentHead | json}}
+    </pre>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+  </div>
+</ng-template>
