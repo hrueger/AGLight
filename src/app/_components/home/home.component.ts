@@ -5,6 +5,7 @@ import { RecentShowsService } from "../../_services/recent-shows.service";
 import { ShowService } from "../../_services/show.service";
 import { LibraryService } from "../../_services/library.service";
 import { DmxService } from "../../_services/dmx.service";
+import { ConsoleService } from "../../_services/console.service";
 
 @Component({
   selector: "app-home",
@@ -20,6 +21,7 @@ export class HomeComponent {
               private recentShowsService: RecentShowsService,
               private libraryService: LibraryService,
               private dmxService: DmxService,
+              private consoleService: ConsoleService,
               ) {}
 
   public async ngOnInit() {
@@ -28,6 +30,7 @@ export class HomeComponent {
     }, this.waitTime);
     this.recentShows = this.recentShowsService.get();
     this.dmxService.init();
+    this.consoleService.init();
     await this.libraryService.loadIntoCache();
   }
   public newShow() {

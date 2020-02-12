@@ -13,6 +13,15 @@
 #define LOGO_WIDTH 128
 #define LOGO_HEIGHT 64
 
+#define SOFTWARE_ID "AGLC"
+#define SOFTWARE_VERSION "v1"
+#define DELIMITER "________"
+#define READY_TO_CONNECT "ready_to_connect"
+#define CONNECTED "connected"
+
+const byte DATA_MAX_SIZE = 32;
+char incomingMessage[DATA_MAX_SIZE];
+
 static const unsigned char PROGMEM logo_bmp[] =
     {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -94,6 +103,7 @@ void setup()
 
   displayLogo();
   connect();
+
 }
 
 void loop()
@@ -115,6 +125,11 @@ void displayLogo(void)
 void connect()
 {
   while (true) {
+
+    if (checkIfConnected()) {
+      return;
+    }
+
     display.clearDisplay();
     display.setTextSize(2);
     display.setTextColor(WHITE);
@@ -129,6 +144,8 @@ void connect()
       display.display();
       delay(100);
     }
+
+    Serial.println(SOFTWARE_ID DELIMITER SOFTWARE_VERSION DELIMITER READY_TO_CONNECT);
 
     for (int i = 0; i < 10; i++) {
       display.clearDisplay();
@@ -150,4 +167,33 @@ void connect()
 
   display.display();
   delay(2000);
+}
+
+void receiveData() {
+  Serial.println("Checking for data");
+  static char endMarker = '\n';
+  char receivedChar;
+  int ndx = 0;
+  memset(incomingMessage, 32, sizeof(incomingMessage));
+  while(Serial.available() > 0) {
+    receivedChar = Serial.read();
+    if (receivedChar == endMarker) {
+      // incomingMessage[ndx] = '\0';
+      return;
+    }
+    incomingMessage[ndx] = receivedChar;
+    ndx++;
+    if (ndx >= DATA_MAX_SIZE) {
+      Serial.print("error" DELIMITER "incomplete message" DELIMITER);
+      Serial.println(incomingMessage);
+      memset(incomingMessage, 32, sizeof(incomingMessage));
+    }
+  }
+  
+}
+
+bool checkIfConnected() {
+  receiveData();
+  String m = incomingMessage;
+  return m.startsWith(CONNECTED);
 }
