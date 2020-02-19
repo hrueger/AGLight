@@ -84,7 +84,7 @@
     "@angular/platform-browser": "^9.0.0",
     "@angular/platform-browser-dynamic": "^9.0.0",
     "@angular/router": "^9.0.0",
-    "@types/node": "^12.12.6",
+    "@types/node": "^13.7.2",
     "@types/request": "^2.48.4",
     "@types/rimraf": "^2.0.3",
     "@types/serialport": "^8.0.0",
