@@ -67,6 +67,7 @@ export class ConsoleService {
                                     title: "Connected",
                                     content: "loading more info..."
                                 },
+                                actions: [],
                             });
                         });
                         parser.on("data", (data) => {
@@ -74,6 +75,7 @@ export class ConsoleService {
                         });
                     },
                     (err) => {
+                        // tslint:disable-next-line: no-console
                         console.log(err);
                         this.statusbarService.setItem({
                             name: "Error while connecting",
@@ -93,6 +95,7 @@ export class ConsoleService {
                             }
                         });
                     }
+                // tslint:disable-next-line: no-console
                 ).catch(err => console.error("caught", err));
             }
         });
@@ -110,19 +113,20 @@ export class ConsoleService {
                 id: "console",
                 dropup: {
                     title: "Connected",
-                    content: `to ${this.consoleName} ${this.consoleVersion}.`
+                    content: `to ${this.consoleName} ${this.consoleVersion}.`,
+                    actions: [
+                        {
+                            text: "Disconnect",
+                            type: "primary",
+                            service: "consoleService",
+                            action: "disconnect"
+                        }
+                    ],
                 },
-                actions: [
-                    {
-                        text: "Disconnect",
-                        type: "primary",
-                        service: "consoleService",
-                        action: "disconnect"
-                    }
-                ]
             });
             this.sendMessage("connected");
         } else {
+            // tslint:disable-next-line: no-console
             console.warn(m);
         }
     }
@@ -137,5 +141,12 @@ export class ConsoleService {
                 }
             });
         });
+    }
+
+    public disconnect() {
+        if (this.connection.isOpen) {
+            this.connection.close();
+        }
+        this.init();
     }
 }
