@@ -64,7 +64,7 @@
     "socket.io-client": "^2.3.0",
     "sqlite3": "4.1.1",
     "tslib": "^1.10.0",
-    "typeorm": "0.2.22",
+    "typeorm": "0.2.24",
     "unzipper": "^0.10.8"
   },
   "devDependencies": {
