@@ -47,7 +47,7 @@
     "@serialport/parser-readline": "^8.0.6",
     "@types/socket.io-client": "^1.4.32",
     "angular-gridster2": "^9.1.0",
-    "babylonjs": "^4.0.3",
+    "babylonjs": "^4.1.0",
     "bootstrap": "^4.4.1",
     "dmx": "0.2.4",
     "electron-splashscreen": "^1.0.0",
