@@ -416,7 +416,7 @@ class FreeCameraKeyboardMoveInput implements ICameraInput<Camera> {
 
         element.addEventListener("keydown", this.onKeyDown, false);
         element.addEventListener("keyup", this.onKeyUp, false);
-        Tools.RegisterTopRootEvents([
+        Tools.RegisterTopRootEvents(undefined, [
             { name: "blur", handler: this.onLostFocus },
         ]);
     }
@@ -426,7 +426,7 @@ class FreeCameraKeyboardMoveInput implements ICameraInput<Camera> {
       if (this.onKeyDown) {
           element.removeEventListener("keydown", this.onKeyDown);
           element.removeEventListener("keyup", this.onKeyUp);
-          Tools.UnregisterTopRootEvents([
+          Tools.UnregisterTopRootEvents(undefined, [
               { name: "blur", handler: this.onLostFocus },
           ]);
           this.keys = [];
