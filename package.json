@@ -63,7 +63,7 @@
     "smalltalk": "^4.0.2",
     "socket.io-client": "^2.3.0",
     "sqlite3": "4.1.1",
-    "tslib": "^1.10.0",
+    "tslib": "^1.11.1",
     "typeorm": "0.2.24",
     "unzipper": "^0.10.8"
   },
