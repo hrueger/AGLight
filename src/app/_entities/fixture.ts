@@ -1,7 +1,4 @@
-import {BaseEntity, Column, Entity, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
-import { Channel } from "./channel";
-import { ChannelMode } from "./channelMode";
-import { Head } from "./head";
+import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
 export class Fixture extends BaseEntity {
@@ -18,13 +15,11 @@ export class Fixture extends BaseEntity {
     @Column()
     public startAddress: number;
 
-    @ManyToOne((type) => Head, (head) => head.fixtures,
-    {nullable: true, cascade: ["insert", "update", "remove"], eager: true, onDelete: "CASCADE" })
-    public head: Head;
+    @Column()
+    public name: string;
 
-    @OneToMany((type) => Channel, (channel) => channel.fixture,
-    {nullable: true, cascade: ["insert", "update", "remove"], eager: true, onDelete: "CASCADE" })
-    public channels: Channel[];
+    @Column()
+    public channelMode: string;
 
     public object?: {
         fixture: import("babylonjs/Meshes/mesh").Mesh;
@@ -39,13 +34,13 @@ export class Fixture extends BaseEntity {
     };
 
     // tslint:disable-next-line: variable-name
-    constructor(displayName: string, number: number, startAddress: number, head: Head, channels: Channel[]) {
+    constructor(displayName: string, number: number, startAddress: number, name: string, channelMode: string) {
         super();
         this.displayName = displayName;
         this.number = number;
         this.startAddress = startAddress;
-        this.head = head;
-        this.channels = channels;
+        this.channelMode = channelMode;
+        this.name = name;
     }
 
 }

@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { AboutComponent } from "./_components/about/about.component";
-import { AvalibleHeadsComponent } from "./_components/avalible-heads/avalible-heads.component";
+import { availableHeadsComponent } from "./_components/available-heads/available-heads.component";
 import { CloudComponent } from "./_components/cloud/cloud.component";
 import { ConfigureShowComponent } from "./_components/configure-show/configure-show.component";
 import { FixturesComponent } from "./_components/fixtures/fixtures.component";
@@ -43,8 +43,8 @@ const routes: Routes = [
     path: "cloud",
   },
   {
-    component: AvalibleHeadsComponent,
-    path: "avalibleHeads",
+    component: availableHeadsComponent,
+    path: "availableHeads",
   },
   {
     component: AboutComponent,

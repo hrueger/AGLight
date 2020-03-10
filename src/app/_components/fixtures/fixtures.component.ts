@@ -72,28 +72,15 @@ export class FixturesComponent implements OnInit {
   public addHead(head: Head, content) {
     this.currentHead = head;
     this.modalService.open(content, {size: "xl"}).result.then((result) => {
-      // console.log(result);
+      console.log(result);
     }, () => {
       //
     });
-    return;
-    const options = this.getSelectOptionsFromHead(head);
     smalltalk.prompt("Number of heads", "Type in the number of heads you want to add:", 2).then((n) => {
-      smalltalkSelect.select("Channel mode",
-      "Choose the channel mode to use for this head(s)", options, {}).then((channelMode: ChannelMode) => {
-        channelMode.channels.map((channel) => {
-          channel.id = undefined;
-          channel.steps = channel.steps.map((step) => {
-            step.id = undefined;
-            return step;
-          });
-          return channel;
-        });
-        const fixture = new Fixture("Change this", n, 1, head, channelMode.channels);
+        const fixture = new Fixture("Change this", n, 1, head);
         this.fixtures.push(fixture);
         this.sortUsedHeads();
         this.save();
-      }, () => undefined);
     }, () => undefined);
   }
 

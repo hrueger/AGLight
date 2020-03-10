@@ -2,6 +2,9 @@ export class Product {
     name: string;
     shortName: string;
     categories: Category[];
+    fixtureKey: string;
+    manufacturer: string;
+    oflURL: string;
     meta: {
         authors: string[];
         creationDate: string;
@@ -408,7 +411,7 @@ type WheelSlot = {
 } | {
     type: "Gobo";
     name: string;
-    resource: string;
+    resource: string | Resource;
 } | {
     type: "Prism";
     facets: number;
@@ -434,5 +437,19 @@ interface CapabilityBase {
     menuClick: "start" | "center" | "end" | "hidden";
     switchChannels: {
         [key: string]: string;
+    }
+}
+
+interface Resource {
+    name: string;
+    keywords: string;
+    source: string;
+    key: string;
+    type: string;
+    alias: string,
+    image: {
+        mimeType: string;
+        extension: string;
+        encoding: string;
     }
 }

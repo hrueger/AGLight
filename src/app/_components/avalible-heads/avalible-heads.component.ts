@@ -6,11 +6,11 @@ import { Head } from "../../_entities/head";
 import { LibraryService } from "../../_services/library.service";
 
 @Component({
-  selector: "app-avalible-heads",
-  styleUrls: ["./avalible-heads.component.scss"],
-  templateUrl: "./avalible-heads.component.html",
+  selector: "app-available-heads",
+  styleUrls: ["./available-heads.component.scss"],
+  templateUrl: "./available-heads.component.html",
 })
-export class AvalibleHeadsComponent {
+export class availableHeadsComponent {
   public heads: Head[] = [];
   public connection: db.Connection;
 

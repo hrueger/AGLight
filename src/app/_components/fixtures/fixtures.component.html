@@ -120,15 +120,15 @@
       <tr>
         <td>
           <a [routerLink]="" *ngFor="let manual of currentHead.links.manual" [title]="manual" (click)="openBrowser($event, manual)">{{manual | truncate}}<br></a>
-          <p *ngIf="!currentHead.links.manual">not avalible</p>
+          <p *ngIf="!currentHead.links.manual">not available</p>
         </td>
         <td>
           <a [routerLink]="" *ngFor="let productPage of currentHead.links.productPage" [title]="productPage" (click)="openBrowser($event, productPage)">{{productPage | truncate}}<br></a>
-          <p *ngIf="!currentHead.links.productPage">not avalible</p>
+          <p *ngIf="!currentHead.links.productPage">not available</p>
         </td>
         <td>
           <a [routerLink]="" *ngFor="let video of currentHead.links.video" [title]="video" (click)="openBrowser($event, video)">{{video | truncate}}<br></a>
-          <p *ngIf="!currentHead.links.video">not avalible</p>
+          <p *ngIf="!currentHead.links.video">not available</p>
         </td>
         <td *ngIf="currentHead.links.other">
           <a [routerLink]="" *ngFor="let other of currentHead.links.other" [title]="other" (click)="openBrowser($event, other)">{{other | truncate}}<br></a>
@@ -142,9 +142,9 @@
         <td *ngIf="currentHead.links.other"></td>
       </tr>
       <tr>
-        <td>{{currentHead.physical && currentHead.physical.power ? currentHead.physical.power + " W" : "not avalible"}}</td>
-        <td>{{currentHead.physical && currentHead.physical.dimensions ? currentHead.physical.dimensions[0] + " x " + currentHead.physical.dimensions[1] + " x " + currentHead.physical.dimensions[2] : "not avalible" }}</td>
-        <td>{{currentHead.physical && currentHead.physical.weight ? currentHead.physical.weight + " kg" : "not avalible"}}</td>
+        <td>{{currentHead.physical && currentHead.physical.power ? currentHead.physical.power + " W" : "not available"}}</td>
+        <td>{{currentHead.physical && currentHead.physical.dimensions ? currentHead.physical.dimensions[0] + " x " + currentHead.physical.dimensions[1] + " x " + currentHead.physical.dimensions[2] : "not available" }}</td>
+        <td>{{currentHead.physical && currentHead.physical.weight ? currentHead.physical.weight + " kg" : "not available"}}</td>
         <td *ngIf="currentHead.links.other"></td>
       </tr>
       <tr>
@@ -155,9 +155,9 @@
         <td *ngIf="currentHead.links.other"></td>
       </tr>
       <tr>
-        <td>{{currentHead.physical && currentHead.physical.bulb && currentHead.physical.bulb.type ? currentHead.physical.bulb.type : "not avalible"}}</td>
-        <td>{{currentHead.physical && currentHead.physical.bulb && currentHead.physical.bulb.colorTemperature ? currentHead.physical.bulb.colorTemperature + " K" : "not avalible" }}</td>
-        <td>{{currentHead.physical && currentHead.physical.bulb && currentHead.physical.bulb.lumens ? currentHead.physical.bulb.lumens + " lm" : "not avalible"}}</td>
+        <td>{{currentHead.physical && currentHead.physical.bulb && currentHead.physical.bulb.type ? currentHead.physical.bulb.type : "not available"}}</td>
+        <td>{{currentHead.physical && currentHead.physical.bulb && currentHead.physical.bulb.colorTemperature ? currentHead.physical.bulb.colorTemperature + " K" : "not available" }}</td>
+        <td>{{currentHead.physical && currentHead.physical.bulb && currentHead.physical.bulb.lumens ? currentHead.physical.bulb.lumens + " lm" : "not available"}}</td>
         <td *ngIf="currentHead.links.other"></td>
       </tr>
       <tr>
@@ -168,9 +168,9 @@
         <td *ngIf="currentHead.links.other"></td>
       </tr>
       <tr>
-        <td>{{currentHead.physical && currentHead.physical.lens && currentHead.physical.lens.name ? currentHead.physical.lens.name : "not avalible"}}</td>
-        <td>{{currentHead.physical && currentHead.physical.lens && currentHead.physical.lens.degreesMinMax ? currentHead.physical.lens.degreesMinMax[0] + " °" : "not avalible" }}</td>
-        <td>{{currentHead.physical && currentHead.physical.lens && currentHead.physical.lens.degreesMinMax ? currentHead.physical.lens.degreesMinMax[1] + " °" : "not avalible"}}</td>
+        <td>{{currentHead.physical && currentHead.physical.lens && currentHead.physical.lens.name ? currentHead.physical.lens.name : "not available"}}</td>
+        <td>{{currentHead.physical && currentHead.physical.lens && currentHead.physical.lens.degreesMinMax ? currentHead.physical.lens.degreesMinMax[0] + " °" : "not available" }}</td>
+        <td>{{currentHead.physical && currentHead.physical.lens && currentHead.physical.lens.degreesMinMax ? currentHead.physical.lens.degreesMinMax[1] + " °" : "not available"}}</td>
         <td *ngIf="currentHead.links.other"></td>
       </tr>
       <tr>
@@ -181,17 +181,19 @@
         <td *ngIf="currentHead.links.other"></td>
       </tr>
       <tr>
-        <td>{{currentHead.physical && currentHead.physical.DMXconnector ? currentHead.physical.DMXconnector : "not avalible"}}</td>
+        <td>{{currentHead.physical && currentHead.physical.DMXconnector ? currentHead.physical.DMXconnector : "not available"}}</td>
         <td></td>
         <td></td>
         <td *ngIf="currentHead.links.other"></td>
       </tr>
     </table>
-    <pre>
-      {{currentHead | json}}
-    </pre>
+    <div class="m-2">
+      <button class="btn btn-outline-primary w-50" *ngFor="let mode of currentHead.modes" (click)="modal.close({fixture: currentHead, mode: mode.name})">
+        Use "{{mode.name}} Mode ({{mode.channels.length}} Channel(s))
+      </button>
+    </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-success" (click)="modal.close('Save click')">Save</button>
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('Cancel')">Cancel</button>
   </div>
 </ng-template>

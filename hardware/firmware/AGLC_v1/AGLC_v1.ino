@@ -100,14 +100,23 @@ void setup()
     for (;;)
       ;
   }
+  analogReadResolution(12);
+  analogSetAttenuation(ADC_11db);
 
   displayLogo();
   connect();
-
 }
 
 void loop()
 {
+  display.clearDisplay();
+  display.setCursor(0, 0);
+  display.setTextSize(1);
+  display.println(F("Connected"));
+  display.println("This will be the");
+  display.println("info screen here.");
+  display.display();
+  delay(5000);
 }
 
 void displayLogo(void)
@@ -157,7 +166,7 @@ void connect()
         display.print(F(" "));
       }
       display.setTextColor(BLACK, WHITE);
-      for (int j = 0; j < 10-i; j++) {
+      for (int j = 0; j < 10 - i; j++) {
         display.print(F(" "));
       }
       display.display();
@@ -175,10 +184,10 @@ void receiveData() {
   char receivedChar;
   int ndx = 0;
   memset(incomingMessage, 32, sizeof(incomingMessage));
-  while(Serial.available() > 0) {
+  while (Serial.available() > 0) {
     receivedChar = Serial.read();
     if (receivedChar == endMarker) {
-      // incomingMessage[ndx] = '\0';
+      incomingMessage[ndx] = '\0';
       return;
     }
     incomingMessage[ndx] = receivedChar;
@@ -189,11 +198,10 @@ void receiveData() {
       memset(incomingMessage, 32, sizeof(incomingMessage));
     }
   }
-  
 }
 
 bool checkIfConnected() {
   receiveData();
   String m = incomingMessage;
-  return m.startsWith(CONNECTED);
+  return m == CONNECTED;
 }

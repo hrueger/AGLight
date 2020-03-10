@@ -13,7 +13,7 @@ import "reflect-metadata";
 import "../polyfills";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AboutComponent } from "./_components/about/about.component";
-import { AvalibleHeadsComponent } from "./_components/avalible-heads/avalible-heads.component";
+import { availableHeadsComponent } from "./_components/available-heads/available-heads.component";
 import { CloudComponent } from "./_components/cloud/cloud.component";
 import { ConfigureShowComponent } from "./_components/configure-show/configure-show.component";
 import { FixturesComponent } from "./_components/fixtures/fixtures.component";
@@ -45,7 +45,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     HomeComponent,
     NavbarComponent,
     FixturesComponent,
-    AvalibleHeadsComponent,
+    availableHeadsComponent,
     ConfigureShowComponent,
     ShowComponent,
     CloudComponent,
