@@ -65,7 +65,7 @@
     "sqlite3": "4.1.1",
     "tslib": "^1.11.1",
     "typeorm": "0.2.24",
-    "unzipper": "^0.10.8"
+    "unzipper": "^0.10.10"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^9.0.0",
