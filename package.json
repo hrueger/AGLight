@@ -58,7 +58,7 @@
     "node-abi": "^2.15.0",
     "popper.js": "^1.16.1",
     "reflect-metadata": "^0.1.13",
-    "rimraf": "^3.0.1",
+    "rimraf": "^3.0.2",
     "serialport": "^8.0.7",
     "smalltalk": "^4.0.2",
     "socket.io-client": "^2.3.0",
