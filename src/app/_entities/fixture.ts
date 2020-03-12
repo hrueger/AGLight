@@ -1,4 +1,5 @@
 import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Product} from "./product";
 
 @Entity()
 export class Fixture extends BaseEntity {
@@ -32,6 +33,8 @@ export class Fixture extends BaseEntity {
             g: number,
         }
     };
+
+    public product?: Product;
 
     // tslint:disable-next-line: variable-name
     constructor(displayName: string, number: number, startAddress: number, name: string, channelMode: string) {

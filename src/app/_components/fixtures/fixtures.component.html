@@ -35,10 +35,9 @@
               <td>Manufacturer</td>
               <td>Channel mode</td>
               <td>Number</td>
-              <td class="">TAS</td>
+              <td>TAS</td>
               <td>Start addr.</td>
               <td>End addr.</td>
-              <td>Effects</td>
             </tr>
           </thead>
           <tbody>
@@ -46,50 +45,16 @@
               <td><button class="action-btn red" (click)="deleteFixture(i)"><i class="fas fa-times"></i></button></td>
               <td class="editable" (click)="change('displayName', i)"><i class="fas fa-pen"></i> {{fixture.displayName}}
               </td>
-              <td>{{fixture.head.name}}</td>
-              <td>{{fixture.head.manufacturer}}</td>
+              <td>{{fixture.product.name}}</td>
+              <td>{{fixture.product.manufacturer.name}}</td>
               <td class="editable" (click)="change('channelMode', i)"><i class="fas fa-pen"></i>
-                {{fixture.channels | channelNumberSum}}</td>
+                
+                {{ fixture.channelMode }} ({{getChannelNumber(fixture)}} Channels)</td>
               <td class="editable" (click)="change('number', i)"><i class="fas fa-pen"></i> {{fixture.number}}</td>
-              <td>{{fixture.number * (fixture.channels | channelNumberSum)}}</td>
+              <td>{{fixture.number * getChannelNumber(fixture)}}</td>
               <td class="editable" (click)="change('startAddress', i)"><i class="fas fa-pen"></i>
                 {{fixture.startAddress}}</td>
-              <td>{{fixture.startAddress + (fixture.number * (fixture.channels | channelNumberSum)) - 1}}</td>
-              <td>
-                <!--<table>
-                      <thead>
-                        <tr>
-                          <td class="verysmallwidth"><button class="action-btn green" (click)="addEffect(i)"><i class="fas fa-plus"></i></button></td>
-                          <td>Effect</td>
-                          <td>Type</td>
-                          <td>Channels</td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let effect of fixture.effects; let j = index">
-                          <td><button class="action-btn red" (click)="deleteEffect(i, j)"><i class="fas fa-times"></i></button></td>
-                          <td class="editable" (click)="change('effect', i, j)"><i class="fas fa-pen"></i> {{effect.name}}</td>
-                          <td>{{effect.group | firstLetterUppercase}}</td>
-                          <td>
-                            <table>
-                              <thead>
-                                <tr>
-                                  <td>Type</td>
-                                  <td>Channel</td>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr *ngFor="let r of effect.affects; let k = index">
-                                  <td>{{r.name}}</td>
-                                  <td class="editable" (click)="change('affectedChannel', i, j, k)"><i class="fas fa-pen"></i> {{getAffectedChannel(i,j,k)}}</td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>-->
-              </td>
+              <td>{{fixture.startAddress + (fixture.number * getChannelNumber(fixture)) - 1}}</td>
             </tr>
           </tbody>
         </table>
@@ -188,8 +153,8 @@
       </tr>
     </table>
     <div class="m-2">
-      <button class="btn btn-outline-primary w-50" *ngFor="let mode of currentHead.modes" (click)="modal.close({fixture: currentHead, mode: mode.name})">
-        Use "{{mode.name}} Mode ({{mode.channels.length}} Channel(s))
+      <button class="btn btn-outline-primary w-50" *ngFor="let mode of currentHead.modes" (click)="modal.close({fixture: currentHead, mode: mode})">
+        Use "{{mode.name}}" Mode ({{mode.channels.length == 1 ? "1 Channel" : mode.channels.length + " Channels"}})
       </button>
     </div>
   </div>

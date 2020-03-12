@@ -1,14 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
-import * as electron from "electron";
-import * as path from "path";
 import * as smalltalk from "smalltalk";
-import * as db from "typeorm";
-import { Channel } from "../../_entities/channel";
-import { ChannelMode } from "../../_entities/channelMode";
 import { Fixture } from "../../_entities/fixture";
-import { Head } from "../../_entities/head";
-import { Step } from "../../_entities/step";
 import { Widget } from "../../_entities/widget";
 import { effects } from "../../_ressources/effects";
 import { ShowService } from "../../_services/show.service";
@@ -29,7 +21,7 @@ export class FixturesComponent implements OnInit {
   public heads: any[];
   public currentHead: any;
 
-  constructor(private showService: ShowService, private modalService: NgbModal, private libraryService: LibraryService) {}
+  constructor(private showService: ShowService, private modalService: NgbModal, private libraryService: LibraryService) { }
 
   public async ngOnInit() {
 
@@ -37,6 +29,9 @@ export class FixturesComponent implements OnInit {
     this.displayHeads = this.heads;
     this.sortDisplayHeads();
     this.fixtures = await (this.showService.connection.getRepository(Fixture).find());
+    for (const fixture of this.fixtures) {
+      fixture.product = this.libraryService.getProduct(fixture.name);
+    }
     /*const that = this;
     window.setTimeout(() => {
       that.ngOnInit();
@@ -45,22 +40,27 @@ export class FixturesComponent implements OnInit {
   }
 
   public getHeads(): any[] {
-    return this.libraryService.getFixtures();
+    return this.libraryService.getProducts();
+  }
+
+  public getChannelNumber(fixture) {
+    return fixture.product.modes.filter((f) => f.name == fixture.channelMode)[0].channels.length;
   }
 
   public search(e) {
     if (this.heads) {
-        this.displayHeads = this.heads.filter((h) => {
-        const toSearch = h.name.toLowerCase() + " " + h.manufacturer.name.toLowerCase();
+      this.displayHeads = this.heads.filter((h) => {
+        const toSearch = (h && h.name ? h.name.toLowerCase() : "") + " " +
+          (h && h.manufacturer && h.manufacturer.name ? h.manufacturer.name.toLowerCase() : "");
         let notFound: boolean = false;
-        for (const q of e.split(" "))  {
+        for (const q of e.split(" ")) {
           if (toSearch.indexOf(q.toLowerCase()) == -1) {
-              notFound = true;
+            notFound = true;
           }
         }
         return (notFound ? false : true);
       });
-        this.sortDisplayHeads();
+      this.sortDisplayHeads();
     }
   }
 
@@ -69,55 +69,22 @@ export class FixturesComponent implements OnInit {
     shell.openExternal(url);
   }
 
-  public addHead(head: Head, content) {
+  public addHead(head, content) {
     this.currentHead = head;
-    this.modalService.open(content, {size: "xl"}).result.then((result) => {
-      console.log(result);
-    }, () => {
-      //
-    });
-    smalltalk.prompt("Number of heads", "Type in the number of heads you want to add:", 2).then((n) => {
-        const fixture = new Fixture("Change this", n, 1, head);
+    this.modalService.open(content, { size: "xl" }).result.then((result) => {
+      smalltalk.prompt("Number of heads", "Type in the number of heads you want to add:", 2).then((n) => {
+        const fixture = new Fixture("Change this", n, 1, result.fixture.name, result.mode.name);
+        fixture.product = this.libraryService.getProduct(result.fixture.name);
         this.fixtures.push(fixture);
         this.sortUsedHeads();
         this.save();
-    }, () => undefined);
+      }, () => undefined);
+    }, () => {
+      //
+    });
   }
 
-  public getAffectedChannel(i: number, j: number, k: number) {
-    /* const c = this.fixtures[i].channelMode.channels.filter(
-      (channel) => channel.startAddress == this.fixtures[i].effects[j].affects[k].channel);
-    if (c && c[0]) {
-        return `${c[0].startAddress}: ${c[0].name}`;
-      } else {
-        return "Please select";
-      } */
-  }
-
-  public addEffect(i: number) {
-    return;
-    /*
-    const groups = this.getSelectOptionsFromEffectGroups();
-    smalltalkSelect.select("Add effect",
-      "Choose the effect group to see the effects listed in there", groups, {}).then((g: string) => {
-        const e = this.getSelectOptionsFromEffects(g);
-        smalltalkSelect.select("Add effect",
-          "Choose the effect to add to this head", e, {}).then((res) => {
-            if (!this.fixtures[i].effects) {
-              this.fixtures[i].effects = [];
-            }
-            const effect = effects.filter((f) => f.name == res)[0];
-            this.fixtures[i].effects.push(effect);
-            this.save();
-          }, () => undefined);
-      }, () => undefined);*/
-  }
-
-  public configureEffect(i: number, j: number) {
-    // this.router.navigate(["configureEffect", i, j]);
-  }
-
-  public change(field: string, i: number, j: number = null, k: number = null) {
+  public change(field: string, i: number) {
     let val;
     let title;
     let message;
@@ -144,15 +111,7 @@ export class FixturesComponent implements OnInit {
         title = "Choose channel mode";
         message = "Choose the channel mode of that head:";
         selectBox = true;
-        options = this.getSelectOptionsFromHead(this.heads.filter((h) => (h.name == this.fixtures[i].head.name))
-          .filter((h) => h.manufacturer == this.fixtures[i].head.manufacturer)[0]);
-        break;
-      case "affectedChannel":
-        val = null;
-        title = "Choose affected channel";
-        message = "Choose the channel which this effect should affect:";
-        selectBox = true;
-        // options = this.getPossibleChannelsToAffect(i, j, k);
+        options = this.getSelectOptionsFromHead(this.fixtures[i]);
         break;
 
     }
@@ -175,43 +134,22 @@ export class FixturesComponent implements OnInit {
         }
       }, () => undefined);
     } else {
-      if (options.length == 0) {
-        if (field == "affectedChannel") {
-          smalltalk.alert("Error", "Unfortunately, this effect can't be applied to this head(s).");
+      smalltalkSelect.select(title, message, options, {}).then((res: string) => {
+        if (res) {
+          this.fixtures[i].channelMode = res.name;
         }
-      } else {
-        smalltalkSelect.select(title, message, options, {}).then((res: ChannelMode) => {
-          if (res) {
-            switch (field) {
-              case "channelMode":
-                res.channels.map((channel) => { channel.id = undefined; return channel; });
-                this.fixtures[i].channels = res.channels;
-                break;
-              case "affectedChannel":
-                // this.fixtures[i].effects[j].affects[k].channel = res;
-            }
-          }
-          this.save();
-        }, () => undefined);
-      }
+        this.save();
+      }, () => undefined);
     }
   }
 
   public deleteFixture(i: number) {
     smalltalk.confirm("Delete fixture(s)",
-    "Are you sure that this fixture(s) should be deleted? You won't be able to restore it.").then(async () => {
-      await this.showService.connection.getRepository(Fixture).remove(this.fixtures[i]);
-      this.fixtures.splice(i, 1);
-      this.save();
-    }, () => undefined);
-  }
-
-  public deleteEffect(i: number, j: number) {
-    smalltalk.confirm("Delete effect",
-    "Are you sure that this effect should be deleted? You won't be able to restore it.").then(() => {
-      // this.fixtures[i].effects.splice(j, 1);
-      this.save();
-    }, () => undefined);
+      "Are you sure that this fixture(s) should be deleted? You won't be able to restore it.").then(async () => {
+        await this.showService.connection.getRepository(Fixture).remove(this.fixtures[i]);
+        this.fixtures.splice(i, 1);
+        this.save();
+      }, () => undefined);
   }
 
   public save() {
@@ -221,76 +159,23 @@ export class FixturesComponent implements OnInit {
 
   private sortUsedHeads() {
     this.fixtures.sort((a, b) => {
-        if (a.startAddress > b.startAddress) {
-          return 1;
-        }
-        if (a.startAddress < b.startAddress) {
-          return -1;
-        }
-        return 0;
-      });
-  }
-
-  private getPossibleChannelsToAffect(i: number, j: number, k: number) {
-    // console.log(this.usedHeads[i].channelMode.channels
-    //  .filter((channel) => {
-        // console.info(channel);
-        // console.log(!channel.effect);
-        // console.log(channel.type);
-        // console.log(this.usedHeads[i].effects[j].affects[k].name);
-    //    return !channel.effect && channel.type == this.usedHeads[i].effects[j].affects[k].name;
-    //  }));
-
-    /* return this.fixtures[i].channelMode.channels
-    .filter((channel) => !channel.effect && channel.type == this.fixtures[i].effects[j].affects[k].name)
-    .map((channel) => {
-      return {
-        description: channel.name,
-        name: channel.name,
-        value: channel.startAddress,
-      };
-    }); */
-  }
-
-  private getSelectOptionsFromHead(head: any) {
-    return head.channelModes.map((channelMode) => {
-      const n = channelMode.channels.reduce((a, b) => a + b.length, 0);
-      return {
-        description: `This mode will use ${n} channel(s).`,
-        name: `${n} channel mode`,
-        value: channelMode,
-      };
+      if (a.startAddress > b.startAddress) {
+        return 1;
+      }
+      if (a.startAddress < b.startAddress) {
+        return -1;
+      }
+      return 0;
     });
   }
 
-  private getSelectOptionsFromEffects(group: string) {
-    // ToDo: check if effect can be applied to head
-    return effects.filter((e) => {
-      return e.group == group;
-      })
-      .map((effect) => {
-        let affects = "";
-        effect.affects.forEach((a) => {
-          affects += `${a.name}<br>`;
-        });
-        return {
-          description: `This effect will affect the following channels:<br>${affects}`,
-          name: effect.name,
-          value: effect.name,
-        };
-      });
-  }
-
-  private getSelectOptionsFromEffectGroups() {
-    return effects.filter((e, index, self) => {
-      return index === self.findIndex((t) => (
-        t.group === e.group
-      ));
-    }).map((effect) => {
+  private getSelectOptionsFromHead(fixture: Fixture) {
+    return fixture.product.modes.map((channelMode) => {
       return {
-        description: `See all effects listed in group '${effect.group}'.`,
-        name: effect.group[0].toUpperCase() + effect.group.slice(1),
-        value: effect.group,
+        description: `This mode will use ${channelMode.channels.length == 1 ? "1 Channel" : `${channelMode.channels.length} Channels`}.`,
+        name: `Use "${channelMode.name}" Mode
+          (${channelMode.channels.length == 1 ? "1 Channel" : `${channelMode.channels.length} Channels`})`,
+        value: channelMode,
       };
     });
   }

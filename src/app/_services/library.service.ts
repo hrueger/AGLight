@@ -6,6 +6,7 @@ import * as rimraf from "rimraf";
 import * as unzipper from "unzipper";
 import * as request from "request";
 import { StatusbarService } from "./statusbar.service";
+import { Product } from "../_entities/product";
 
 @Injectable({
     providedIn: "root",
@@ -13,21 +14,19 @@ import { StatusbarService } from "./statusbar.service";
 export class LibraryService {
     private tempStoragePath = path.join((electron.app || electron.remote.app).getPath("userData"), "temp.zip");
     private libraryPath = path.join((electron.app || electron.remote.app).getPath("userData"), "library");
-    private fixtureCache = {};
-    private manufacturerCache = {};
+    private productCache: Product[] = [];
 
     constructor(private statusbarService: StatusbarService) {}
 
-    public async ngOnInit() {
-        if (!fs.existsSync(path.join(this.libraryPath, "manufacturers.json"))) {
-            this.sync();
-        }
+    public getProducts(): Product[] {
+        return this.productCache;
     }
 
-    public getFixtures(): any[] {
-        return Object.keys(this.fixtureCache).map((k) => {return this.fixtureCache[k];}).filter((f) =>
-            f.name && f.manufacturer && f.manufacturer.name
-        );
+    public getProduct(name): Product {
+        const f = this.productCache.filter((fixture) => fixture.name == name);
+        if (f && f[0]) {
+            return f[0];
+        }
     }
 
     public loadIntoCache() {
@@ -36,14 +35,15 @@ export class LibraryService {
             icon: "spinner fa-spin",
             id: "library",
         });
+        if (!fs.existsSync(path.join(this.libraryPath, "manufacturers.json"))) {
+            this.sync();
+        }
+        const manufacturerCache = JSON.parse(fs.readFileSync(path.join(this.libraryPath, "manufacturers.json")).toString());
         this.walk(this.libraryPath, (err, files) => {
             files.forEach((file) => {
                 const content = JSON.parse(fs.readFileSync(file).toString());
-                this.fixtureCache[content.fixtureKey] = content;
-            });
-            this.manufacturerCache = JSON.parse(fs.readFileSync(path.join(this.libraryPath, "manufacturers.json")).toString());
-            Object.keys(this.fixtureCache).forEach((key) => {
-                this.fixtureCache[key].manufacturer = this.manufacturerCache[this.fixtureCache[key].manufacturerKey];
+                content.manufacturer = manufacturerCache[content.manufacturerKey];
+                this.productCache.push(content as Product);
             });
             this.statusbarService.setItem({
                 name: "Library loaded",
@@ -51,7 +51,7 @@ export class LibraryService {
                 id: "library",
                 dropup: {
                     title: "Library status",
-                    content: "Library loaded succcessfully.",
+                    content: `Library loaded succcessfully. There are ${this.productCache.length} fixtures from ${Object.keys(manufacturerCache).length} manufacturers available.`,
                     actions: [
                         {
                             text: "Update",

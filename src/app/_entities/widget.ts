@@ -1,6 +1,4 @@
-import {BaseEntity, Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
-import { Channel } from "./channel";
-import { Fixture } from "./fixture";
+import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
 export class Widget extends BaseEntity {
@@ -26,12 +24,8 @@ export class Widget extends BaseEntity {
     @Column()
     public effectOrHead: string;
 
-    @ManyToOne((type) => Channel, (channel) => channel.widgets,
-    {nullable: true, cascade: ["insert", "update", "remove"], eager: true, onDelete: "CASCADE" })
-    public channel: Channel;
-
     constructor(x: number, y: number, rows: number, cols: number, type: string,
-                effectOrHead: string, channel: Channel) {
+                effectOrHead: string) {
         super();
         this.x = x;
         this.y = y;
@@ -39,7 +33,6 @@ export class Widget extends BaseEntity {
         this.rows = rows;
         this.type = type;
         this.effectOrHead = effectOrHead;
-        this.channel = channel;
     }
 
 }
