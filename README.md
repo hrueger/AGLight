@@ -25,10 +25,9 @@ AGLight is a intiutive software for controlling DMX lights. You can build the us
 The Electron Angular App will send over the dmx universe over to different devices. This is done using the excellent [node-dmx](https://github.com/node-dmx/dmx) library. You can see all supported devices [here](https://github.com/node-dmx/dmx/tree/master/drivers).
 
 ## Features
-* Add your own heads with the head editor
-* Sync them with the cloud
-* Preview your scene with the 3D Visualizer
 * Create your custom UI via Drag and Drop
+* Uses the great [OpenFixtureLibrary](https://github.com/OpenLightingProject/open-fixture-library)
+* Preview your scene with the 3D Visualizer (in dev)
 * Supports the following USB interfaces:
     * All artnet devices like EnttecODE
     * BeagleBone-DMX
