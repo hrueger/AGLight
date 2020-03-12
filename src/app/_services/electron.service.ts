@@ -27,4 +27,8 @@ export class ElectronService {
       this.fs = window.require("fs");
     }
   }
+
+  public setTitle(title) {
+    this.remote.getCurrentWindow().setTitle(`${title} - AGLight`);
+  }
 }

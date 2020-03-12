@@ -3,14 +3,10 @@ import { Router } from "@angular/router";
 import { remote } from "electron";
 import * as fs from "fs";
 import * as db from "typeorm";
-import { Channel } from "../_entities/channel";
-import { ChannelMode } from "../_entities/channelMode";
-import { Effect } from "../_entities/effect";
 import { Fixture } from "../_entities/fixture";
-import { Head } from "../_entities/head";
-import { Step } from "../_entities/step";
 import { Widget } from "../_entities/widget";
 import { RecentShowsService } from "./recent-shows.service";
+import { ElectronService } from "../_services/electron.service";
 
 @Injectable({
   providedIn: "root",
@@ -24,7 +20,7 @@ export class ShowService {
   private pshowLoaded: boolean = false;
   private currentShowFilePath: string;
 
-  constructor(private recentShowsService: RecentShowsService, private router: Router) {}
+  constructor(private recentShowsService: RecentShowsService, private router: Router, private electronService: ElectronService) {}
 
   public async loadShow(path: string) {
     if (this.connection) {
@@ -33,12 +29,13 @@ export class ShowService {
     }
     this.connection = await db.createConnection({
       database: path,
-      entities: [Head, Widget, Channel, ChannelMode, Step, Fixture],
+      entities: [Widget, Fixture],
       type: "sqlite",
     });
     await this.connection.synchronize();
     this.pshowLoaded = true;
     this.recentShowsService.add(path);
+    this.electronService.setTitle(path.split("\\").pop());
     this.currentShowFilePath = path;
     this.router.navigate(["fixtures"]);
   }
