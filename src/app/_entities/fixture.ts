@@ -1,5 +1,6 @@
-import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, Entity, PrimaryGeneratedColumn, OneToMany} from "typeorm";
 import {Product} from "./product";
+import { Widget } from "./widget";
 
 @Entity()
 export class Fixture extends BaseEntity {
@@ -21,6 +22,9 @@ export class Fixture extends BaseEntity {
 
     @Column()
     public channelMode: string;
+
+    @OneToMany((type) => Widget, (widget) => widget.fixture)
+    public widgets: Widget[];
 
     public object?: {
         fixture: import("babylonjs/Meshes/mesh").Mesh;
