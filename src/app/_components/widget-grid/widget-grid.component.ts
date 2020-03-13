@@ -1,14 +1,13 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { GridsterConfig } from "angular-gridster2";
 import * as smalltalk from "smalltalk";
-import { Channel } from "../../_entities/channel";
 import { Fixture } from "../../_entities/fixture";
-import { Step } from "../../_entities/step";
 import { Widget } from "../../_entities/widget";
 import { colors } from "../../_ressources/colors";
 import { controls } from "../../_ressources/controls";
 import { ShowService } from "../../_services/show.service";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
+import { LibraryService } from "../../_services/library.service";
 const DMX = require("dmx");
 
 @Component({
@@ -19,7 +18,7 @@ const DMX = require("dmx");
 export class WidgetGridComponent implements OnInit {
 
   public options: GridsterConfig;
-  public fixtures = [];
+  public fixtures:Fixture[] = [];
   public widgets: Widget[] = [];
   @Input() public editMode: boolean = false;
   private dmx: any;
@@ -27,7 +26,7 @@ export class WidgetGridComponent implements OnInit {
 
   private readonly shadeColorFactor = 35;
 
-  constructor(private showService: ShowService) {}
+  constructor(private showService: ShowService, private libraryService: LibraryService) {}
 
   public async ngOnInit() {
     const that = this;
@@ -56,7 +55,7 @@ export class WidgetGridComponent implements OnInit {
   public addItem() {
     const opts1 = this.fixtures.map((fixture) => {
       return {
-        description: `${fixture.number}x ${fixture.head.manufacturer} ${fixture.head.name}`,
+        description: `${fixture.number}x ${fixture.product.manufacturer.name} ${fixture.product.name}`,
         name: fixture.displayName,
         value: fixture,
       };
@@ -69,12 +68,12 @@ export class WidgetGridComponent implements OnInit {
               description: "Add a control from a channel.",
               name: "Channel",
               value: "head",
-            },
+            },/*
             {
               description: "Add a control from a effect.",
               name: "Effect",
               value: "effect",
-            },
+            },*/
           ];
           smalltalkSelect.select("Add control",
           "Choose the general type from which you want to add a control.", opts2, {}).then((effectOrHead: string) => {
@@ -82,46 +81,29 @@ export class WidgetGridComponent implements OnInit {
             let opts3;
             if (effectOrHead == "head") {
               msg = "Choose the channel:";
-              opts3 = fixture.channels.map((channel) => {
+              console.log(fixture.product.modes.filter((m) => m.name == fixture.channelMode)[0].channels);
+              opts3 = fixture.product.modes.filter((m) => m.name == fixture.channelMode)[0].channels.map((channel, idx) => {
                 return {
-                  description: `Type: ${channel.type}`,
-                  name: `${channel.startAddress + "" +
-                    (channel.length > 1 ? "-" + (channel.length + channel.startAddress - 1) : "")}: ${channel.name}`,
+                  description: `Type: ${channel}`,
+                  name: `${fixture.startAddress - 1 + idx}: ${channel}`,
                   value: channel,
                 };
               });
-            } else {
+            }/* else {
               msg = "Choose the effect:";
-              opts3 = []; /*fixture.effects.map((effect, index) => {
+              opts3 = []; *//*fixture.effects.map((effect, index) => {
                 return {
                   description: `Group: ${effect.group}`,
                   name: `Effect: ${effect.name}`,
                   value: index,
                 };
-              });*/
-            }
+              });*//*
+            }*/
             if (opts3.length) {
-              smalltalkSelect.select("Add control", msg, opts3, {}).then(async (channel: Channel) => {
-                // let effectParamIdx;
-                if (effectOrHead == "effect") {
-                  /*opts = this.fixtures[headIdx].effects[effectOrChannelIdx].params.map((param, index) => {
-                    return {
-                      description: `Type: ${param.type}`,
-                      name: `${param.name}`,
-                      value: index,
-                    };
-                  });
-                  // @ts-ignore
-                  effectParamIdx = parseInt(await (smalltalkSelect.select("Add control",
-                    "Choose the effect parameter to control", opts, {})), undefined);*/
-                }
-
-                const controlType = /*(effectOrHead == "head" ?*/
-                channel.type/* :
-                this.fixtures[headIdx].effects[effectOrChannelIdx].params[effectParamIdx].type)*/;
-
+              smalltalkSelect.select("Add control", msg, opts3, {}).then(async (channel: string) => {
                 const opts4 = controls.filter((control) => {
-                  return control.type == controlType;
+                  console.log(`Checking if ${control.type} == ${channel}`)
+                  return control.type == channel;
                 })[0].usefulWidgets.map((widget) => {
                   return {
                     description: `Add a ${widget}.`,
@@ -132,7 +114,7 @@ export class WidgetGridComponent implements OnInit {
                 if (opts4.length) {
                   smalltalkSelect.select("Add control",
                     "Choose the control you want to add:", opts4, {}).then(async (control: string) => {
-                      const w = new Widget(0, 0, 1, 1, control, effectOrHead, channel);
+                      const w = new Widget(0, 0, 1, 1, control, channel, fixture);
                       await this.showService.connection.manager.save(w);
                       await this.loadAll();
                       // this.widgets.push(w);
@@ -157,19 +139,19 @@ export class WidgetGridComponent implements OnInit {
     let val;
     switch (type) {
       case "slider":
-        chl = widget.channel.startAddress + widget.channel.fixture.startAddress - 1;
+        chl = this.findChannelAddress(widget);
         val = event;
         this.universe.update({[chl]: val});
         break;
       case "button":
         break;
       case "buttongrid":
-        chl = widget.channel.startAddress + widget.channel.fixture.startAddress - 1;
+        /*chl = this.findChannelAddress(widget);
         val = widget.channel.steps[idx].start;
-        this.universe.update({[chl]: val});
+        this.universe.update({[chl]: val});*/
         break;
       case "colorpicker":
-        chl = widget.channel.startAddress + widget.channel.fixture.startAddress - 1;
+        chl = this.findChannelAddress(widget);
         this.universe.update({
           [chl]: event.color.rgb.r,
           [chl + 1]: event.color.rgb.g,
@@ -181,21 +163,29 @@ export class WidgetGridComponent implements OnInit {
     }
   }
 
+  private findChannelAddress(widget: Widget): number {
+    return widget.fixture.startAddress +
+      widget.fixture.product.modes.filter((m) => m.name == widget.fixture.channelMode)[0]
+      .channels.findIndex((c) => c == widget.channel);
+  }
+
   public save() {
     this.showService.connection.getRepository(Widget).save(this.widgets);
   }
 
   public getButtongridRowArray(widget: Widget) {
-    const nodes: Step[] = widget.channel.steps;
+    return 0;
+    /*const nodes: Step[] = widget.channel.steps;
     const rows = Math.floor(Math.sqrt(nodes.length));
-    return Array.from(Array(rows).keys());
+    return Array.from(Array(rows).keys());*/
   }
 
   public getButtongridColArray(widget: Widget, i: number) {
-    const nodes: Step[] = widget.channel.steps;
+    return 0;
+    /*const nodes: Step[] = widget.channel.steps;
     const rows = Math.floor(Math.sqrt(nodes.length));
     const cols = nodes.length / rows;
-    return Array.from(Array(cols).keys()).map((n) => n + (i * rows) + i);
+    return Array.from(Array(cols).keys()).map((n) => n + (i * rows) + i);*/
   }
 
   public ngOnDestroy() {
@@ -252,13 +242,13 @@ export class WidgetGridComponent implements OnInit {
   }
 
   private async loadAll() {
+    const products = this.libraryService.getProducts();
     this.fixtures = await this.showService.connection.getRepository(Fixture).find();
-    this.widgets = await this.showService.connection.getRepository(Widget)
-      .createQueryBuilder("widget")
-      .leftJoinAndSelect("widget.channel", "channel")
-      .leftJoinAndSelect("channel.fixture", "fixture")
-      .leftJoinAndSelect("channel.steps", "step")
-      .getMany();
+    for (const fixture of this.fixtures) {
+      fixture.product = products.filter((p) => p.name == fixture.name)[0];
+    }
+    console.log(this.fixtures);
+    this.widgets = await this.showService.connection.getRepository(Widget).find();
   }
 
   private replaceDarkOrLight(name) {
