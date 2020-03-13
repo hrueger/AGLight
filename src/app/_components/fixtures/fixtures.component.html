@@ -7,13 +7,13 @@
             (ngModelChange)="search($event)">
         </div>
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>{{ ( displayHeads && heads && displayHeads.length == heads.length ? "All heads" : (displayHeads && displayHeads.length && searchValue != "" ? "Search results" : "No heads found")) }}</span>
+          <span>{{ ( displayFixtures && fixtures && displayFixtures.length == fixtures.length ? "All fixtures" : (displayFixtures && displayFixtures.length && searchValue != "" ? "Search results" : "No fixtures found")) }}</span>
         </h6>
         
           <ul class="nav flex-column">
-            <li class="nav-item" *ngFor="let head of displayHeads">
-              <a class="nav-link clickable" (click)="addHead(head, addFixtureModal)" *ngIf="head.name && head.manufacturer && head.manufacturer.name">
-                {{head.name}} | {{head.manufacturer.name}}
+            <li class="nav-item" *ngFor="let fixture of displayFixtures">
+              <a class="nav-link clickable" (click)="addFixture(fixture, addFixtureModal)" *ngIf="fixture.name && fixture.manufacturer && fixture.manufacturer.name">
+                {{fixture.name}} | {{fixture.manufacturer.name}}
               </a>
             </li>
           </ul>
@@ -25,6 +25,9 @@
         <div class="action-bar">
           <button class="btn btn-outline-success" (click)="save()">Save</button>
           <a class="btn btn-outline-primary" routerLink="/cloud">Sync...</a>
+        </div>
+        <div class="alert alert-danger" *ngIf="errorMessage">
+          {{errorMessage}}
         </div>
         <table class="table table-striped table-sm table-fit table-dark">
           <thead>
@@ -65,14 +68,14 @@
 
 <ng-template #addFixtureModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">{{currentHead.name}}</h4>
+    <h4 class="modal-title" id="modal-basic-title">{{currentFixture.name}}</h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <div class="my-2">
-      <span *ngFor="let category of currentHead.categories" class="badge badge-light mr-2">{{category}}</span>
+      <span *ngFor="let category of currentFixture.categories" class="badge badge-light mr-2">{{category}}</span>
     </div>
     <table class="table table-dark mb-0">
       <tr>
@@ -80,23 +83,23 @@
         <td><b>Manual</b></td>
         <td><b>Product page</b></td>
         <td><b>Video</b></td>
-        <td *ngIf="currentHead.links.other"><b>Other</b></td>
+        <td *ngIf="currentFixture.links.other"><b>Other</b></td>
       </tr>
       <tr>
         <td>
-          <a [routerLink]="" *ngFor="let manual of currentHead.links.manual" [title]="manual" (click)="openBrowser($event, manual)">{{manual | truncate}}<br></a>
-          <p *ngIf="!currentHead.links.manual">not available</p>
+          <a [routerLink]="" *ngFor="let manual of currentFixture.links.manual" [title]="manual" (click)="openBrowser($event, manual)">{{manual | truncate}}<br></a>
+          <p *ngIf="!currentFixture.links.manual">not available</p>
         </td>
         <td>
-          <a [routerLink]="" *ngFor="let productPage of currentHead.links.productPage" [title]="productPage" (click)="openBrowser($event, productPage)">{{productPage | truncate}}<br></a>
-          <p *ngIf="!currentHead.links.productPage">not available</p>
+          <a [routerLink]="" *ngFor="let productPage of currentFixture.links.productPage" [title]="productPage" (click)="openBrowser($event, productPage)">{{productPage | truncate}}<br></a>
+          <p *ngIf="!currentFixture.links.productPage">not available</p>
         </td>
         <td>
-          <a [routerLink]="" *ngFor="let video of currentHead.links.video" [title]="video" (click)="openBrowser($event, video)">{{video | truncate}}<br></a>
-          <p *ngIf="!currentHead.links.video">not available</p>
+          <a [routerLink]="" *ngFor="let video of currentFixture.links.video" [title]="video" (click)="openBrowser($event, video)">{{video | truncate}}<br></a>
+          <p *ngIf="!currentFixture.links.video">not available</p>
         </td>
-        <td *ngIf="currentHead.links.other">
-          <a [routerLink]="" *ngFor="let other of currentHead.links.other" [title]="other" (click)="openBrowser($event, other)">{{other | truncate}}<br></a>
+        <td *ngIf="currentFixture.links.other">
+          <a [routerLink]="" *ngFor="let other of currentFixture.links.other" [title]="other" (click)="openBrowser($event, other)">{{other | truncate}}<br></a>
         </td>
       </tr>
       <tr>
@@ -104,56 +107,56 @@
         <td><b>Power</b></td>
         <td><b>Size</b></td>
         <td><b>Weight</b></td>
-        <td *ngIf="currentHead.links.other"></td>
+        <td *ngIf="currentFixture.links.other"></td>
       </tr>
       <tr>
-        <td>{{currentHead.physical && currentHead.physical.power ? currentHead.physical.power + " W" : "not available"}}</td>
-        <td>{{currentHead.physical && currentHead.physical.dimensions ? currentHead.physical.dimensions[0] + " x " + currentHead.physical.dimensions[1] + " x " + currentHead.physical.dimensions[2] : "not available" }}</td>
-        <td>{{currentHead.physical && currentHead.physical.weight ? currentHead.physical.weight + " kg" : "not available"}}</td>
-        <td *ngIf="currentHead.links.other"></td>
+        <td>{{currentFixture.physical && currentFixture.physical.power ? currentFixture.physical.power + " W" : "not available"}}</td>
+        <td>{{currentFixture.physical && currentFixture.physical.dimensions ? currentFixture.physical.dimensions[0] + " x " + currentFixture.physical.dimensions[1] + " x " + currentFixture.physical.dimensions[2] : "not available" }}</td>
+        <td>{{currentFixture.physical && currentFixture.physical.weight ? currentFixture.physical.weight + " kg" : "not available"}}</td>
+        <td *ngIf="currentFixture.links.other"></td>
       </tr>
       <tr>
         <td rowspan="2"><b>Bulb</b></td>
         <td><b>Type</b></td>
         <td><b>Color temperature</b></td>
         <td><b>Lumens</b></td>
-        <td *ngIf="currentHead.links.other"></td>
+        <td *ngIf="currentFixture.links.other"></td>
       </tr>
       <tr>
-        <td>{{currentHead.physical && currentHead.physical.bulb && currentHead.physical.bulb.type ? currentHead.physical.bulb.type : "not available"}}</td>
-        <td>{{currentHead.physical && currentHead.physical.bulb && currentHead.physical.bulb.colorTemperature ? currentHead.physical.bulb.colorTemperature + " K" : "not available" }}</td>
-        <td>{{currentHead.physical && currentHead.physical.bulb && currentHead.physical.bulb.lumens ? currentHead.physical.bulb.lumens + " lm" : "not available"}}</td>
-        <td *ngIf="currentHead.links.other"></td>
+        <td>{{currentFixture.physical && currentFixture.physical.bulb && currentFixture.physical.bulb.type ? currentFixture.physical.bulb.type : "not available"}}</td>
+        <td>{{currentFixture.physical && currentFixture.physical.bulb && currentFixture.physical.bulb.colorTemperature ? currentFixture.physical.bulb.colorTemperature + " K" : "not available" }}</td>
+        <td>{{currentFixture.physical && currentFixture.physical.bulb && currentFixture.physical.bulb.lumens ? currentFixture.physical.bulb.lumens + " lm" : "not available"}}</td>
+        <td *ngIf="currentFixture.links.other"></td>
       </tr>
       <tr>
         <td rowspan="2"><b>Lens</b></td>
         <td><b>Name</b></td>
         <td><b>Min</b></td>
         <td><b>Max</b></td>
-        <td *ngIf="currentHead.links.other"></td>
+        <td *ngIf="currentFixture.links.other"></td>
       </tr>
       <tr>
-        <td>{{currentHead.physical && currentHead.physical.lens && currentHead.physical.lens.name ? currentHead.physical.lens.name : "not available"}}</td>
-        <td>{{currentHead.physical && currentHead.physical.lens && currentHead.physical.lens.degreesMinMax ? currentHead.physical.lens.degreesMinMax[0] + " °" : "not available" }}</td>
-        <td>{{currentHead.physical && currentHead.physical.lens && currentHead.physical.lens.degreesMinMax ? currentHead.physical.lens.degreesMinMax[1] + " °" : "not available"}}</td>
-        <td *ngIf="currentHead.links.other"></td>
+        <td>{{currentFixture.physical && currentFixture.physical.lens && currentFixture.physical.lens.name ? currentFixture.physical.lens.name : "not available"}}</td>
+        <td>{{currentFixture.physical && currentFixture.physical.lens && currentFixture.physical.lens.degreesMinMax ? currentFixture.physical.lens.degreesMinMax[0] + " °" : "not available" }}</td>
+        <td>{{currentFixture.physical && currentFixture.physical.lens && currentFixture.physical.lens.degreesMinMax ? currentFixture.physical.lens.degreesMinMax[1] + " °" : "not available"}}</td>
+        <td *ngIf="currentFixture.links.other"></td>
       </tr>
       <tr>
         <td rowspan="2"><b>Plug</b></td>
         <td><b>DMX Connector</b></td>
         <td></td>
         <td></td>
-        <td *ngIf="currentHead.links.other"></td>
+        <td *ngIf="currentFixture.links.other"></td>
       </tr>
       <tr>
-        <td>{{currentHead.physical && currentHead.physical.DMXconnector ? currentHead.physical.DMXconnector : "not available"}}</td>
+        <td>{{currentFixture.physical && currentFixture.physical.DMXconnector ? currentFixture.physical.DMXconnector : "not available"}}</td>
         <td></td>
         <td></td>
-        <td *ngIf="currentHead.links.other"></td>
+        <td *ngIf="currentFixture.links.other"></td>
       </tr>
     </table>
     <div class="m-2">
-      <button class="btn btn-outline-primary w-50" *ngFor="let mode of currentHead.modes" (click)="modal.close({fixture: currentHead, mode: mode})">
+      <button class="btn btn-outline-primary w-50" *ngFor="let mode of currentFixture.modes" (click)="modal.close({fixture: currentFixture, mode: mode})">
         Use "{{mode.name}}" Mode ({{mode.channels.length == 1 ? "1 Channel" : mode.channels.length + " Channels"}})
       </button>
     </div>

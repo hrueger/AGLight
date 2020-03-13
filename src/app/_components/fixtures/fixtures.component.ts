@@ -1,8 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import * as smalltalk from "smalltalk";
 import { Fixture } from "../../_entities/fixture";
-import { Widget } from "../../_entities/widget";
-import { effects } from "../../_ressources/effects";
+import { Product } from "../../_entities/product";
 import { ShowService } from "../../_services/show.service";
 import { LibraryService } from "../../_services/library.service";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
@@ -17,17 +16,18 @@ import { shell } from "electron";
 export class FixturesComponent implements OnInit {
   public searchValue: string = "";
   public fixtures: Fixture[] = [];
-  public displayHeads: any[];
-  public heads: any[];
-  public currentHead: any;
+  public displayFixtures: Product[];
+  public allFixtures: Product[];
+  public currentFixture: Product;
+  public errorMessage: string = "";
 
   constructor(private showService: ShowService, private modalService: NgbModal, private libraryService: LibraryService) { }
 
   public async ngOnInit() {
 
-    this.heads = this.getHeads();
-    this.displayHeads = this.heads;
-    this.sortDisplayHeads();
+    this.allFixtures = this.getFixtures();
+    this.displayFixtures = this.allFixtures;
+    this.sortDisplayFixtures();
     this.fixtures = await (this.showService.connection.getRepository(Fixture).find());
     for (const fixture of this.fixtures) {
       fixture.product = this.libraryService.getProduct(fixture.name);
@@ -39,7 +39,7 @@ export class FixturesComponent implements OnInit {
     }, 1500)*/
   }
 
-  public getHeads(): any[] {
+  public getFixtures(): any[] {
     return this.libraryService.getProducts();
   }
 
@@ -48,8 +48,8 @@ export class FixturesComponent implements OnInit {
   }
 
   public search(e) {
-    if (this.heads) {
-      this.displayHeads = this.heads.filter((h) => {
+    if (this.allFixtures) {
+      this.displayFixtures = this.allFixtures.filter((h) => {
         const toSearch = (h && h.name ? h.name.toLowerCase() : "") + " " +
           (h && h.manufacturer && h.manufacturer.name ? h.manufacturer.name.toLowerCase() : "");
         let notFound: boolean = false;
@@ -60,7 +60,7 @@ export class FixturesComponent implements OnInit {
         }
         return (notFound ? false : true);
       });
-      this.sortDisplayHeads();
+      this.sortDisplayFixtures();
     }
   }
 
@@ -69,14 +69,14 @@ export class FixturesComponent implements OnInit {
     shell.openExternal(url);
   }
 
-  public addHead(head, content) {
-    this.currentHead = head;
+  public addFixture(fixture, content) {
+    this.currentFixture = fixture;
     this.modalService.open(content, { size: "xl" }).result.then((result) => {
-      smalltalk.prompt("Number of heads", "Type in the number of heads you want to add:", 2).then((n) => {
-        const fixture = new Fixture("Change this", n, 1, result.fixture.name, result.mode.name);
-        fixture.product = this.libraryService.getProduct(result.fixture.name);
-        this.fixtures.push(fixture);
-        this.sortUsedHeads();
+      smalltalk.prompt("Number of fixtures", "Type in the number of fixtures you want to add:", 2).then((n) => {
+        const f = new Fixture("Change this", n, 1, result.fixture.name, result.mode.name);
+        f.product = this.libraryService.getProduct(result.fixture.name);
+        this.fixtures.push(f);
+        this.sortUsedFixtures();
         this.save();
       }, () => undefined);
     }, () => {
@@ -93,25 +93,25 @@ export class FixturesComponent implements OnInit {
     switch (field) {
       case "number":
         val = this.fixtures[i].number;
-        title = "Change number of heads";
-        message = "Enter the number of the heads:";
+        title = "Change number of fixtures";
+        message = "Enter the number of the fixtures:";
         break;
       case "startAddress":
         val = this.fixtures[i].startAddress;
         title = "Change start address";
-        message = "Enter the head's start address:";
+        message = "Enter the fixture's start address:";
         break;
       case "displayName":
         val = this.fixtures[i].displayName;
         title = "Change display name";
-        message = "Enter the head's display name:";
+        message = "Enter the fixture's display name:";
         break;
       case "channelMode":
         val = null;
         title = "Choose channel mode";
-        message = "Choose the channel mode of that head:";
+        message = "Choose the channel mode of that fixture:";
         selectBox = true;
-        options = this.getSelectOptionsFromHead(this.fixtures[i]);
+        options = this.getSelectOptionsFromFixture(this.fixtures[i]);
         break;
 
     }
@@ -127,14 +127,14 @@ export class FixturesComponent implements OnInit {
               break;
             case "startAddress":
               this.fixtures[i].startAddress = parseInt(res, undefined);
-              this.sortUsedHeads();
+              this.sortUsedFixtures();
               break;
           }
           this.save();
         }
       }, () => undefined);
     } else {
-      smalltalkSelect.select(title, message, options, {}).then((res: string) => {
+      smalltalkSelect.select(title, message, options, {}).then((res: any) => {
         if (res) {
           this.fixtures[i].channelMode = res.name;
         }
@@ -153,11 +153,12 @@ export class FixturesComponent implements OnInit {
   }
 
   public save() {
-    // console.log("saving");
-    this.showService.connection.getRepository(Fixture).save(this.fixtures);
+    if (this.verify()) {
+      this.showService.connection.getRepository(Fixture).save(this.fixtures);
+    }
   }
 
-  private sortUsedHeads() {
+  private sortUsedFixtures() {
     this.fixtures.sort((a, b) => {
       if (a.startAddress > b.startAddress) {
         return 1;
@@ -169,7 +170,7 @@ export class FixturesComponent implements OnInit {
     });
   }
 
-  private getSelectOptionsFromHead(fixture: Fixture) {
+  private getSelectOptionsFromFixture(fixture: Fixture) {
     return fixture.product.modes.map((channelMode) => {
       return {
         description: `This mode will use ${channelMode.channels.length == 1 ? "1 Channel" : `${channelMode.channels.length} Channels`}.`,
@@ -180,8 +181,8 @@ export class FixturesComponent implements OnInit {
     });
   }
 
-  private sortDisplayHeads() {
-    this.displayHeads.sort((a, b) => {
+  private sortDisplayFixtures() {
+    this.displayFixtures.sort((a, b) => {
       if (a && b && a.name && b.name && a.manufacturer && b.manufacturer && a.manufacturer.name && b.manufacturer.name) {
         if ([a.manufacturer.name, b.manufacturer.name].sort()[0] == b.manufacturer.name) {
           return 1;
@@ -198,5 +199,32 @@ export class FixturesComponent implements OnInit {
         return 0;
       }
     });
+  }
+
+  private verify() {
+    for (const fixture of this.fixtures as any) {
+      fixture.endAddress = fixture.number * this.getChannelNumber(fixture);
+    }
+    for (const fixture of this.fixtures as any) {
+      for (const testFixture of this.fixtures as any) {
+        if (
+          (
+            (fixture.startAddress > testFixture.startAddress &&
+              fixture.startAddress < testFixture.endAddress ||
+              testFixture.startAddress > fixture.startAddress &&
+              testFixture.startAddress < fixture.endAddress
+            ) ||
+            fixture.startAddress == testFixture.endAddress ||
+            fixture.endAddress == testFixture.startAddress ||
+            fixture.startAddress == testFixture.startAddress ||
+            fixture.endAddress == testFixture.endAddress
+          ) && fixture.name != testFixture.name) {
+          this.errorMessage = `Address overlapping of "${fixture.displayName}" and "${testFixture.displayName}"!`
+          return false;
+        }
+      }
+    }
+    this.errorMessage = "";
+    return true;
   }
 }

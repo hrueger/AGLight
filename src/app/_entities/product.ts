@@ -3,7 +3,10 @@ export class Product {
     shortName: string;
     categories: Category[];
     fixtureKey: string;
-    manufacturer: string;
+    manufacturer: {
+        name: string;
+        url: string;
+    };
     oflURL: string;
     meta: {
         authors: string[];

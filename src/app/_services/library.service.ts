@@ -7,6 +7,7 @@ import * as unzipper from "unzipper";
 import * as request from "request";
 import { StatusbarService } from "./statusbar.service";
 import { Product } from "../_entities/product";
+import { RawProduct } from "../_entities/rawProduct";
 
 @Injectable({
     providedIn: "root",
@@ -41,9 +42,9 @@ export class LibraryService {
         const manufacturerCache = JSON.parse(fs.readFileSync(path.join(this.libraryPath, "manufacturers.json")).toString());
         this.walk(this.libraryPath, (err, files) => {
             files.forEach((file) => {
-                const content = JSON.parse(fs.readFileSync(file).toString());
+                const content = JSON.parse(fs.readFileSync(file).toString()) as RawProduct;
                 content.manufacturer = manufacturerCache[content.manufacturerKey];
-                this.productCache.push(content as Product);
+                this.productCache.push(content as any);
             });
             this.statusbarService.setItem({
                 name: "Library loaded",
