@@ -37,6 +37,7 @@ export class FixturesComponent implements OnInit {
       that.ngOnInit();
       console.log("Updated!");
     }, 1500)*/
+    this.validate();
   }
 
   public getFixtures(): any[] {
@@ -153,7 +154,7 @@ export class FixturesComponent implements OnInit {
   }
 
   public save() {
-    if (this.verify()) {
+    if (this.validate()) {
       this.showService.connection.getRepository(Fixture).save(this.fixtures);
     }
   }
@@ -201,25 +202,25 @@ export class FixturesComponent implements OnInit {
     });
   }
 
-  private verify() {
+  private validate() {
     for (const fixture of this.fixtures as any) {
-      fixture.endAddress = fixture.number * this.getChannelNumber(fixture);
+      fixture.endAddress = fixture.startAddress - 1 + (fixture.number * this.getChannelNumber(fixture));
     }
-    for (const fixture of this.fixtures as any) {
-      for (const testFixture of this.fixtures as any) {
+    for (const a of this.fixtures as any) {
+      for (const b of this.fixtures as any) {
         if (
           (
-            (fixture.startAddress > testFixture.startAddress &&
-              fixture.startAddress < testFixture.endAddress ||
-              testFixture.startAddress > fixture.startAddress &&
-              testFixture.startAddress < fixture.endAddress
+            (
+              (a.startAddress > b.startAddress && a.startAddress < b.endAddress)
+              ||
+              (a.endAddress > b.startAddress && a.endAddress < b.endAddress)
             ) ||
-            fixture.startAddress == testFixture.endAddress ||
-            fixture.endAddress == testFixture.startAddress ||
-            fixture.startAddress == testFixture.startAddress ||
-            fixture.endAddress == testFixture.endAddress
-          ) && fixture.name != testFixture.name) {
-          this.errorMessage = `Address overlapping of "${fixture.displayName}" and "${testFixture.displayName}"!`
+            a.startAddress == b.endAddress ||
+            a.endAddress == b.startAddress ||
+            a.startAddress == b.startAddress ||
+            a.endAddress == b.endAddress
+          ) && (a.name != b.name || a.displayName != b.displayName)) {
+          this.errorMessage = `Address overlapping of "${a.displayName}" and "${b.displayName}"!`
           return false;
         }
       }
