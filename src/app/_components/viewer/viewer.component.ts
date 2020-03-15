@@ -16,7 +16,6 @@ import {
 } from "babylonjs";
 import { ipcRenderer } from "electron";
 import * as socketIo from "socket.io-client";
-import { Channel } from "../../_entities/channel";
 import { Fixture } from "../../_entities/fixture";
 import { colors } from "../../_ressources/colors";
 
@@ -48,7 +47,7 @@ export class ViewerComponent implements OnInit {
     ipcRenderer.send("viewerEvent", "viewerIsReady");
     const client = socketIo.connect(`http://localhost:${this.socketIoPort}`);
     client.on("update", (universe) => {
-      universe.forEach((channelVal, channelNr) => {
+      /*universe.forEach((channelVal, channelNr) => {
         this.fixtures.forEach((f) => {
           let totalChannelLength = 0;
           f.channels.forEach((c) => {
@@ -123,7 +122,7 @@ export class ViewerComponent implements OnInit {
             });
           }
         });
-      });
+      });*/
     });
 
     ipcRenderer.on("getFixtures", (e, a) => {
