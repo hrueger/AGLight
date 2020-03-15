@@ -81,7 +81,6 @@ export class WidgetGridComponent implements OnInit {
             let opts3;
             if (effectOrHead == "head") {
               msg = "Choose the channel:";
-              console.log(fixture.product.modes.filter((m) => m.name == fixture.channelMode)[0].channels);
               opts3 = fixture.product.modes.filter((m) => m.name == fixture.channelMode)[0].channels.map((channel, idx) => {
                 return {
                   description: `Type: ${channel}`,
@@ -102,7 +101,6 @@ export class WidgetGridComponent implements OnInit {
             if (opts3.length) {
               smalltalkSelect.select("Add control", msg, opts3, {}).then(async (channel: string) => {
                 const opts4 = controls.filter((control) => {
-                  console.log(`Checking if ${control.type} == ${channel}`)
                   return control.type == channel;
                 })[0].usefulWidgets.map((widget) => {
                   return {
@@ -247,7 +245,6 @@ export class WidgetGridComponent implements OnInit {
     for (const fixture of this.fixtures) {
       fixture.product = products.filter((p) => p.name == fixture.name)[0];
     }
-    console.log(this.fixtures);
     this.widgets = await this.showService.connection.getRepository(Widget).find();
   }
 
