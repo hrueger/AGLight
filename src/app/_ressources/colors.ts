@@ -11662,5 +11662,15 @@ const colors: {
     // tslint:disable-next-line: object-literal-sort-keys
     hex: "#edf6ff",
   },
+  {
+    name: "UV",
+    // tslint:disable-next-line: object-literal-sort-keys
+    hex: "#590098",
+  },
+  {
+    name: "Warm White",
+    // tslint:disable-next-line: object-literal-sort-keys
+    hex: "#fff2b3",
+  }
 ];
 export { colors };
