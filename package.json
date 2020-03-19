@@ -40,7 +40,7 @@
     ]
   },
   "dependencies": {
-    "@angular/localize": "^9.0.6",
+    "@angular/localize": "^9.0.7",
     "@fortawesome/fontawesome-free": "^5.12.1",
     "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
     "@ng-bootstrap/ng-bootstrap": "^6.0.0",
