@@ -6,7 +6,8 @@
   "jsRules": {},
   "rules": {
       "no-var-requires": false,
-      "triple-equals": false
+      "triple-equals": false,
+      "radix": false
   },
   "rulesDirectory": [],
   "linterOptions": {
