@@ -29,7 +29,9 @@
     "postinstall": "npm run postinstall:electron && npx electron-builder install-app-deps",
     "postinstall:web": "node postinstall-web",
     "postinstall:electron": "node postinstall",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "private": true,
   "greenkeeper": {
@@ -65,7 +67,8 @@
     "sqlite3": "4.1.1",
     "tslib": "^1.11.1",
     "typeorm": "0.2.24",
-    "unzipper": "^0.10.10"
+    "unzipper": "^0.10.10",
+    "snyk": "^1.301.0"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^9.0.0",
@@ -110,5 +113,6 @@
     "wait-on": "4.0.1",
     "webpack": "^4.42.0",
     "zone.js": "~0.10.3"
-  }
+  },
+  "snyk": true
 }
