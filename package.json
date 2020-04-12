@@ -90,7 +90,7 @@
     "@angular/router": "^9.0.0",
     "@types/node": "^12.12.30",
     "@types/request": "^2.48.4",
-    "@types/rimraf": "^2.0.3",
+    "@types/rimraf": "^2.0.4",
     "@types/serialport": "^8.0.0",
     "angular-cli-builders": "^2.1.2",
     "codelyzer": "^5.2.1",
