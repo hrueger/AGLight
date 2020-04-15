@@ -45,7 +45,7 @@
     "@angular/localize": "^9.0.7",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
-    "@ng-bootstrap/ng-bootstrap": "^6.0.1",
+    "@ng-bootstrap/ng-bootstrap": "^6.0.2",
     "@serialport/parser-readline": "^8.0.6",
     "@types/socket.io-client": "^1.4.32",
     "angular-gridster2": "^9.1.0",
