@@ -68,7 +68,7 @@
     "tslib": "^1.11.1",
     "typeorm": "0.2.24",
     "unzipper": "^0.10.10",
-    "snyk": "^1.301.0"
+    "snyk": "^1.303.1"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^9.0.0",
