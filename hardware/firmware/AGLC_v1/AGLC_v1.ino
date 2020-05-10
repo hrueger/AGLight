@@ -13,6 +13,10 @@
 #define LOGO_WIDTH 128
 #define LOGO_HEIGHT 64
 
+//#define SDA 23
+//#define SCL 22
+#define MULTIPLEX_1_ADDR 0x70
+
 #define SOFTWARE_ID "AGLC"
 #define SOFTWARE_VERSION "v1"
 #define DELIMITER "________"
@@ -88,13 +92,22 @@ static const unsigned char PROGMEM logo_bmp[] =
      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+Adafruit_SSD1306 display0(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+Adafruit_SSD1306 display1(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 void setup()
 {
   Serial.begin(115200);
+  switchToDevice(0);
 
-  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C))
+  if (!display0.begin(SSD1306_SWITCHCAPVCC, 0x3C))
+  {
+    Serial.println(F("SSD1306 allocation failed"));
+    for (;;)
+      ;
+  }
+  switchToDevice(1);
+  if (!display1.begin(SSD1306_SWITCHCAPVCC, 0x3C))
   {
     Serial.println(F("SSD1306 allocation failed"));
     for (;;)
@@ -109,72 +122,75 @@ void setup()
 
 void loop()
 {
-  display.clearDisplay();
-  display.setCursor(0, 0);
-  display.setTextSize(1);
-  display.println(F("Connected"));
-  display.println("This will be the");
-  display.println("info screen here.");
-  display.display();
+  
+  switchToDevice(1);
+  display1.clearDisplay();
+  display1.setCursor(0, 0);
+  display1.setTextSize(1);
+  display1.println(F("Connected"));
+  display1.println("This will be the");
+  display1.println("info screen here.");
+  display1.display();
   delay(5000);
 }
 
 void displayLogo(void)
 {
-  display.clearDisplay();
+  switchToDevice(0);
+  display1.clearDisplay();
 
-  display.drawBitmap(
-      (display.width() - LOGO_WIDTH) / 2,
-      (display.height() - LOGO_HEIGHT) / 2,
+  display1.drawBitmap(
+      (display1.width() - LOGO_WIDTH) / 2,
+      (display1.height() - LOGO_HEIGHT) / 2,
       logo_bmp, LOGO_WIDTH, LOGO_HEIGHT, 1);
-  display.display();
+  display1.display();
   delay(2000);
-  display.clearDisplay();
+  display1.clearDisplay();
 }
 void connect()
 {
   while (true) {
-
+    switchToDevice(1);
     if (checkIfConnected()) {
       return;
     }
 
-    display.clearDisplay();
-    display.setTextSize(2);
-    display.setTextColor(WHITE);
-    display.setCursor(0, 0);
+    display1.clearDisplay();
+    display1.setTextSize(2);
+    display1.setTextColor(WHITE);
+    display1.setCursor(0, 0);
 
-    display.println(F("Connecting"));
-    display.println("");
-    display.setTextColor(BLACK, WHITE);
-    display.display();
+    display1.println(F("Connecting"));
+    display1.println("");
+    display1.setTextColor(BLACK, WHITE);
+    display1.display();
     for (int i = 0; i < 10; i++) {
-      display.print(F(" "));
-      display.display();
+      display1.print(F(" "));
+      display1.display();
       delay(100);
     }
 
     Serial.println(SOFTWARE_ID DELIMITER SOFTWARE_VERSION DELIMITER READY_TO_CONNECT);
 
     for (int i = 0; i < 10; i++) {
-      display.clearDisplay();
-      display.setCursor(0, 0);
-      display.setTextColor(WHITE, BLACK);
-      display.println(F("Connecting"));
-      display.println("");
+      display1.clearDisplay();
+      display1.setCursor(0, 0);
+      display1.setTextColor(WHITE, BLACK);
+      display1.println(F("Connecting"));
+      display1.println("");
       for (int j = 0; j < i; j++) {
-        display.print(F(" "));
+        display1.print(F(" "));
       }
-      display.setTextColor(BLACK, WHITE);
+      display1.setTextColor(BLACK, WHITE);
       for (int j = 0; j < 10 - i; j++) {
-        display.print(F(" "));
+        display1.print(F(" "));
       }
-      display.display();
+      display1.display();
       delay(100);
     }
   }
 
-  display.display();
+  display1.display();
   delay(2000);
 }
 
@@ -204,4 +220,10 @@ bool checkIfConnected() {
   receiveData();
   String m = incomingMessage;
   return m == CONNECTED;
+}
+
+void switchToDevice(uint8_t bus) {
+  Wire.beginTransmission(/*SDA, SCL, */MULTIPLEX_1_ADDR);
+  Wire.write(1 << bus);
+  Wire.endTransmission();
 }
