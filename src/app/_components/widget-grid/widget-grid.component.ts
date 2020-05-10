@@ -82,8 +82,26 @@ export class WidgetGridComponent implements OnInit {
             if (effectOrHead == "head") {
               msg = "Choose the channel:";
               opts3 = fixture.product.modes.filter((m) => m.name == fixture.channelMode)[0].channels.map((channel, idx) => {
+                let singleCapability = false;
+                if (!fixture.product.availableChannels[channel].capabilities) {
+                  singleCapability = true;
+                  fixture.product.availableChannels[channel].capabilities = [fixture.product.availableChannels[channel].capability];
+                }
                 return {
-                  description: `Type: ${channel}`,
+                  description: `
+                    ${singleCapability ? "Capability:<br>" : "Capabilities:<br><ul>"}
+                    ${fixture.product.availableChannels[channel].capabilities.map((c: any) => `${singleCapability ? "" : "<li>"}
+
+                    ${JSON.stringify(c)}
+                    <br><br>
+                    ${c.dmxRange ? `${c.dmxRange[0]} - ${c.dmxRange[1]}`: "0 - 255"}: <b>${c.type}</b> ()
+                    ${c.comment ? `<br><i>${c.comment}</i>` : ""}
+                    <br><br>
+
+
+                    ${singleCapability ? "" : "</li>"}`).join("")}
+                    ${singleCapability ? "" : "</ul>"}
+                  `,
                   name: `${fixture.startAddress - 1 + idx}: ${channel}`,
                   value: channel,
                 };

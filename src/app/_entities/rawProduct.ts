@@ -58,19 +58,7 @@ type Capability = CapabilityBase & {
     type: "NoFunction";
 } | {
     type: "ShutterStrobe";
-    shutterEffect: {
-        "enum": [
-            "Open",
-            "Closed",
-            "Strobe",
-            "Pulse",
-            "RampUp",
-            "RampDown",
-            "RampUpDown",
-            "Lightning",
-            "Spikes"
-        ]
-    };
+    shutterEffect: "Open" | "Closed" | "Strobe" | "Pulse" | "RampUp" | "RampDown" | "RampUpDown" | "Lightning" | "Spikes";
     soundControlled: boolean;
     speed: speed;
     speedStart: speed;

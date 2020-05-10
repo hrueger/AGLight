@@ -8,8 +8,11 @@
           </button>
         </div>
         <div class="widget">
-          {{ widget.type }}
-          {{widget.channel.name}} - {{ widget.channel.fixture.displayName }}
+          <pre>
+            {{ widget | json }}
+          </pre>
+          <!--{{ widget.type }}-->
+          <!--{{widget.channel}} - {{ widget.fixture.displayName }}
           <div class="widget-slider d-flex" *ngIf="widget.type == 'Fader'">
             <ng5-slider  [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: false}" (valueChange)="action('slider', widget, $event)"></ng5-slider>
           </div>
@@ -35,7 +38,7 @@
                 </td>
               </tr>
             </table>
-          </div>
+          </div>-->
         </div>
       </div>
 
