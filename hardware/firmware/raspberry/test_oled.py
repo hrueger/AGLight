@@ -11,6 +11,8 @@ VERSION = "v0.0.1"
 # substitute ssd1331(...) or sh1106(...) below if using that device
 device1 = ssd1306(i2c(port=3, address=0x3C))
 device2 = ssd1306(i2c(port=4, address=0x3C))
+device3 = ssd1306(i2c(port=5, address=0x3C))
+device4 = ssd1306(i2c(port=6, address=0x3C))
 # device3 = ssd1306(i2c(port=4, address=0x3C))
 
 def drawCenteredText(device, context, text, top=None, font=None):
@@ -32,4 +34,6 @@ def drawSplashScreen(device):
 
 drawSplashScreen(device1)
 drawSplashScreen(device2)
+drawSplashScreen(device3)
+drawSplashScreen(device4)
 time.sleep(100)
