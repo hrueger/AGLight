@@ -7,9 +7,8 @@
             (ngModelChange)="search($event)">
         </div>
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>{{ ( displayFixtures && fixtures && displayFixtures.length == fixtures.length ? "All fixtures" : (displayFixtures && displayFixtures.length && searchValue != "" ? "Search results" : "No fixtures found")) }}</span>
-        </h6>
-        
+          <span>{{ ( searchValue == "" ? "All fixtures" : (displayFixtures && displayFixtures.length && searchValue != "" ? "Search results" : "No fixtures found")) }}</span>
+        </h6>        
           <ul class="nav flex-column">
             <li class="nav-item" *ngFor="let fixture of displayFixtures">
               <a class="nav-link clickable" (click)="addFixture(fixture, addFixtureModal)" *ngIf="fixture.name && fixture.manufacturer && fixture.manufacturer.name">
