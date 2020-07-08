@@ -56,7 +56,6 @@
     "jquery": "^3.5.0",
     "ng5-slider": "^1.2.4",
     "ngx-color": "^5.0.1",
-    "ngx-perfect-scrollbar": "^9.0.0",
     "node-abi": "^2.15.0",
     "popper.js": "^1.16.1",
     "reflect-metadata": "^0.1.13",

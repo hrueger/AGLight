@@ -6,9 +6,6 @@ import { GridsterModule } from "angular-gridster2";
 import { Ng5SliderModule } from "ng5-slider";
 import { ColorCircleModule } from "ngx-color/circle";
 import { ColorSwatchesModule } from "ngx-color/swatches";
-import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
-import { PERFECT_SCROLLBAR_CONFIG } from "ngx-perfect-scrollbar";
-import { PerfectScrollbarConfigInterface } from "ngx-perfect-scrollbar";
 import "reflect-metadata";
 import "../polyfills";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -32,10 +29,6 @@ import { TruncatePipe } from "./_pipes/truncate.pipe";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { StatusbarComponent } from "./_components/statusbar/statusbar.component";
-
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true,
-};
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -63,7 +56,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   imports: [
     BrowserModule,
     NgbModule,
-    PerfectScrollbarModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
@@ -72,11 +64,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     ColorCircleModule,
     ColorSwatchesModule,
   ],
-  providers: [
-    {
-      provide: PERFECT_SCROLLBAR_CONFIG,
-      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
-    },
-  ],
+  providers: [],
 })
 export class AppModule {}

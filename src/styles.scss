@@ -27,6 +27,7 @@ a, button {
   margin-top: 56px;
   margin-bottom: 23px;
   height: calc( 100vh - 79px );
+  overflow-x: hidden;
 }
 
 .action-btn {
