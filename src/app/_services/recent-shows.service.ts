@@ -44,9 +44,7 @@ export class RecentShowsService {
   constructor() {
     this.store = new Store({
       configName: "recentShows",
-      defaults: {
-        shows: [],
-      },
+      defaults: []
     });
     this.data = this.store.get();
     if (!this.data) {
