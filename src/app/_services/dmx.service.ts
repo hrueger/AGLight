@@ -141,9 +141,34 @@ export class DmxService {
                                 }
                             ]
                         });
+                        this.testDmxDimming();
                     }
                 }, 500)
             });
         });
+    }
+
+    private testDmxDimming() {
+        let increasing = true;
+        let val = 0;
+        setInterval(() => {
+            val = increasing ? val + 1 : val - 1;
+            if (val > 30) {
+                increasing = false;
+            }
+            if (val < 5) {
+                increasing = true;
+            }
+            this.universe.update({
+                30: 0,
+                31: val,
+                32: val,
+                33: val,
+                36: 0,
+                37: val,
+                38: val,
+                39: val,
+            });
+        }, 25)
     }
 }
