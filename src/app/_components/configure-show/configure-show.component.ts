@@ -12,6 +12,7 @@ import { WidgetGridComponent } from "../widget-grid/widget-grid.component";
 export class ConfigureShowComponent {
     public allFixtures: Fixture[] = [];
     public displayFixtures: Fixture[] = [];
+    public searchValue = "";
     @ViewChild("widgetGrid") public widgetGrid: WidgetGridComponent;
     constructor(private libraryService: LibraryService, private showService: ShowService) { }
 
