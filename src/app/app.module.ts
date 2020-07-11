@@ -10,7 +10,6 @@ import "reflect-metadata";
 import "../polyfills";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AboutComponent } from "./_components/about/about.component";
-import { CloudComponent } from "./_components/cloud/cloud.component";
 import { ConfigureShowComponent } from "./_components/configure-show/configure-show.component";
 import { FixturesComponent } from "./_components/fixtures/fixtures.component";
 import { HomeComponent } from "./_components/home/home.component";
@@ -39,7 +38,6 @@ import { StatusbarComponent } from "./_components/statusbar/statusbar.component"
     FixturesComponent,
     ConfigureShowComponent,
     ShowComponent,
-    CloudComponent,
     ChannelNumberSumPipe,
     TruncatePipe,
     AboutComponent,

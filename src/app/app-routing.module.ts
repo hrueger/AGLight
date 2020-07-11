@@ -1,7 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { AboutComponent } from "./_components/about/about.component";
-import { CloudComponent } from "./_components/cloud/cloud.component";
 import { ConfigureShowComponent } from "./_components/configure-show/configure-show.component";
 import { FixturesComponent } from "./_components/fixtures/fixtures.component";
 import { HomeComponent } from "./_components/home/home.component";
@@ -36,10 +35,6 @@ const routes: Routes = [
     canActivate: [ShowLoadedGuard],
     component: ShowComponent,
     path: "show",
-  },
-  {
-    component: CloudComponent,
-    path: "cloud",
   },
   {
     component: AboutComponent,
