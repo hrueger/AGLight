@@ -42,6 +42,10 @@ export class StatusbarComponent {
   }
 
   public btnClicked(btn) {
+    for (const i of this.menuItems) {
+      i.showDropup = false;
+    }
+    this.cdr.detectChanges();
     this[btn.service][btn.action]();
   }
 }
