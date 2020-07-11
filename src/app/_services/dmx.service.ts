@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { StatusbarService } from "./statusbar.service";
 import * as DMX from "dmx";
 import * as smalltalkSelect from "../_utils/smalltalk-select";
+import * as smalltalk from "smalltalk";
 
 @Injectable({
     providedIn: "root",
@@ -9,13 +10,55 @@ import * as smalltalkSelect from "../_utils/smalltalk-select";
 export class DmxService {
     private dmx: DMX;
     private universe: any;
-    private readonly devices: { [key: string]: string } = { 
-        artnet: "Driver for EnttecODE",
-        bbdmx: "driver for BeagleBone-DMX",
-        dmx4all: "driver for DMX4ALL devices like the \"NanoDMX USB Interface\"",
-        "enttec-usb-dmx-pro": "a driver for devices using a Enttec USB DMX Pro chip like the \"DMXKing ultraDMX Micro\".",
-        "enttec-open-usb-dmx": "driver for \"Enttec Open DMX USB\". This device is NOT recommended, there are known hardware limitations and this driver is not very stable. (If possible better obtain a device with the \"pro\" chip)",
-        "dmxking-utra-dmx-pro": "driver for the DMXKing Ultra DMX pro interface. This driver support multiple universe specify the options with Port = A or B",
+    private readonly connectOption = {
+        text: "Connect...",
+        type: "primary",
+        service: "dmxService",
+        action: "connectToDevice"
+    };
+    private readonly devices: {
+        [key: string]: {
+            name: string,
+            description: string,
+            deviceId: string,
+            deviceIdDescription: string,
+    } } = {
+        artnet: {
+            name: "Artnet",
+            description: "Driver for all Artnet Devices like the EnttecODE.",
+            deviceId: "127.0.0.1",
+            deviceIdDescription: "IP-Adress of the device",
+        },
+        bbdmx: {
+            name: "BeagleBone-DMX",
+            description: "A driver for the \"BeagleBone-DMX\" Interface.",
+            deviceId: "COM5",
+            deviceIdDescription: "Serial port of the device. For windows it is COM1, COM2, ...; For Linux it will be /dev/something",
+        },
+        dmx4all: {
+            name: "DMX4ALL",
+            description: "A driver for DMX4ALL devices like the \"NanoDMX USB Interface\"",
+            deviceId: "COM5",
+            deviceIdDescription: "Serial port of the device. For windows it is COM1, COM2, ...; For Linux it will be /dev/something",
+        },
+        "enttec-usb-dmx-pro": {
+            name: "Enttec USB DMX Pro",
+            description: "A driver for devices using a \"Enttec USB DMX Pro\" chip like those Enttec devices or the \"DMXKing ultraDMX Micro\".",
+            deviceId: "COM5",
+            deviceIdDescription: "Serial port of the device. For windows it is COM1, COM2, ...; For Linux it will be /dev/something",
+        },
+        "enttec-open-usb-dmx": {
+            name: "Enttec Open DMX USB",
+            description: "A driver for \"Enttec Open DMX USB\". This device is NOT recommended, there are known hardware limitations and this driver is not very stable. (If possible better obtain a device with the \"pro\" chip)",
+            deviceId: "COM5",
+            deviceIdDescription: "Serial port of the device. For windows it is COM1, COM2, ...; For Linux it will be /dev/something",
+        },
+        "dmxking-utra-dmx-pro": {
+            name: "DMXKing Ultra DMX pro",
+            description: "A driver for the \"DMXKing Ultra DMX pro\" interface. This driver supports multiple universe specify the options with Port = A or Port = B",
+            deviceId: "COM5",
+            deviceIdDescription: "Serial port of the device. For windows it is COM1, COM2, ...; For Linux it will be /dev/something",
+        },
     }
     constructor(private statusbarService: StatusbarService) {}
 
@@ -29,52 +72,78 @@ export class DmxService {
                 title: "DMX Output device",
                 content: "No dmx device connected.",
                 actions: [
-                    {
-                        text: "Connect...",
-                        type: "primary",
-                        service: "dmxService",
-                        action: "connectToDevice"
-                    }
+                    this.connectOption,
                 ]
             }
         });
     }
-    public connectToDevice() {
-        const opts = Object.keys(this.devices).map((key) => ({description: this.devices[key], name: key.replace(/-/g, " ").replace(/(^\w{1})|(\s{1}\w{1})/g, match => match.toUpperCase()), value: key}))
-        smalltalkSelect.select("Connect DMX Interface",
-            "Choose the head from which you want to add a control.", opts, {}).then((key: string) => {
-                console.log(key);
-            });
-        // pseudo code
-        this.statusbarService.setItem({
-            name: "Searching for dmx devices",
-            icon: "spinner fa-spin",
-            id: "dmx",
-            dropup: {
-                title: "Searching for DMX devices",
-                content: "Searching can take up to a minute, depending on the speed of your computer."
+    public async connectToDevice() {
+        const opts = Object.keys(this.devices).map((key) => (
+            {
+                description: this.devices[key].description,
+                name: this.devices[key].name,
+                value: key,
             }
-        });
-        const that = this;
-        // this won't be there later ;-)
-        setTimeout(() => {
-            that.statusbarService.setItem({
-                name: "Enttec OpenDMX",
-                icon: "plug",
-                id: "dmx",
-                dropup: {
-                    title: "Connected",
-                    content: "to an Enttec OpenDMX. More info will be here. Maybe. Later. And hopefully."
-                },
-                actions: [
-                    {
-                        text: "Disconnect",
-                        type: "primary",
-                        service: "dmxService",
-                        action: "disconnect"
+        ));
+        smalltalkSelect.select("Connect DMX Interface", "Choose the driver for the device you want to connect to.", opts, {}).then((key: string) => {
+            smalltalk.prompt("Device Identifier", this.devices[key].deviceIdDescription, this.devices[key].deviceId).then((deviceId) => {
+                let connectedSuccessfully = true;
+                // tslint:disable-next-line: no-console
+                const originalWarn = console.warn; // needed because the driver does not throw an error...
+                const onError = (e) => {
+                    smalltalk.alert("Error while connecting", e.toString());
+                    this.statusbarService.setItem({
+                        name: "Error while connecting",
+                        icon: "exclamation-triangle",
+                        id: "dmx",
+                        dropup: {
+                            title: "Error while connecting",
+                            content: `The following error occured: '${e}'`,
+                            actions: [
+                                this.connectOption,
+                            ]
+                        }
+                    });
+                    // tslint:disable-next-line: no-console
+                    console.warn = originalWarn;
+                    connectedSuccessfully = false;
+                };
+                try {
+                    // tslint:disable-next-line: no-console
+                    console.warn = (msg) => {
+                        onError(msg);
+                        throw Error(msg);
+                        connectedSuccessfully = false;
+                    };
+                    this.universe = this.dmx.addUniverse("u1", key, deviceId);
+                } catch(e) {
+                    // tslint:disable-next-line: no-console
+                    console.error(e);
+                    onError(e);
+                    connectedSuccessfully = false;
+                }
+                setTimeout(() => {
+                    if (connectedSuccessfully) {
+                        this.statusbarService.setItem({
+                            name: this.devices[key].name,
+                            icon: "plug",
+                            id: "dmx",
+                            dropup: {
+                                title: "Successfully connected",
+                                content: `to an ${this.devices[key].name} on '${deviceId}'.`
+                            },
+                            actions: [
+                                {
+                                    text: "Disconnect",
+                                    type: "primary",
+                                    service: "dmxService",
+                                    action: "disconnect"
+                                }
+                            ]
+                        });
                     }
-                ]
+                }, 500)
             });
-        }, 3000);
+        });
     }
 }
