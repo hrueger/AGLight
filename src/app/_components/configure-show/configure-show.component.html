@@ -1,1 +1,33 @@
-<widget-grid [editMode]="true"></widget-grid>
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-dark sidebar">
+            <div class="sidebar-sticky h-100 d-flex flex-column pb-4">
+                <div>
+                    <div class="px-3">
+                        <input class="form-control" type="text" placeholder="Search" [(ngModel)]="searchValue" (ngModelChange)="search($event)">
+                    </div>
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>{{ ( searchValue == "" ? "All fixtures" : (displayFixtures && displayFixtures.length && searchValue != "" ? "Search results" : "No fixtures found")) }}</span>
+                    </h6>
+                </div>
+                <div class="flex-grow-1 overflow-auto">
+                    <ul class="nav flex-column">
+                        <li class="nav-item" *ngFor="let fixture of displayFixtures">
+                            <a class="nav-link d-flex justify-content-between">
+                                <span>{{fixture.displayName}} <span class="text-muted">| {{fixture.product.name}}</span></span>
+                                <div>
+                                    <button class="action-btn green" (click)="addWidget(fixture)"><i class="fas fa-plus"></i></button>
+                                    <button class="action-btn blue" (click)="addEffectWidget(fixture)"><i class="fas fa-magic"></i></button>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <widget-grid #widgetGrid [editMode]="true"></widget-grid>
+        </main>
+    </div>
+</div>

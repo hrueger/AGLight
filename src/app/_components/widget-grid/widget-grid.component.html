@@ -1,18 +1,17 @@
-<button *ngIf="editMode" class="btn btn-round btn-outline-success" (click)="addItem()"><i class="fas fa-plus"></i></button>
 <gridster [options]="options">
     <gridster-item [item]="widget" *ngFor="let widget of widgets">
-      <div class="content drag-handler">
-        <div class="item-buttons float-right" *ngIf="editMode">
-          <button class="btn btn-outline-danger btn-round" (click)="removeItem($event, widget)" (touchstart)="removeItem($event, widget)">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="widget">
-          <pre>
-            {{ widget | json }}
-          </pre>
-          <!--{{ widget.type }}-->
-          <!--{{widget.channel}} - {{ widget.fixture.displayName }}
+        <div class="content drag-handler">
+            <div class="item-buttons float-right" *ngIf="editMode">
+                <button class="btn btn-outline-danger btn-round" (click)="removeItem($event, widget)" (touchstart)="removeItem($event, widget)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="widget">
+                <pre>
+                    {{ widget | json }}
+                </pre>
+                <!--{{ widget.type }}-->
+                <!--{{widget.channel}} - {{ widget.fixture.displayName }}
           <div class="widget-slider d-flex" *ngIf="widget.type == 'Fader'">
             <ng5-slider  [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: false}" (valueChange)="action('slider', widget, $event)"></ng5-slider>
           </div>
@@ -39,8 +38,8 @@
               </tr>
             </table>
           </div>-->
+            </div>
         </div>
-      </div>
 
     </gridster-item>
-  </gridster>
+</gridster>
