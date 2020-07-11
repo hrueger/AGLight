@@ -8,7 +8,6 @@ import { controls } from "../../_ressources/controls";
 import { ShowService } from "../../_services/show.service";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
 import { LibraryService } from "../../_services/library.service";
-const DMX = require("dmx");
 
 @Component({
   selector: "widget-grid",
@@ -21,7 +20,6 @@ export class WidgetGridComponent implements OnInit {
   public fixtures:Fixture[] = [];
   public widgets: Widget[] = [];
   @Input() public editMode: boolean = false;
-  private dmx: any;
   private universe: any;
 
   private readonly shadeColorFactor = 35;
@@ -40,9 +38,6 @@ export class WidgetGridComponent implements OnInit {
       resizable: {enabled: this.editMode},
     };
     await this.loadAll();
-    if (!this.editMode) {
-      this.setupDmx();
-    }
   }
 
   public async removeItem($event, item: Widget) {
@@ -345,12 +340,6 @@ export class WidgetGridComponent implements OnInit {
     const BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
 
     return "#" + RR + GG + BB;
-  }
-
-  private setupDmx() {
-    this.dmx = new DMX();
-    this.universe = this.dmx.addUniverse("AGLight universe #1", "socketio", undefined, {debug: true});
-    this.universe.updateAll(0); // ToDo init
   }
 
   private alertNothingToDisplay() {
