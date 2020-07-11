@@ -14,7 +14,7 @@
                     <ul class="nav flex-column">
                         <li class="nav-item" *ngFor="let fixture of displayFixtures">
                             <a class="nav-link clickable" (click)="addFixture(fixture, addFixtureModal)" *ngIf="fixture.name && fixture.manufacturer && fixture.manufacturer.name">
-                              {{fixture.name}} | {{fixture.manufacturer.name}}
+                              {{fixture.name}} <span class="text-muted">| {{fixture.manufacturer.name}}</span>
                             </a>
                         </li>
                     </ul>
