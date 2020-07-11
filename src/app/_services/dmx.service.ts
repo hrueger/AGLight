@@ -141,7 +141,7 @@ export class DmxService {
                                 }
                             ]
                         });
-                        this.testDmxDimming();
+                        this.testDmxColorRainbow();
                     }
                 }, 500)
             });
@@ -170,5 +170,23 @@ export class DmxService {
                 39: val,
             });
         }, 25)
+    }
+
+    private testDmxColorRainbow() {
+        const b = 0.003;
+        const T = 2 * Math.PI / b;
+        setInterval(() => {
+            const t = Date.now();
+            this.universe.update({
+                30: 0,
+                31: Math.round(127.5 * Math.sin((0.003 * t) + 0 * T) + 127.5),
+                32: Math.round(127.5 * Math.sin((0.003 * t) + 1 * T) + 127.5),
+                33: Math.round(127.5 * Math.sin((0.003 * t) + 2 * T) + 127.5),
+                36: 0,
+                37: 0,
+                38: 0,
+                39: 0,
+            });
+        }, 50)
     }
 }
