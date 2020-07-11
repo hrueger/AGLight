@@ -1,7 +1,8 @@
-import { Component } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { LibraryService } from "../../_services/library.service";
 import { Fixture } from "../../_entities/fixture";
 import { ShowService } from "../../_services/show.service";
+import { WidgetGridComponent } from "../widget-grid/widget-grid.component";
 
 @Component({
     selector: "app-configure-show",
@@ -11,6 +12,7 @@ import { ShowService } from "../../_services/show.service";
 export class ConfigureShowComponent {
     public allFixtures: Fixture[] = [];
     public displayFixtures: Fixture[] = [];
+    @ViewChild("widgetGrid") public widgetGrid: WidgetGridComponent;
     constructor(private libraryService: LibraryService, private showService: ShowService) { }
 
     public async ngOnInit(): Promise<void> {

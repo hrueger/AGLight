@@ -16,8 +16,8 @@
                             <a class="nav-link d-flex justify-content-between">
                                 <span>{{fixture.displayName}} <span class="text-muted">| {{fixture.product.name}}</span></span>
                                 <div>
-                                    <button class="action-btn green" (click)="addWidget(fixture)"><i class="fas fa-plus"></i></button>
-                                    <button class="action-btn blue" (click)="addEffectWidget(fixture)"><i class="fas fa-magic"></i></button>
+                                    <button class="action-btn green" (click)="widgetGrid.addWidget(fixture)"><i class="fas fa-plus"></i></button>
+                                    <button class="action-btn blue" (click)="widgetGrid.addEffectWidget(fixture)"><i class="fas fa-magic"></i></button>
                                 </div>
                             </a>
                         </li>
