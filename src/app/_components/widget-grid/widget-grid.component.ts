@@ -67,12 +67,13 @@ export class WidgetGridComponent implements OnInit {
         await this.loadAll();
     }
 
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    public async removeItem($event: any, item: Widget): Promise<void> {
+    public async removeItem($event: Event, item: Widget): Promise<void> {
         $event.preventDefault();
         $event.stopPropagation();
-        await this.showService.connection.getRepository(Widget).remove(item);
-        this.widgets.splice(this.widgets.indexOf(item), 1);
+        smalltalk.confirm("Are you sure?", "Do you really want to remove this widget?").then(async () => {
+            await this.showService.connection.getRepository(Widget).remove(item);
+            this.widgets.splice(this.widgets.indexOf(item), 1);
+        }, () => undefined);
     }
 
     public addWidget(fixture: Fixture): void {
