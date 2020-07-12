@@ -2,13 +2,40 @@ import { Component, Input, OnInit } from "@angular/core";
 import { GridsterConfig } from "angular-gridster2";
 import * as smalltalk from "smalltalk";
 import { Fixture } from "../../_entities/fixture";
-import { Widget } from "../../_entities/widget";
+import { Widget, WidgetType } from "../../_entities/widget";
 import { colors } from "../../_ressources/colors";
-import { controls } from "../../_ressources/controls";
 import { ShowService } from "../../_services/show.service";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
 import { LibraryService } from "../../_services/library.service";
 import { beautifyCamelCase } from "../../_utils/camelcase-beautifier";
+
+const widgets: { name: string, value: string, description: string }[] = [
+    {
+        name: "Fader",
+        value: "Fader",
+        description: "A simple fader to drag and drop and select a channel value.",
+    },
+    {
+        name: "Button",
+        value: "Button",
+        description: "A button to quickly go to the channel value you predefined.",
+    },
+    {
+        name: "Colorpicker",
+        value: "Colorpicker",
+        description: "A simple colorpicker with predefined color swatches to quickly select a nice color.",
+    },
+    {
+        name: "RGB Colorpicker",
+        value: "RGB Colorpicker",
+        description: "A full RGB colorpicker to select every color you can imagine.",
+    },
+    {
+        name: "Button Grid",
+        value: "Button Grid",
+        description: "A grid of buttons to have quick access to multiple channel values.",
+    },
+];
 
 @Component({
     selector: "widget-grid",
@@ -49,7 +76,6 @@ export class WidgetGridComponent implements OnInit {
     }
 
     public addWidget(fixture: Fixture): void {
-        const msg = "Choose the channel:";
         const opts3 = fixture.product.modes.filter(
             (m) => m.name == fixture.channelMode,
         )[0].channels.map((channel, idx) => ({
@@ -68,25 +94,14 @@ export class WidgetGridComponent implements OnInit {
             value: channel,
         }));
         if (opts3.length) {
-            smalltalkSelect.select("Add control", msg, opts3).then(async (channel: string) => {
-                const opts4 = controls.filter(
-                    (control) => control.type == channel,
-                )[0].usefulWidgets.map((widget) => ({
-                    description: `Add a ${widget}.`,
-                    name: widget,
-                    value: widget,
-                }));
-                if (opts4.length) {
-                    smalltalkSelect.select("Add control",
-                        "Choose the control you want to add:", opts4).then(async (control: string) => {
-                        const w = new Widget(0, 0, 1, 1, control, channel, fixture);
-                        await this.showService.connection.manager.save(w);
-                        await this.loadAll();
-                        // this.widgets.push(w);
-                    }, () => undefined);
-                } else {
-                    this.alertNothingToDisplay();
-                }
+            smalltalkSelect.select("Add widget", "Choose the channel:", opts3).then(async (channel: string) => {
+                smalltalkSelect.select("Add widget",
+                    "Choose the widget you want to add:", widgets).then(async (control: WidgetType) => {
+                    const w = new Widget(0, 0, 1, 1, control, channel, fixture);
+                    await this.showService.connection.manager.save(w);
+                    await this.loadAll();
+                    // this.widgets.push(w);
+                }, () => undefined);
             }, () => undefined);
         } else {
             this.alertNothingToDisplay();

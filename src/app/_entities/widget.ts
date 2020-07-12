@@ -3,6 +3,8 @@ import {
 } from "typeorm";
 import { Fixture } from "./fixture";
 
+export type WidgetType = "Fader" | "Button" | "Colorpicker" | "RGB Colorpicker" | "ButtonGrid";
+
 @Entity()
 export class Widget extends BaseEntity {
     @PrimaryGeneratedColumn()
@@ -21,7 +23,7 @@ export class Widget extends BaseEntity {
     public cols: number;
 
     @Column()
-    public type: string;
+    public type: WidgetType;
 
     @Column()
     public channel: string;
@@ -29,7 +31,7 @@ export class Widget extends BaseEntity {
     @ManyToOne(() => Fixture, (fixture) => fixture.widgets)
     public fixture: Fixture;
 
-    constructor(x: number, y: number, rows: number, cols: number, type: string,
+    constructor(x: number, y: number, rows: number, cols: number, type: WidgetType,
         channel: string, fixture: Fixture) {
         super();
         this.x = x;
