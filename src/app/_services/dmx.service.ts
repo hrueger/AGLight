@@ -8,6 +8,9 @@ import * as smalltalkSelect from "../_utils/smalltalk-select";
     providedIn: "root",
 })
 export class DmxService {
+    public get isConnected(): boolean {
+        return !!this.universe;
+    }
     private dmx: DMX;
     private universe: any;
     private readonly connectOption = {
@@ -77,6 +80,15 @@ export class DmxService {
             },
         });
     }
+
+    public update(data: { [ch: number]: number}): void {
+        this.universe.update(data);
+    }
+
+    public shutdown(): void {
+        // ToDo
+    }
+
     public async connectToDevice(): Promise<void> {
         const opts = Object.keys(this.devices).map((key) => (
             {
@@ -142,7 +154,6 @@ export class DmxService {
                                 },
                             ],
                         });
-                        this.testDmxColorRainbow();
                     }
                 }, 500);
             });

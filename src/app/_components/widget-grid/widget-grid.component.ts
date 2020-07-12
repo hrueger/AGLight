@@ -7,6 +7,7 @@ import { colors } from "../../_ressources/colors";
 import { ShowService } from "../../_services/show.service";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
 import { LibraryService } from "../../_services/library.service";
+import { DmxService } from "../../_services/dmx.service";
 import { beautifyCamelCase } from "../../_utils/camelcase-beautifier";
 
 const widgets: { name: string, value: string, description: string }[] = [
@@ -47,11 +48,14 @@ export class WidgetGridComponent implements OnInit {
     public fixtures: Fixture[] = [];
     public widgets: Widget[] = [];
     @Input() public editMode = false;
-    private universe: any;
 
     private readonly shadeColorFactor = 35;
 
-    constructor(private showService: ShowService, private libraryService: LibraryService) { }
+    constructor(
+        private showService: ShowService,
+        private libraryService: LibraryService,
+        private dmxService: DmxService,
+    ) { }
 
     public async ngOnInit(): Promise<void> {
         const that = this;
@@ -64,7 +68,11 @@ export class WidgetGridComponent implements OnInit {
             mobileBreakpoint: 0,
             resizable: { enabled: this.editMode },
         };
-        await this.loadAll();
+        if (!this.dmxService.isConnected) {
+            smalltalk.alert("Error", "No DMX output connected!<br>Click the button in the statusbar to get to the DMX setup wizard.");
+        } else {
+            await this.loadAll();
+        }
     }
 
     public async removeItem($event: Event, item: Widget): Promise<void> {
@@ -124,7 +132,7 @@ export class WidgetGridComponent implements OnInit {
         case "slider":
             chl = this.findChannelAddress(widget);
             val = event;
-            this.universe.update({ [chl]: val });
+            this.dmxService.update({ [chl]: val });
             break;
         case "button":
             break;
@@ -135,7 +143,7 @@ export class WidgetGridComponent implements OnInit {
             break;
         case "colorpicker":
             chl = this.findChannelAddress(widget);
-            this.universe.update({
+            this.dmxService.update({
                 [chl]: event.color.rgb.r,
                 [chl + 1]: event.color.rgb.g,
                 [chl + 2]: event.color.rgb.b,
@@ -174,11 +182,7 @@ export class WidgetGridComponent implements OnInit {
     }
 
     public ngOnDestroy(): void {
-        if (this.universe) {
-            // eslint-disable-next-line no-console
-            console.log(this.universe.server.close());
-            this.universe.close(() => undefined);
-        }
+        this.dmxService.shutdown();
     }
 
     public tryGetBackgroundColor(name: string)
