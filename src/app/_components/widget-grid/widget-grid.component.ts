@@ -8,6 +8,7 @@ import { controls } from "../../_ressources/controls";
 import { ShowService } from "../../_services/show.service";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
 import { LibraryService } from "../../_services/library.service";
+import { beautifyCamelCase } from "../../_utils/camelcase-beautifier";
 
 @Component({
     selector: "widget-grid",
@@ -51,32 +52,21 @@ export class WidgetGridComponent implements OnInit {
         const msg = "Choose the channel:";
         const opts3 = fixture.product.modes.filter(
             (m) => m.name == fixture.channelMode,
-        )[0].channels.map((channel, idx) => {
-            let singleCapability = false;
-            if (!fixture.product.availableChannels[channel].capabilities) {
-                singleCapability = true;
-                fixture.product.availableChannels[channel]
-                    .capabilities = [fixture.product.availableChannels[channel].capability];
-            }
-            return {
-                description: `
-                    ${singleCapability ? "Capability:<br>" : "Capabilities:<br><ul>"}
-                    ${fixture.product.availableChannels[channel].capabilities.map((c: any) => `${singleCapability ? "" : "<li>"}
+        )[0].channels.map((channel, idx) => ({
+            description: `
+                    <table><thead><tr><th></th><th></th></tr></thead><tbody>
+                    ${fixture.product.availableChannels[channel].capabilities.map((c: any) => `<tr>
 
-                    ${JSON.stringify(c)}
-                    <br><br>
-                    ${c.dmxRange ? `${c.dmxRange[0]} - ${c.dmxRange[1]}` : "0 - 255"}: <b>${c.type}</b> ()
-                    ${c.comment ? `<br><i>${c.comment}</i>` : ""}
-                    <br><br>
-
-
-                    ${singleCapability ? "" : "</li>"}`).join("")}
-                    ${singleCapability ? "" : "</ul>"}
+                    <td class="text-muted">${c.dmxRange ? `${c.dmxRange[0]} - ${c.dmxRange[1]}` : "0 - 255"}:</td>
+                    <td><b>${beautifyCamelCase(c.type)}</b> ${c.effectPreset ? `(${beautifyCamelCase(c.effectPreset)})` : ""}</td></tr>
+                    ${c.comment ? `<tr><td></td><td><i>${c.comment}</i></td></tr>` : ""}
+                    
+                    `).join("")}
+                    </tbody></table>
                   `,
-                name: `${fixture.startAddress - 1 + idx}: ${channel}`,
-                value: channel,
-            };
-        });
+            name: `${fixture.startAddress - 1 + idx}: ${channel}`,
+            value: channel,
+        }));
         if (opts3.length) {
             smalltalkSelect.select("Add control", msg, opts3).then(async (channel: string) => {
                 const opts4 = controls.filter(
