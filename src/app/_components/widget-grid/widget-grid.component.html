@@ -1,4 +1,4 @@
-<gridster [options]="options">
+<gridster [options]="options" *ngIf="widgets.length > 0">
     <gridster-item [item]="widget" *ngFor="let widget of widgets">
         <div class="content drag-handler">
             <div class="item-buttons float-right" *ngIf="editMode">
@@ -43,3 +43,6 @@
 
     </gridster-item>
 </gridster>
+<div *ngIf="!widgets || widgets.length == 0" class="d-flex flex-column justify-content-center h-100 text-center">
+    <div>No widgets to be displayed!</div>
+</div>
