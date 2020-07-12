@@ -335,8 +335,8 @@ class Channel {
     highlightValue: number;
     constant: boolean;
     precedence: "LTP" | "HTP";
-    capability: Capability;
     capabilities: Capability[];
+    singleCapability?: boolean;
 }
 
 enum DMXconnector {
