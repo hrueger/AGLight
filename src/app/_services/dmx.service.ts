@@ -137,6 +137,8 @@ export class DmxService {
                 }
                 setTimeout(() => {
                     if (connectedSuccessfully) {
+                        // eslint-disable-next-line no-console
+                        console.warn = originalWarn;
                         this.statusbarService.setItem({
                             name: this.devices[key].name,
                             icon: "plug",
