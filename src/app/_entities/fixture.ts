@@ -1,10 +1,11 @@
-import {BaseEntity, Column, Entity, PrimaryGeneratedColumn, OneToMany} from "typeorm";
-import {Product} from "./product";
+import {
+    BaseEntity, Column, Entity, PrimaryGeneratedColumn, OneToMany,
+} from "typeorm";
+import { Product } from "./product";
 import { Widget } from "./widget";
 
 @Entity()
 export class Fixture extends BaseEntity {
-
     @PrimaryGeneratedColumn()
     public id: number;
 
@@ -23,7 +24,7 @@ export class Fixture extends BaseEntity {
     @Column()
     public channelMode: string;
 
-    @OneToMany((type) => Widget, (widget) => widget.fixture)
+    @OneToMany(() => Widget, (widget) => widget.fixture)
     public widgets: Widget[];
 
     public object?: {
@@ -41,7 +42,13 @@ export class Fixture extends BaseEntity {
     public product?: Product;
 
     // tslint:disable-next-line: variable-name
-    constructor(displayName: string, number: number, startAddress: number, name: string, channelMode: string) {
+    constructor(
+        displayName: string,
+        number: number,
+        startAddress: number,
+        name: string,
+        channelMode: string,
+    ) {
         super();
         this.displayName = displayName;
         this.number = number;
@@ -49,5 +56,4 @@ export class Fixture extends BaseEntity {
         this.channelMode = channelMode;
         this.name = name;
     }
-
 }

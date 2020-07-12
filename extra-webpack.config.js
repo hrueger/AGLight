@@ -1,5 +1,5 @@
 module.exports = {
-    target: 'electron-renderer',
+    target: "electron-renderer",
     // don't remove this comments it is used for parsing by postinstall.config.js
     // start of extra configs
     externals: {
@@ -10,8 +10,8 @@ module.exports = {
     },
     resolve: {
         alias: {
-            typeorm: "__dirname../node_modules/typeorm/typeorm-model-shim"
-        }
-    }
+            typeorm: "__dirname../node_modules/typeorm/typeorm-model-shim",
+        },
+    },
     // end of extra configs
 };

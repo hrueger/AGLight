@@ -1,4 +1,4 @@
-import { Injectable, ChangeDetectorRef } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 
 @Injectable({
@@ -7,7 +7,8 @@ import { Subject } from "rxjs";
 export class StatusbarService {
     public data: Subject<any[]> = new Subject();
     private cache: any[] = [];
-    public setItem(item) {
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    public setItem(item: any): void {
         if (this.cache.findIndex((i) => i.id == item.id) != -1) {
             this.cache = this.cache.map((i) => {
                 if (i.id == item.id) {

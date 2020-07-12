@@ -2,18 +2,17 @@ import { Pipe, PipeTransform } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 @Pipe({
-  name: "effectAffectsSum",
+    name: "effectAffectsSum",
 })
 export class EffectAffectsSumPipe implements PipeTransform {
+    constructor(private sanitizer: DomSanitizer) {}
 
-  constructor(private sanitizer: DomSanitizer) {}
-
-  public transform(val: any): SafeHtml {
-    let affects = "";
-    val.forEach((a) => {
-      affects += `${a.number}x ${a.name}<br>`;
-    });
-    return this.sanitizer.bypassSecurityTrustHtml(affects);
-  }
-
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    public transform(val: any): SafeHtml {
+        let affects = "";
+        val.forEach((a) => {
+            affects += `${a.number}x ${a.name}<br>`;
+        });
+        return this.sanitizer.bypassSecurityTrustHtml(affects);
+    }
 }

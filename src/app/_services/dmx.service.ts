@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { StatusbarService } from "./statusbar.service";
 import * as DMX from "dmx";
-import * as smalltalkSelect from "../_utils/smalltalk-select";
 import * as smalltalk from "smalltalk";
+import { StatusbarService } from "./statusbar.service";
+import * as smalltalkSelect from "../_utils/smalltalk-select";
 
 @Injectable({
     providedIn: "root",
@@ -14,7 +14,7 @@ export class DmxService {
         text: "Connect...",
         type: "primary",
         service: "dmxService",
-        action: "connectToDevice"
+        action: "connectToDevice",
     };
     private readonly devices: {
         [key: string]: {
@@ -62,7 +62,7 @@ export class DmxService {
     }
     constructor(private statusbarService: StatusbarService) {}
 
-    public init() {
+    public init(): void {
         this.dmx = new DMX();
         this.statusbarService.setItem({
             name: "No dmx device connected",
@@ -73,11 +73,11 @@ export class DmxService {
                 content: "No dmx device connected.",
                 actions: [
                     this.connectOption,
-                ]
-            }
+                ],
+            },
         });
     }
-    public async connectToDevice() {
+    public async connectToDevice(): Promise<void> {
         const opts = Object.keys(this.devices).map((key) => (
             {
                 description: this.devices[key].description,
@@ -85,11 +85,12 @@ export class DmxService {
                 value: key,
             }
         ));
-        smalltalkSelect.select("Connect DMX Interface", "Choose the driver for the device you want to connect to.", opts, {}).then((key: string) => {
+        smalltalkSelect.select("Connect DMX Interface", "Choose the driver for the device you want to connect to.", opts).then((key: string) => {
             smalltalk.prompt("Device Identifier", this.devices[key].deviceIdDescription, this.devices[key].deviceId).then((deviceId) => {
                 let connectedSuccessfully = true;
-                // tslint:disable-next-line: no-console
-                const originalWarn = console.warn; // needed because the driver does not throw an error...
+                // needed because the driver does not throw an error...
+                // eslint-disable-next-line no-console
+                const originalWarn = console.warn;
                 const onError = (e) => {
                     smalltalk.alert("Error while connecting", e.toString());
                     this.statusbarService.setItem({
@@ -101,23 +102,23 @@ export class DmxService {
                             content: `The following error occured: '${e}'`,
                             actions: [
                                 this.connectOption,
-                            ]
-                        }
+                            ],
+                        },
                     });
-                    // tslint:disable-next-line: no-console
+                    // eslint-disable-next-line no-console
                     console.warn = originalWarn;
                     connectedSuccessfully = false;
                 };
                 try {
-                    // tslint:disable-next-line: no-console
+                    // eslint-disable-next-line no-console
                     console.warn = (msg) => {
                         onError(msg);
                         throw Error(msg);
                         connectedSuccessfully = false;
                     };
                     this.universe = this.dmx.addUniverse("u1", key, deviceId);
-                } catch(e) {
-                    // tslint:disable-next-line: no-console
+                } catch (e) {
+                    // eslint-disable-next-line no-console
                     console.error(e);
                     onError(e);
                     connectedSuccessfully = false;
@@ -130,20 +131,20 @@ export class DmxService {
                             id: "dmx",
                             dropup: {
                                 title: "Successfully connected",
-                                content: `to an ${this.devices[key].name} on '${deviceId}'.`
+                                content: `to an ${this.devices[key].name} on '${deviceId}'.`,
                             },
                             actions: [
                                 {
                                     text: "Disconnect",
                                     type: "primary",
                                     service: "dmxService",
-                                    action: "disconnect"
-                                }
-                            ]
+                                    action: "disconnect",
+                                },
+                            ],
                         });
                         this.testDmxColorRainbow();
                     }
-                }, 500)
+                }, 500);
             });
         });
     }
@@ -169,11 +170,12 @@ export class DmxService {
                 38: val,
                 39: val,
             });
-        }, 25)
+        }, 25);
     }
 
     private testDmxColorRainbow() {
         const b = 0.003;
+        // eslint-disable-next-line no-mixed-operators
         const T = 2 * Math.PI / b;
         setInterval(() => {
             const t = Date.now();
@@ -187,6 +189,6 @@ export class DmxService {
                 38: 0,
                 39: 0,
             });
-        }, 50)
+        }, 50);
     }
 }

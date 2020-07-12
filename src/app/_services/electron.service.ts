@@ -4,7 +4,7 @@ import { ipcRenderer, remote, webFrame } from "electron";
 import * as fs from "fs";
 
 @Injectable({
-  providedIn: "root",
+    providedIn: "root",
 })
 export class ElectronService {
   public ipcRenderer: typeof ipcRenderer;
@@ -13,22 +13,22 @@ export class ElectronService {
   public childProcess: typeof childProcess;
   public fs: typeof fs;
 
-  get isElectron() {
-    return window && window.process && window.process.type;
+  get isElectron(): boolean {
+      return window && (window as any).process && (window as any).process.type;
   }
 
   constructor() {
-    // Conditional imports
-    if (this.isElectron) {
-      this.ipcRenderer = window.require("electron").ipcRenderer;
-      this.webFrame = window.require("electron").webFrame;
-      this.remote = window.require("electron").remote;
-      this.childProcess = window.require("child_process");
-      this.fs = window.require("fs");
-    }
+      // Conditional imports
+      if (this.isElectron) {
+          this.ipcRenderer = window.require("electron").ipcRenderer;
+          this.webFrame = window.require("electron").webFrame;
+          this.remote = window.require("electron").remote;
+          this.childProcess = window.require("child_process");
+          this.fs = window.require("fs");
+      }
   }
 
-  public setTitle(title) {
-    this.remote.getCurrentWindow().setTitle(`${title} - AGLight`);
+  public setTitle(title: string): void {
+      this.remote.getCurrentWindow().setTitle(`${title} - AGLight`);
   }
 }

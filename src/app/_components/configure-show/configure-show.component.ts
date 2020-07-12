@@ -20,23 +20,23 @@ export class ConfigureShowComponent {
         const products = this.libraryService.getProducts();
         this.allFixtures = await this.showService.connection.getRepository(Fixture).find();
         for (const fixture of this.allFixtures) {
-            fixture.product = products.filter((p) => p.name == fixture.name)[0];
+            [fixture.product] = products.filter((p) => p.name == fixture.name);
         }
         this.displayFixtures = this.allFixtures;
     }
 
-    public search(e) {
+    public search(e: string): void {
         if (this.allFixtures) {
             this.displayFixtures = this.allFixtures.filter((h) => {
-                const toSearch = (h && h.displayName ? h.displayName.toLowerCase() : "") + " " +
-                    (h && h.product && h.product.name ? h.product.name.toLowerCase() : "");
-                let notFound: boolean = false;
+                const toSearch = `${h && h.displayName ? h.displayName.toLowerCase() : ""} ${
+                    h && h.product && h.product.name ? h.product.name.toLowerCase() : ""}`;
+                let notFound = false;
                 for (const q of e.split(" ")) {
                     if (toSearch.indexOf(q.toLowerCase()) == -1) {
                         notFound = true;
                     }
                 }
-                return (notFound ? false : true);
+                return (!notFound);
             });
             this.sortDisplayFixtures();
         }
@@ -44,7 +44,8 @@ export class ConfigureShowComponent {
 
     private sortDisplayFixtures() {
         this.displayFixtures.sort((a, b) => {
-            if (a && b && a.displayName && b.displayName && a.product && b.product && a.product.name && b.product.name) {
+            if (a && b && a.displayName && b.displayName
+                && a.product && b.product && a.product.name && b.product.name) {
                 if ([a.product.name, b.product.name].sort()[0] == b.product.name) {
                     return 1;
                 }
@@ -57,8 +58,8 @@ export class ConfigureShowComponent {
                 if ([a.displayName, b.displayName].sort()[0] == b.name) {
                     return -1;
                 }
-                return 0;
             }
+            return 0;
         });
     }
 }

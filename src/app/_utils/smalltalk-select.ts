@@ -1,12 +1,9 @@
-"use strict";
+/* eslint-disable no-use-before-define */
+import * as currify from "currify";
+import * as store from "fullstore";
+import * as createElement from "@cloudcmd/create-element";
 
 require("smalltalk/css/smalltalk.css");
-
-const currify = require("currify");
-const store = require("fullstore");
-const createElement = require("@cloudcmd/create-element");
-
-const keyDown = currify(keyDown_);
 
 const BUTTON_OK_CANCEL = {
     ok: "OK",
@@ -14,18 +11,42 @@ const BUTTON_OK_CANCEL = {
     cancel: "Cancel",
 };
 
+function find(element: { querySelector: (arg0: string) => any; }, names: any[]) {
+    const elements = names.map((name: any) => element.querySelector(`[data-name="js-${name}"]`)).filter(Boolean);
+
+    return elements;
+}
+
+function addListenerAll(event: string, parent: any, elements: string[], fn: (event: any) => void) {
+    for (const el of find(parent, elements)) {
+        el.addEventListener(event, fn);
+    }
+}
+
+function remove(dialog: { parentElement: any; }) {
+    const { parentElement } = dialog;
+
+    if (parentElement) {
+        parentElement.removeChild(dialog);
+    }
+}
+
 const zIndex = store(100);
 
-function select(title, msg, choosableOptions, options) {
+function select(title: string, msg: string, choosableOptions: any[], options?: { cancel: boolean; })
+    : Promise<unknown> & {
+    dialog: any;
+    ok: any;
+} {
     let optionsHTML = "";
-    choosableOptions.forEach((option) => {
+    choosableOptions.forEach((option: { value: any; name: any; description: any; }) => {
         optionsHTML += `<div class="card selectcard" data-value='${JSON.stringify(option.value)}'>
-          <h5 class="card-header">${option.name}</h5>
-          <div class="card-body">
-            ${option.description}
-          </div>
+        <h5 class="card-header">${option.name}</h5>
+        <div class="card-body">
+        ${option.description}
+        </div>
         </div>`;
-      });
+    });
     const valueStr = `<input style="display: none !important;" value="" data-name="js-input">${optionsHTML}`;
     const buttons = BUTTON_OK_CANCEL;
 
@@ -34,36 +55,40 @@ function select(title, msg, choosableOptions, options) {
 
 export { select };
 
-function getTemplate(title, msg, value, buttons) {
+function getTemplate(title: any, msg: string, value: any, buttons: any) {
     const encodedMsg = msg.replace(/\n/g, "<br>");
 
     return `<div class="page">
-        <div data-name="js-close" class="close-button"></div>
-        <header>${ title }</header>
-        <div class="content-area">${ encodedMsg }
-        <div>${ value }</div></div>
-        <div class="action-area">
-            <div class="button-strip">
-                ${parseButtons(buttons)}
-            </div>
-        </div>
+    <div data-name="js-close" class="close-button"></div>
+    <header>${title}</header>
+    <div class="content-area">${encodedMsg}
+    <div>${value}</div></div>
+    <div class="action-area">
+    <div class="button-strip">
+    ${parseButtons(buttons)}
+    </div>
+    </div>
     </div>`;
 }
 
-function parseButtons(buttons) {
+function parseButtons(buttons: any) {
     const names = Object.keys(buttons);
-    const parse = currify((btns, name, i) => `<button
-            tabindex=${i}
-            data-name="js-${name.toLowerCase()}">
-            ${btns[name]}
-        </button>`);
+    const parse = currify((btns: { [x: string]: any; }, name: string, i: any) => `<button
+    tabindex=${i}
+    data-name="js-${name.toLowerCase()}">
+    ${btns[name]}
+    </button>`);
 
     return names
         .map(parse(buttons))
         .join("");
 }
 
-function showDialog(title, msg, value, buttons, options) {
+function showDialog(title: any, msg: any, value: string | any[], buttons: {
+    ok: string;
+    // tslint:disable-next-line: object-literal-sort-keys
+    cancel: string;
+}, options?: { cancel: boolean; }) {
     const ok = store();
     const cancel = store();
 
@@ -76,7 +101,7 @@ function showDialog(title, msg, value, buttons, options) {
     const promise = new Promise((resolve, reject) => {
         const noCancel = options && options.cancel === false;
         // tslint:disable-next-line: no-empty
-        const empty = () => {};
+        const empty = () => { /* */ };
         const rejectError = () => reject(Error());
 
         ok(resolve);
@@ -99,12 +124,13 @@ function showDialog(title, msg, value, buttons, options) {
         el.setSelectionRange(0, value.length);
     }
 
-    addListenerAll("click", dialog, closeButtons, (event) => {
+    addListenerAll("click", dialog, closeButtons, (event: { target: any; }) => {
         closeDialog(event.target, dialog, ok(), cancel());
     });
 
     document.querySelectorAll(".selectcard").forEach((el) => {
         el.addEventListener("click", (e) => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             const elem = e.target.closest(".selectcard");
             if (elem.classList.contains("selected")) {
@@ -126,7 +152,7 @@ function showDialog(title, msg, value, buttons, options) {
     });
 
     for (const event of ["click", "contextmenu"]) {
-        dialog.addEventListener(event, (e) => {
+        dialog.addEventListener(event, (e: { stopPropagation: () => void; }) => {
             e.stopPropagation();
             for (const el of find(dialog, ["ok", "input"])) {
                 el.focus();
@@ -142,18 +168,22 @@ function showDialog(title, msg, value, buttons, options) {
     });
 }
 
-function keyDown_(dialog, ok, cancel, event) {
+function keyDown_(dialog: any, ok: any, cancel: () => void,
+    event: {
+        target?: any; preventDefault?: any
+        shiftKey?: any; stopPropagation?: any; keyCode?: any;
+    }) {
     const KEY = {
-        DOWN  : 40,
-        ENTER : 13,
-        ESC   : 27,
-        LEFT  : 37,
-        RIGHT : 39,
-        TAB   : 9,
-        UP    : 38,
+        DOWN: 40,
+        ENTER: 13,
+        ESC: 27,
+        LEFT: 37,
+        RIGHT: 39,
+        TAB: 9,
+        UP: 38,
     };
 
-    const {keyCode} = event;
+    const { keyCode } = event;
     const el = event.target;
 
     const namesAll = ["ok", "cancel", "input"];
@@ -181,9 +211,7 @@ function keyDown_(dialog, ok, cancel, event) {
         break;
 
     default:
-        ["left", "right", "up", "down"].filter((name) => {
-            return keyCode === KEY[name.toUpperCase()];
-        }).forEach(() => {
+        ["left", "right", "up", "down"].filter((name) => keyCode === KEY[name.toUpperCase()]).forEach(() => {
             changeButtonFocus(dialog, names);
         });
 
@@ -193,18 +221,18 @@ function keyDown_(dialog, ok, cancel, event) {
     event.stopPropagation();
 }
 
-function getDataName(el) {
+function getDataName(el: Element) {
     return el
         .getAttribute("data-name")
         .replace("js-", "");
 }
 
-function changeButtonFocus(dialog, names) {
+function changeButtonFocus(dialog: any, names: string | any[]) {
     const active = document.activeElement;
     const activeName = getDataName(active);
     const isButton = /ok|cancel/.test(activeName);
     const count = names.length - 1;
-    const getName = (activNm) => {
+    const getName = (activNm: string) => {
         if (activNm === "cancel") {
             return "ok";
         }
@@ -223,7 +251,7 @@ function changeButtonFocus(dialog, names) {
     }
 }
 
-const getIndex = (count, index) => {
+const getIndex = (count: number, index: number) => {
     if (index === count) {
         return 0;
     }
@@ -231,7 +259,7 @@ const getIndex = (count, index) => {
     return index + 1;
 };
 
-function tab(dialog, names) {
+function tab(dialog: any, names: string | any[]) {
     const active = document.activeElement;
     const activeName = getDataName(active);
     const count = names.length - 1;
@@ -246,7 +274,8 @@ function tab(dialog, names) {
     }
 }
 
-function closeDialog(el, dialog, ok, cancel) {
+function closeDialog(el: { getAttribute: (arg0: string) => string; },
+    dialog: any, ok: (arg0: any) => void, cancel: () => void) {
     const name = el
         .getAttribute("data-name")
         .replace("js-", "");
@@ -258,27 +287,9 @@ function closeDialog(el, dialog, ok, cancel) {
     }
 
     const value = find(dialog, ["input"])
-        .reduce((v, elem) => elem.value, null);
+        .reduce((v: any, elem: { value: any; }) => elem.value, null);
     ok(JSON.parse(value));
     remove(dialog);
 }
 
-function find(element, names) {
-    const elements = names.map((name) => element.querySelector(`[data-name="js-${ name }"]`)).filter(Boolean);
-
-    return elements;
-}
-
-function addListenerAll(event, parent, elements, fn) {
-    for (const el of find(parent, elements)) {
-        el.addEventListener(event, fn);
-    }
-}
-
-function remove(dialog) {
-    const {parentElement} = dialog;
-
-    if (parentElement) {
-        parentElement.removeChild(dialog);
-    }
-}
+const keyDown = currify(keyDown_);

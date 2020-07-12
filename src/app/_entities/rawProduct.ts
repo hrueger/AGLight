@@ -443,7 +443,6 @@ interface Resource {
     }
 }
 
-
 type url = string;
 type isoDateString = string;
 type speed = string;

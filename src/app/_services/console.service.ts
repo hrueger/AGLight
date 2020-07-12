@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { StatusbarService } from "./statusbar.service";
 import * as SerialPort from "serialport";
 import * as Readline from "@serialport/parser-readline";
+import { StatusbarService } from "./statusbar.service";
 
 const READY_TO_CONNECT = "ready_to_connect";
 const DELIMITER = "________";
@@ -11,12 +11,12 @@ const DELIMITER = "________";
 })
 export class ConsoleService {
     private connection: SerialPort;
-    private isConnected: boolean = false;
+    private isConnected = false;
     private consoleName: string;
     private consoleVersion: string;
     constructor(private statusbarService: StatusbarService) { }
 
-    public init() {
+    public init(): void {
         this.statusbarService.setItem({
             name: "No console connected",
             icon: "times",
@@ -29,26 +29,27 @@ export class ConsoleService {
                         text: "Connect",
                         type: "primary",
                         service: "consoleService",
-                        action: "connect"
-                    }
-                ]
-            }
+                        action: "connect",
+                    },
+                ],
+            },
         });
     }
-    public async connect() {
+    public async connect(): Promise<void> {
         this.statusbarService.setItem({
             name: "Connecting to console",
             icon: "spinner fa-spin",
             id: "console",
             dropup: {
                 title: "Connecting",
-                content: "Connecting can take up to a minute, depending on the speed of your computer."
-            }
+                content: "Connecting can take up to a minute, depending on the speed of your computer.",
+            },
         });
         SerialPort.list().then((d) => {
             if (d && d[0]) {
                 new Promise((resolve, reject) => {
                     setTimeout(() => {
+                        // eslint-disable-next-line prefer-promise-reject-errors
                         reject("Timeout");
                     }, 5000);
                     this.connection = new SerialPort(d[0].path, { baudRate: 115200 }, (e) => {
@@ -65,7 +66,7 @@ export class ConsoleService {
                                 id: "console",
                                 dropup: {
                                     title: "Connected",
-                                    content: "loading more info..."
+                                    content: "loading more info...",
                                 },
                                 actions: [],
                             });
@@ -75,7 +76,7 @@ export class ConsoleService {
                         });
                     },
                     (err) => {
-                        // tslint:disable-next-line: no-console
+                        // eslint-disable-next-line no-console
                         console.log(err);
                         this.statusbarService.setItem({
                             name: "Error while connecting",
@@ -83,30 +84,29 @@ export class ConsoleService {
                             id: "console",
                             dropup: {
                                 title: "Error",
-                                content: "Could not connect to console. Reason: " + err,
+                                content: `Could not connect to console. Reason: ${err}`,
                                 actions: [
                                     {
                                         text: "Try again",
                                         type: "primary",
                                         service: "consoleService",
-                                        action: "connect"
-                                    }
-                                ]
-                            }
+                                        action: "connect",
+                                    },
+                                ],
+                            },
                         });
-                    }
-                // tslint:disable-next-line: no-console
-                ).catch(err => console.error("caught", err));
+                    },
+                // eslint-disable-next-line no-console
+                ).catch((err) => console.error("caught", err));
             }
         });
     }
 
-    public newMessage(m: string) {
+    public newMessage(m: string): void {
         if (!this.isConnected && m.endsWith(READY_TO_CONNECT)) {
             const p = m.split(DELIMITER);
             this.isConnected = true;
-            this.consoleName = p[0];
-            this.consoleVersion = p[1];
+            [this.consoleName, this.consoleVersion] = p;
             this.statusbarService.setItem({
                 name: `${this.consoleName} ${this.consoleVersion}`,
                 icon: "plug",
@@ -119,14 +119,14 @@ export class ConsoleService {
                             text: "Disconnect",
                             type: "primary",
                             service: "consoleService",
-                            action: "disconnect"
-                        }
+                            action: "disconnect",
+                        },
                     ],
                 },
             });
             this.sendMessage("connected");
         } else {
-            // tslint:disable-next-line: no-console
+            // eslint-disable-next-line no-console
             console.warn(m);
         }
     }
@@ -143,7 +143,7 @@ export class ConsoleService {
         });
     }
 
-    public disconnect() {
+    public disconnect(): void {
         if (this.connection.isOpen) {
             this.connection.close();
         }

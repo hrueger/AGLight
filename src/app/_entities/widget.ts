@@ -1,9 +1,10 @@
-import {BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne} from "typeorm";
+import {
+    BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne,
+} from "typeorm";
 import { Fixture } from "./fixture";
 
 @Entity()
 export class Widget extends BaseEntity {
-
     @PrimaryGeneratedColumn()
     public id: number;
 
@@ -25,11 +26,11 @@ export class Widget extends BaseEntity {
     @Column()
     public channel: string;
 
-    @ManyToOne((type) => Fixture, (fixture) => fixture.widgets)
+    @ManyToOne(() => Fixture, (fixture) => fixture.widgets)
     public fixture: Fixture;
 
     constructor(x: number, y: number, rows: number, cols: number, type: string,
-                channel: string, fixture: Fixture) {
+        channel: string, fixture: Fixture) {
         super();
         this.x = x;
         this.y = y;
@@ -39,5 +40,4 @@ export class Widget extends BaseEntity {
         this.channel = channel;
         this.fixture = fixture;
     }
-
 }

@@ -12,54 +12,54 @@ import { ViewerComponent } from "./_components/viewer/viewer.component";
 import { ShowLoadedGuard } from "./_guards/show-loaded.guard";
 
 const routes: Routes = [
-  {
-    path: "",
-    pathMatch: "full",
-    redirectTo: "home",
-  },
-  {
-    component: HomeComponent,
-    path: "home",
-  },
-  {
-    canActivate: [ShowLoadedGuard],
-    component: FixturesComponent,
-    path: "fixtures",
-  },
-  {
-    canActivate: [ShowLoadedGuard],
-    component: ConfigureShowComponent,
-    path: "configureShow",
-  },
-  {
-    canActivate: [ShowLoadedGuard],
-    component: ShowComponent,
-    path: "show",
-  },
-  {
-    component: AboutComponent,
-    path: "about",
-  },
-  {
-    component: InfoComponent,
-    path: "info",
-  },
-  {
-    component: ViewerComponent,
-    path: "viewer",
-  },
-  {
-    component: LicensesComponent,
-    path: "licenses",
-  },
-  {
-    component: ManualComponent,
-    path: "manual",
-  },
+    {
+        path: "",
+        pathMatch: "full",
+        redirectTo: "home",
+    },
+    {
+        component: HomeComponent,
+        path: "home",
+    },
+    {
+        canActivate: [ShowLoadedGuard],
+        component: FixturesComponent,
+        path: "fixtures",
+    },
+    {
+        canActivate: [ShowLoadedGuard],
+        component: ConfigureShowComponent,
+        path: "configureShow",
+    },
+    {
+        canActivate: [ShowLoadedGuard],
+        component: ShowComponent,
+        path: "show",
+    },
+    {
+        component: AboutComponent,
+        path: "about",
+    },
+    {
+        component: InfoComponent,
+        path: "info",
+    },
+    {
+        component: ViewerComponent,
+        path: "viewer",
+    },
+    {
+        component: LicensesComponent,
+        path: "licenses",
+    },
+    {
+        component: ManualComponent,
+        path: "manual",
+    },
 ];
 
 @NgModule({
-  exports: [RouterModule],
-  imports: [RouterModule.forRoot(routes, { useHash: true })],
+    exports: [RouterModule],
+    imports: [RouterModule.forRoot(routes, { useHash: true })],
 })
 export class AppRoutingModule {}

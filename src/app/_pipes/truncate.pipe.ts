@@ -1,11 +1,12 @@
 import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-    name: "truncate"
+    name: "truncate",
 })
 export class TruncatePipe implements PipeTransform {
-
-    public transform(textContent: string, options = { sliceStart: 0, sliceEnd: 30, prepend: "", append: "..." }): string {
+    public transform(textContent: string, options = {
+        sliceStart: 0, sliceEnd: 30, prepend: "", append: "...",
+    }): string {
         if (textContent.length >= options.sliceEnd) {
             let truncatedText = textContent.slice(options.sliceStart, options.sliceEnd);
             if (options.prepend) { truncatedText = `${options.prepend}${truncatedText}`; }

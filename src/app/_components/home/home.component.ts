@@ -1,12 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { Router } from "@angular/router";
-import { ipcRenderer, remote } from "electron";
+import { ipcRenderer, remote, shell } from "electron";
 import { RecentShowsService } from "../../_services/recent-shows.service";
 import { ShowService } from "../../_services/show.service";
 import { LibraryService } from "../../_services/library.service";
 import { DmxService } from "../../_services/dmx.service";
 import { ConsoleService } from "../../_services/console.service";
-import { shell } from "electron";
 
 @Component({
     selector: "app-home",
@@ -15,17 +14,16 @@ import { shell } from "electron";
 })
 export class HomeComponent {
     public recentShows: any[] = [];
-    public showRecentDropdown: boolean = false;
+    public showRecentDropdown = false;
     private readonly waitTime: number = 3000;
     constructor(private showService: ShowService,
         private router: Router,
         private recentShowsService: RecentShowsService,
         private libraryService: LibraryService,
         private dmxService: DmxService,
-        private consoleService: ConsoleService,
-    ) { }
+        private consoleService: ConsoleService) { }
 
-    public async ngOnInit() {
+    public async ngOnInit(): Promise<void> {
         setTimeout(() => {
             ipcRenderer.send("ready");
         }, this.waitTime);
@@ -34,7 +32,7 @@ export class HomeComponent {
         this.consoleService.init();
         await this.libraryService.loadIntoCache();
     }
-    public newShow() {
+    public newShow(): void {
         const path = remote.dialog.showSaveDialogSync(remote.getCurrentWindow(), {
             buttonLabel: "Create",
             filters: [
@@ -48,11 +46,11 @@ export class HomeComponent {
         });
         this.showService.createShow(path);
     }
-    public recentShow(i) {
+    public recentShow(i: number): void {
         const path = this.recentShows[i];
         this.showService.loadShow(path);
     }
-    public openShow() {
+    public openShow(): void {
         const path = remote.dialog.showOpenDialogSync(remote.getCurrentWindow(), {
             buttonLabel: "Open",
             filters: [
@@ -68,7 +66,7 @@ export class HomeComponent {
         this.showService.loadShow(path);
     }
 
-    public openExternal(url: string) {
+    public openExternal(url: string): void {
         shell.openExternal(url);
     }
 }
