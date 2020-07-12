@@ -7,37 +7,35 @@
                 </button>
             </div>
             <div class="widget">
-                <pre>
+                <!--<pre>
                     {{ widget | json }}
-                </pre>
-                <!--{{ widget.type }}-->
-                <!--{{widget.channel}} - {{ widget.fixture.displayName }}
-          <div class="widget-slider d-flex" *ngIf="widget.type == 'Fader'">
-            <ng5-slider  [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: false}" (valueChange)="action('slider', widget, $event)"></ng5-slider>
-          </div>
+                </pre>-->
+                {{ widget.type }} {{widget.channel}} - {{ widget.fixture.displayName }}
+                <div class="widget-slider d-flex" *ngIf="widget.type == 'Fader'">
+                    <ng5-slider [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: false}" (valueChange)="action('slider', widget, $event)"></ng5-slider>
+                </div>
 
-          <div class="widget-button" *ngIf="widget.type == 'Button'">
-            <button class="btn btn-outline-primary gridster-item-content">Button</button>
-          </div>
+                <div class="widget-button" *ngIf="widget.type == 'Button'">
+                    <button class="btn btn-outline-primary gridster-item-content">Button</button>
+                </div>
 
-          <div class="widget-colorpicker" *ngIf="widget.type == 'Colorpicker'">
-            <color-circle circleSize="50" (onChangeComplete)="action('colorpicker', widget, $event)" class="gridster-item-content"></color-circle>
-          </div>
+                <div class="widget-colorpicker" *ngIf="widget.type == 'Colorpicker'">
+                    <color-circle circleSize="50" (onChangeComplete)="action('colorpicker', widget, $event)" class="gridster-item-content"></color-circle>
+                </div>
 
-          <div class="widget-rgb-colorpicker" *ngIf="widget.type == 'RGB Colorpicker'">
-            <color-swatches (onChangeComplete)="action('colorpicker', widget, $event)" class="gridster-item-content"></color-swatches>
-          </div>
+                <div class="widget-rgb-colorpicker" *ngIf="widget.type == 'RGB Colorpicker'">
+                    <color-swatches (onChangeComplete)="action('colorpicker', widget, $event)" class="gridster-item-content"></color-swatches>
+                </div>
 
-          <div class="widget-buttongrid" *ngIf="widget.type == 'Buttongrid'">
-            <table class="gridster-item-content">
-              <tr *ngFor="let row of getButtongridRowArray(widget); let i = index">
-                <td *ngFor="let col of getButtongridColArray(widget, i); let j = index">
-                  <button class="btn btn-outline-primary" [ngStyle]='tryGetBackgroundColor(widget.channel.steps[col].name)'
-                    (click)="action('buttongrid', widget, $event, col)">{{widget.channel.steps[col].name}}</button>
-                </td>
-              </tr>
-            </table>
-          </div>-->
+                <div class="widget-buttongrid" *ngIf="widget.type == 'Buttongrid'">
+                    <table class="gridster-item-content">
+                        <tr *ngFor="let row of getButtongridRowArray(widget); let i = index">
+                            <td *ngFor="let col of getButtongridColArray(widget, i); let j = index">
+                                <button class="btn btn-outline-primary" [ngStyle]='tryGetBackgroundColor(widget.channel.steps[col].name)' (click)="action('buttongrid', widget, $event, col)">{{widget.channel.steps[col].name}}</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
 

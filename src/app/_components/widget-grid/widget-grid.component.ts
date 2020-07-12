@@ -225,12 +225,15 @@ export class WidgetGridComponent implements OnInit {
     }
 
     private async loadAll() {
-        const products = this.libraryService.getProducts();
         this.fixtures = await this.showService.connection.getRepository(Fixture).find();
+        const products = this.libraryService.getProducts();
         for (const fixture of this.fixtures) {
             [fixture.product] = products.filter((p) => p.name == fixture.name);
         }
-        this.widgets = await this.showService.connection.getRepository(Widget).find();
+        this.widgets = await this.showService.connection.getRepository(Widget).find({ relations: ["fixture"] });
+        for (const w of this.widgets) {
+            [w.fixture.product] = products.filter((p) => p.name == w.fixture.name);
+        }
     }
 
     private replaceDarkOrLight(name: string): {backgroundColor?: string, color?: string} {
