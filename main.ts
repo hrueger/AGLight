@@ -19,12 +19,13 @@ function createWindow() {
     win = new BrowserWindow({
         frame: false,
         icon: path.join(__dirname, "src/favicon.png"),
-        show: true,
+        show: false,
         webPreferences: { nodeIntegration: true },
         x: 0,
         y: 0,
     });
     win.maximize();
+    win.hide();
     if (serve) {
         require("electron-reload")(__dirname, {
             electron: require(`${__dirname}/node_modules/electron`),
@@ -62,7 +63,10 @@ function createWindow() {
         width: 500,
     });
 
-    ipcMain.on("ready", hideSplashscreen);
+    ipcMain.on("ready", () => {
+        hideSplashscreen();
+        win.maximize();
+    });
     ipcMain.on("viewerEvent", (e, a, arg) => {
         switch (a) {
         case "viewerIsReady":
