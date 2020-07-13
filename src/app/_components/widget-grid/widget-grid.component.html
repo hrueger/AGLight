@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="widget-button" *ngIf="widget.type == 'Button'">
-                    <button class="btn btn-outline-primary gridster-item-content">{{widget.config.buttonName ? widget.config.buttonName : "Button"}}</button>
+                    <button class="btn btn-outline-primary gridster-item-content" (click)="action('button', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Button"}}</button>
                 </div>
 
                 <div class="widget-colorpicker" *ngIf="widget.type == 'Colorpicker'">
