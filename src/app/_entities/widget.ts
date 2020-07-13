@@ -29,6 +29,9 @@ export class Widget extends BaseEntity {
     public channel: string;
 
     @Column({ default: "" })
+    public customChannel: string;
+
+    @Column({ default: "" })
     public displayName: string;
 
     @Column({ type: "simple-json", default: "" })
@@ -43,7 +46,7 @@ export class Widget extends BaseEntity {
     public fixture: Fixture;
 
     constructor(x: number, y: number, rows: number, cols: number, type: WidgetType,
-        channel: string, fixture: Fixture) {
+        channel: string, fixture: Fixture, customChannel = "") {
         super();
         this.x = x;
         this.y = y;
@@ -52,5 +55,6 @@ export class Widget extends BaseEntity {
         this.type = type;
         this.channel = channel;
         this.fixture = fixture;
+        this.customChannel = customChannel;
     }
 }
