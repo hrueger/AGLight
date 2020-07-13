@@ -10,6 +10,7 @@ import { ManualComponent } from "./_components/manual/manual.component";
 import { ShowComponent } from "./_components/show/show.component";
 import { ViewerComponent } from "./_components/viewer/viewer.component";
 import { ShowLoadedGuard } from "./_guards/show-loaded.guard";
+import { DmxOutputConnectedGuard } from "./_guards/dmx-output-connected.guard";
 
 const routes: Routes = [
     {
@@ -32,7 +33,7 @@ const routes: Routes = [
         path: "configureShow",
     },
     {
-        canActivate: [ShowLoadedGuard],
+        canActivate: [ShowLoadedGuard, DmxOutputConnectedGuard],
         component: ShowComponent,
         path: "show",
     },
