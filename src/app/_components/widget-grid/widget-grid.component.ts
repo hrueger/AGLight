@@ -69,7 +69,7 @@ export class WidgetGridComponent implements OnInit {
             mobileBreakpoint: 0,
             resizable: { enabled: this.editMode },
         };
-        if (!this.dmxService.isConnected && !this.editMode && !true) {
+        if (!this.dmxService.isConnected && !this.editMode) {
             smalltalk.alert("Error", "No DMX output connected!<br>Click the button in the statusbar to get to the DMX setup wizard.");
         } else {
             await this.loadAll();
