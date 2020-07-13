@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="widget-button" *ngIf="widget.type == 'Button'">
-                    <button class="btn btn-outline-primary gridster-item-content">Button</button>
+                    <button class="btn btn-outline-primary gridster-item-content">{{widget.config.buttonName ? widget.config.buttonName : "Button"}}</button>
                 </div>
 
                 <div class="widget-colorpicker" *ngIf="widget.type == 'Colorpicker'">
@@ -82,6 +82,13 @@
                 <div class="col-9">
                     <input id="buttonValue" name="buttonValue" [(ngModel)]="currentWidget.config.buttonValue" placeholder="The DMX value of this button's channel." type="number" min="0" max="255" class="form-control">
                     <span class="form-text text-slightly-muted">It can be between 0 and 255.</span>
+                </div>
+            </div>
+            <div class="form-group row" *ngIf="currentWidget.type == 'Button'">
+                <label for="buttonName" class="col-3 col-form-label">Button Name</label>
+                <div class="col-9">
+                    <input id="buttonName" name="buttonName" [(ngModel)]="currentWidget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
+                    <span class="form-text text-slightly-muted">It can be everything you can possibly imagine.</span>
                 </div>
             </div>
         </form>

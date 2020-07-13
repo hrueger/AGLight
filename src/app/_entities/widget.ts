@@ -36,6 +36,7 @@ export class Widget extends BaseEntity {
         name?: string;
         transitionTime?: number;
         buttonValue?: number;
+        buttonName?: string;
     };
 
     @ManyToOne(() => Fixture, (fixture) => fixture.widgets)
