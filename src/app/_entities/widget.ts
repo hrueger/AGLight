@@ -28,6 +28,16 @@ export class Widget extends BaseEntity {
     @Column()
     public channel: string;
 
+    @Column({ default: "" })
+    public displayName: string;
+
+    @Column({ type: "simple-json", default: "" })
+    public config: {
+        name?: string;
+        transitionTime?: number;
+        buttonValue?: number;
+    };
+
     @ManyToOne(() => Fixture, (fixture) => fixture.widgets)
     public fixture: Fixture;
 

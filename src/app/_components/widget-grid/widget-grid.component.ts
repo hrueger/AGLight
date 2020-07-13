@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { GridsterConfig } from "angular-gridster2";
 import * as smalltalk from "smalltalk";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Fixture } from "../../_entities/fixture";
 import { Widget, WidgetType } from "../../_entities/widget";
 import { colors } from "../../_ressources/colors";
@@ -48,6 +49,8 @@ export class WidgetGridComponent implements OnInit {
     public options: GridsterConfig;
     public fixtures: Fixture[] = [];
     public widgets: Widget[] = [];
+    public currentWidget: Widget;
+    public widgetTypes = widgets;
     @Input() public editMode = false;
 
     private readonly shadeColorFactor = 35;
@@ -56,6 +59,7 @@ export class WidgetGridComponent implements OnInit {
         private showService: ShowService,
         private libraryService: LibraryService,
         private dmxService: DmxService,
+        private modalService: NgbModal,
     ) { }
 
     public async ngOnInit(): Promise<void> {
@@ -82,6 +86,15 @@ export class WidgetGridComponent implements OnInit {
         smalltalk.confirm("Are you sure?", "Do you really want to remove this widget?").then(async () => {
             await this.showService.connection.getRepository(Widget).remove(item);
             this.widgets.splice(this.widgets.indexOf(item), 1);
+        }, () => undefined);
+    }
+
+    public openConfig($event: Event, item: Widget, modal: unknown): void {
+        this.currentWidget = item;
+        $event.preventDefault();
+        $event.stopPropagation();
+        this.modalService.open(modal, { size: "lg" }).result.then(() => {
+            this.save();
         }, () => undefined);
     }
 

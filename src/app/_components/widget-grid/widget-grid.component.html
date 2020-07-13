@@ -2,6 +2,9 @@
     <gridster-item [item]="widget" *ngFor="let widget of widgets">
         <div class="content drag-handler">
             <div class="item-buttons float-right" *ngIf="editMode">
+                <button class="btn btn-outline-primary btn-round mr-2" (click)="openConfig($event, widget, configModal)" (touchstart)="openConfig($event, widget, configModal)">
+                    <i class="fas fa-cog"></i>
+                </button>
                 <button class="btn btn-outline-danger btn-round" (click)="removeItem($event, widget)" (touchstart)="removeItem($event, widget)">
                     <i class="fas fa-times"></i>
                 </button>
@@ -10,7 +13,7 @@
                 <!--<pre>
                     {{ widget | json }}
                 </pre>-->
-                {{ widget.type }} {{widget.channel}} - {{ widget.fixture.displayName }}
+                {{widget.displayName ? widget.displayName : (widget.type + " " + widget.channel + " - " + widget.fixture.displayName)}}
                 <div class="widget-slider d-flex" *ngIf="widget.type == 'Fader'">
                     <ng5-slider [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: true}" (valueChange)="action('slider', widget, $event)"></ng5-slider>
                 </div>
@@ -44,3 +47,38 @@
 <div *ngIf="!widgets || widgets.length == 0" class="d-flex flex-column justify-content-center h-100 text-center">
     <div>No widgets to be displayed!</div>
 </div>
+
+<ng-template #configModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Settings of <i>{{currentWidget.displayName ? currentWidget.displayName : (currentWidget.type + " " + currentWidget.channel + " - " + currentWidget.fixture.displayName)}}</i></h4>
+        <button type="button" class="close" (click)="modal.dismiss()"><span>&times;</span></button>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" for="name">Name</label>
+                <div class="col-9">
+                    <input id="name" name="name" ngbAutofocus placeholder="The widget's name" [(ngModel)]="currentWidget.displayName" type="text" class="form-control">
+                    <span class="form-text text-slightly-muted">If not set, it will be the underlying fixture's name.</span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="transitionTime" class="col-3 col-form-label">Transition time</label>
+                <div class="col-9">
+                    <input id="transitionTime" name="transitionTime" [(ngModel)]="currentWidget.config.transitionTime" placeholder="The time in milliseconds for the transition." type="number" min="0" class="form-control">
+                    <span class="form-text text-slightly-muted">The default value is 0, which means no transition will be done. <b>Be careful with dimmers as they could suddenly draw a lot of power!</b></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="buttonValue" class="col-3 col-form-label">Value</label>
+                <div class="col-9">
+                    <input id="buttonValue" name="buttonValue" [(ngModel)]="currentWidget.config.buttonValue" placeholder="The DMX value of this button's channel." type="number" min="0" max="255" class="form-control">
+                    <span class="form-text text-slightly-muted">It can be between 0 and 255.</span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-success" (click)="modal.close()">Save</button>
+    </div>
+</ng-template>
