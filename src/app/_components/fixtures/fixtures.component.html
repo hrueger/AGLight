@@ -52,12 +52,12 @@
                             </td>
                             <td>{{fixture.product.name}}</td>
                             <td>{{fixture.product.manufacturer.name}}</td>
-                            <td class="editable" (click)="change('channelMode', i)"><i class="fas fa-pen"></i> {{ fixture.channelMode }} ({{getChannelNumber(fixture)}} Channels)</td>
+                            <td class="editable" (click)="change('channelMode', i)"><i class="fas fa-pen"></i> {{ fixture.channelMode }} ({{getChannelCount(fixture)}} Channels)</td>
                             <td class="editable" (click)="change('number', i)"><i class="fas fa-pen"></i> {{fixture.number}}</td>
-                            <td>{{fixture.number * getChannelNumber(fixture)}}</td>
+                            <td>{{fixture.number * getChannelCount(fixture)}}</td>
                             <td class="editable" (click)="change('startAddress', i)"><i class="fas fa-pen"></i> {{fixture.startAddress}}
                             </td>
-                            <td>{{fixture.startAddress + (fixture.number * getChannelNumber(fixture)) - 1}}</td>
+                            <td>{{fixture.startAddress + (fixture.number * getChannelCount(fixture)) - 1}}</td>
                         </tr>
                     </tbody>
                 </table>

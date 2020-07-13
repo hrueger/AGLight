@@ -6,6 +6,7 @@ import { Fixture } from "../../_entities/fixture";
 import { Product } from "../../_entities/product";
 import { ShowService } from "../../_services/show.service";
 import { LibraryService } from "../../_services/library.service";
+import { getChannelCount } from "../../_utils/channel-count";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
 
 @Component({
@@ -20,6 +21,7 @@ export class FixturesComponent implements OnInit {
     public allFixtures: Product[];
     public currentFixture: Product;
     public errorMessage = "";
+    public getChannelCount = getChannelCount;
 
     constructor(
         private showService: ShowService,
@@ -45,11 +47,6 @@ export class FixturesComponent implements OnInit {
 
     public getFixtures(): any[] {
         return this.libraryService.getProducts();
-    }
-
-    public getChannelNumber(fixture: Fixture): number {
-        return fixture.product.modes.filter((f) => f.name == fixture.channelMode)[0]
-            .channels.length;
     }
 
     public search(e: string): void {
@@ -211,7 +208,7 @@ export class FixturesComponent implements OnInit {
     private validate() {
         for (const fixture of this.fixtures as any) {
             fixture.endAddress = fixture.startAddress - 1
-                + (fixture.number * this.getChannelNumber(fixture));
+                + (fixture.number * getChannelCount(fixture));
         }
         for (const a of this.fixtures as any) {
             for (const b of this.fixtures as any) {

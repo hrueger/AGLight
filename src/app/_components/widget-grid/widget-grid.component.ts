@@ -9,6 +9,7 @@ import * as smalltalkSelect from "../../_utils/smalltalk-select";
 import { LibraryService } from "../../_services/library.service";
 import { DmxService } from "../../_services/dmx.service";
 import { beautifyCamelCase } from "../../_utils/camelcase-beautifier";
+import { getChannelCount } from "../../_utils/channel-count";
 
 const widgets: { name: string, value: string, description: string }[] = [
     {
@@ -68,7 +69,7 @@ export class WidgetGridComponent implements OnInit {
             mobileBreakpoint: 0,
             resizable: { enabled: this.editMode },
         };
-        if (!this.dmxService.isConnected && !this.editMode) {
+        if (!this.dmxService.isConnected && !this.editMode && !true) {
             smalltalk.alert("Error", "No DMX output connected!<br>Click the button in the statusbar to get to the DMX setup wizard.");
         } else {
             await this.loadAll();
@@ -126,13 +127,11 @@ export class WidgetGridComponent implements OnInit {
         if (this.editMode) {
             return;
         }
-        let chl: number;
-        let val;
+        let channels: number[];
         switch (type) {
         case "slider":
-            chl = this.findChannelAddress(widget);
-            val = event;
-            this.dmxService.update({ [chl]: val });
+            channels = this.findChannelAddresses(widget);
+            this.dmxService.updateMultiple(event, channels);
             break;
         case "button":
             break;
@@ -142,22 +141,28 @@ export class WidgetGridComponent implements OnInit {
             // this.universe.update({ [chl]: val });
             break;
         case "colorpicker":
-            chl = this.findChannelAddress(widget);
-            this.dmxService.update({
-                [chl]: event.color.rgb.r,
-                [chl + 1]: event.color.rgb.g,
-                [chl + 2]: event.color.rgb.b,
-            });
+            channels = this.findChannelAddresses(widget);
+            for (const c of channels) {
+                this.dmxService.update({
+                    [c]: event.color.rgb.r,
+                    [c + 1]: event.color.rgb.g,
+                    [c + 2]: event.color.rgb.b,
+                });
+            }
             break;
         default:
             break;
         }
     }
 
-    private findChannelAddress(widget: Widget): number {
-        return widget.fixture.startAddress
-            + widget.fixture.product.modes.filter((m) => m.name == widget.fixture.channelMode)[0]
-                .channels.findIndex((c) => c == widget.channel);
+    private findChannelAddresses(widget: Widget): number[] {
+        return new Array(widget.fixture.number)
+            .fill(null)
+            .map((_, idx) => widget.fixture.startAddress
+                + (idx * (getChannelCount(widget.fixture) + 1))
+                + widget.fixture.product.modes
+                    .filter((m) => m.name == widget.fixture.channelMode)[0]
+                    .channels.findIndex((c) => c == widget.channel));
     }
 
     public save(): void {

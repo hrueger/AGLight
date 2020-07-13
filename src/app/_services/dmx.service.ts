@@ -85,6 +85,14 @@ export class DmxService {
         this.universe.update(data);
     }
 
+    public updateMultiple(value: number, channels: number[]): void {
+        const data = {};
+        for (const c of channels) {
+            data[c] = value;
+        }
+        this.universe.update(data);
+    }
+
     public shutdown(): void {
         // ToDo
     }
