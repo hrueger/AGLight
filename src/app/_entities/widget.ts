@@ -56,5 +56,8 @@ export class Widget extends BaseEntity {
         this.channel = channel;
         this.fixture = fixture;
         this.customChannel = customChannel;
+        this.config = {
+            transitionTime: 1000,
+        };
     }
 }
