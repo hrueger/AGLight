@@ -12,7 +12,7 @@ import { DmxService } from "../../_services/dmx.service";
 import { beautifyCamelCase } from "../../_utils/camelcase-beautifier";
 import { getChannelCount } from "../../_utils/channel-count";
 
-const widgets: { name: string, value: string, description: string }[] = [
+const widgets: { name: string, value: string, description: string, customChannelRequired?: string }[] = [
     {
         name: "Fader",
         value: "Fader",
@@ -27,11 +27,13 @@ const widgets: { name: string, value: string, description: string }[] = [
         name: "Colorpicker",
         value: "Colorpicker",
         description: "A simple colorpicker with predefined color swatches to quickly select a nice color.",
+        customChannelRequired: "rgb",
     },
     {
         name: "RGB Colorpicker",
         value: "RGB Colorpicker",
         description: "A full RGB colorpicker to select every color you can imagine.",
+        customChannelRequired: "rgb",
     },
     {
         name: "Button Grid",
@@ -99,9 +101,10 @@ export class WidgetGridComponent implements OnInit {
     }
 
     public addWidget(fixture: Fixture): void {
-        const opts3 = fixture.product.modes.filter(
+        const { channels } = fixture.product.modes.filter(
             (m) => m.name == fixture.channelMode,
-        )[0].channels.map((channel, idx) => ({
+        )[0];
+        const opts3 = channels.map((channel, idx) => ({
             description: `
                     <table><thead><tr><th></th><th></th></tr></thead><tbody>
                     ${fixture.product.availableChannels[channel].capabilities.map((c: any) => `<tr>
@@ -116,10 +119,24 @@ export class WidgetGridComponent implements OnInit {
             name: `${fixture.startAddress - 1 + idx}: ${channel}`,
             value: channel,
         }));
+        const mappedChannels = channels.map((c) => fixture.product.availableChannels[c]);
+        mappedChannels.forEach((channel, idx) => {
+            if (
+                channel.singleCapability && channel.capabilities[0].type == "ColorIntensity"
+                && mappedChannels[idx + 1] && mappedChannels[idx + 1].singleCapability && mappedChannels[idx + 1].capabilities[0].type == "ColorIntensity"
+                && mappedChannels[idx + 2] && mappedChannels[idx + 2].singleCapability && mappedChannels[idx + 2].capabilities[0].type == "ColorIntensity"
+            ) {
+                opts3.unshift({
+                    description: "This is a virtual channel. It bundles the Red, Green and Blue channel of the fixture(s). You can use this for colorpickers.",
+                    name: "RGB Channel (3 Channels)",
+                    value: "CUSTOM:rgb",
+                });
+            }
+        });
         if (opts3.length) {
             smalltalkSelect.select("Add widget", "Choose the channel:", opts3).then(async (channel: string) => {
                 smalltalkSelect.select("Add widget",
-                    "Choose the widget you want to add:", widgets).then(async (control: WidgetType) => {
+                    "Choose the widget you want to add:", widgets.filter((w) => (w.customChannelRequired ? `CUSTOM:${w.customChannelRequired}` == channel : true))).then(async (control: WidgetType) => {
                     const w = new Widget(0, 0, 1, 1, control, channel, fixture);
                     await this.showService.connection.manager.save(w);
                     await this.loadAll();
