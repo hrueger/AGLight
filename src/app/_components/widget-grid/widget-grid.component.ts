@@ -148,7 +148,10 @@ export class WidgetGridComponent implements OnInit {
             break;
         case "button":
             channels = this.findChannelAddresses(widget);
-            this.dmxService.updateMultiple(widget.config?.buttonValue ? widget.config.buttonValue : 0, channels);
+            this.dmxService.updateMultiple(
+                widget.config?.buttonValue ? widget.config.buttonValue : 0,
+                channels,
+            );
             break;
         case "buttongrid":
             // chl = this.findChannelAddress(widget);
