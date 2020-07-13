@@ -170,13 +170,14 @@ export class WidgetGridComponent implements OnInit {
         switch (type) {
         case "slider":
             channels = this.findChannelAddresses(widget);
-            this.dmxService.updateMultiple(event, channels);
+            this.dmxService.animateMultipleTo(event, channels, widget.config?.transitionTime);
             break;
         case "button":
             channels = this.findChannelAddresses(widget);
-            this.dmxService.updateMultiple(
+            this.dmxService.animateMultipleTo(
                 widget.config?.buttonValue ? widget.config.buttonValue : 0,
                 channels,
+                widget.config?.transitionTime,
             );
             break;
         case "buttongrid":
@@ -187,11 +188,14 @@ export class WidgetGridComponent implements OnInit {
         case "colorpicker":
             channels = this.findChannelAddresses(widget);
             for (const c of channels) {
-                this.dmxService.update({
-                    [c]: event.color.rgb.r,
-                    [c + 1]: event.color.rgb.g,
-                    [c + 2]: event.color.rgb.b,
-                });
+                this.dmxService.animateTo(
+                    {
+                        [c]: event.color.rgb.r,
+                        [c + 1]: event.color.rgb.g,
+                        [c + 2]: event.color.rgb.b,
+                    },
+                    widget.config?.transitionTime,
+                );
             }
             break;
         default:

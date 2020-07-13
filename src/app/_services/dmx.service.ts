@@ -86,11 +86,33 @@ export class DmxService {
     }
 
     public updateMultiple(value: number, channels: number[]): void {
+        const data = this.getChannelObject(channels, value);
+        this.universe.update(data);
+    }
+
+    public animateTo(data: { [ch: number]: number }, duration: number): void {
+        if (!duration || duration <= 0) {
+            this.update(data);
+            return;
+        }
+        new DMX.Animation().add(data, duration).run(this.universe);
+    }
+
+    public animateMultipleTo(value: number, channels: number[], duration: number): void {
+        if (!duration || duration <= 0) {
+            this.updateMultiple(value, channels);
+            return;
+        }
+        const data = this.getChannelObject(channels, value);
+        new DMX.Animation().add(data, duration).run(this.universe);
+    }
+
+    private getChannelObject(channels: number[], value: number) {
         const data = {};
         for (const c of channels) {
             data[c] = value;
         }
-        this.universe.update(data);
+        return data;
     }
 
     public shutdown(): void {
