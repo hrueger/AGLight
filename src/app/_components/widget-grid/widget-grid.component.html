@@ -56,6 +56,14 @@
     <div class="modal-body">
         <form>
             <div class="form-group row">
+                <label class="col-3 col-form-label" for="type">Type</label>
+                <div class="col-9">
+                    <select id="name" name="name" placeholder="The widget's type" [(ngModel)]="currentWidget.type" class="custom-select">
+                        <option [selected]="type.value == currentWidget.type" [value]="type.value" *ngFor="let type of widgetTypes">{{type.name}}</option>
+                    </select> {{currentWidget.type}}
+                </div>
+            </div>
+            <div class="form-group row">
                 <label class="col-3 col-form-label" for="name">Name</label>
                 <div class="col-9">
                     <input id="name" name="name" ngbAutofocus placeholder="The widget's name" [(ngModel)]="currentWidget.displayName" type="text" class="form-control">
