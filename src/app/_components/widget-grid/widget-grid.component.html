@@ -1,43 +1,67 @@
 <gridster [options]="options" *ngIf="widgets.length > 0">
     <gridster-item [item]="widget" *ngFor="let widget of widgets">
-        <div class="content drag-handler">
-            <div class="item-buttons float-right" *ngIf="editMode">
-                <button class="btn btn-outline-primary btn-round mr-2" (click)="openConfig($event, widget, configModal)" (touchstart)="openConfig($event, widget, configModal)">
-                    <i class="fas fa-cog"></i>
-                </button>
-                <button class="btn btn-outline-danger btn-round" (click)="removeItem($event, widget)" (touchstart)="removeItem($event, widget)">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
+        <div class="content">
             <div class="widget">
                 <!--<pre>
                     {{ widget | json }}
                 </pre>-->
-                {{widget.displayName ? widget.displayName : (widget.type + " " + widget.channel + " - " + widget.fixture.displayName)}}
-                <div class="widget-slider d-flex" *ngIf="widget.type == 'Fader'">
-                    <ng5-slider [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: true}" (valueChange)="action('slider', widget, $event)"></ng5-slider>
+                <div class="d-flex justify-content-between">
+                    <span class="text-truncate">{{widget.displayName ? widget.displayName : (widget.type + " " + widget.channel + " - " + widget.fixture.displayName)}}</span>
+                    <div class="item-buttons" *ngIf="editMode">
+                        <button class="btn btn-outline-warning btn-round mr-2 drag-handler">
+                            <i class="fas fa-arrows-alt"></i>
+                        </button>
+                        <button class="btn btn-outline-primary btn-round mr-2" (click)="openConfig($event, widget, configModal)" (touchstart)="openConfig($event, widget, configModal)">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-round" (click)="removeItem($event, widget)" (touchstart)="removeItem($event, widget)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
                 </div>
+                <div class="p-3 gridster-item-content">
 
-                <div class="widget-button" *ngIf="widget.type == 'Button'">
-                    <button class="btn btn-outline-primary gridster-item-content" (click)="action('button', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Button"}}</button>
-                </div>
+                    <div class="widget-slider d-flex" *ngIf="widget.type == 'Fader'">
+                        <ng5-slider [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: true}" (valueChange)="action('slider', widget, $event)"></ng5-slider>
+                    </div>
 
-                <div class="widget-colorpicker" *ngIf="widget.type == 'Colorpicker'">
-                    <color-circle circleSize="50" (onChangeComplete)="action('colorpicker', widget, $event)" class="gridster-item-content"></color-circle>
-                </div>
+                    <div class="widget-button" *ngIf="widget.type == 'Button'">
+                        <button *ngIf="!editMode" class="btn btn-outline-primary " (click)="action('button', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Button"}}</button>
+                        <div *ngIf="editMode">
+                            <div class="form-group row">
+                                <label for="buttonValue" class="col-3 col-form-label">Value</label>
+                                <div class="col-9">
+                                    <input id="buttonValue" name="buttonValue" [(ngModel)]="widget.config.buttonValue" placeholder="The DMX value of this button's channel." type="number" min="0" max="255" class="form-control">
+                                    <span class="form-text text-slightly-muted">It can be between 0 and 255.</span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="buttonName" class="col-3 col-form-label">Button Name</label>
+                                <div class="col-9">
+                                    <input id="buttonName" name="buttonName" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
+                                    <span class="form-text text-slightly-muted">It can be everything you can possibly imagine.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="widget-rgb-colorpicker" *ngIf="widget.type == 'RGB Colorpicker'">
-                    <color-swatches (onChangeComplete)="action('colorpicker', widget, $event)" class="gridster-item-content"></color-swatches>
-                </div>
+                    <div class="widget-colorpicker" *ngIf="widget.type == 'Colorpicker'">
+                        <color-circle circleSize="50" (onChangeComplete)="action('colorpicker', widget, $event)"></color-circle>
+                    </div>
 
-                <div class="widget-buttongrid" *ngIf="widget.type == 'Buttongrid'">
-                    <table class="gridster-item-content">
-                        <tr *ngFor="let row of getButtongridRowArray(widget); let i = index">
-                            <td *ngFor="let col of getButtongridColArray(widget, i); let j = index">
-                                <button class="btn btn-outline-primary" [ngStyle]='tryGetBackgroundColor(widget.channel.steps[col].name)' (click)="action('buttongrid', widget, $event, col)">{{widget.channel.steps[col].name}}</button>
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="widget-rgb-colorpicker" *ngIf="widget.type == 'RGB Colorpicker'">
+                        <color-swatches (onChangeComplete)="action('colorpicker', widget, $event)"></color-swatches>
+                    </div>
+
+                    <div class="widget-buttongrid" *ngIf="widget.type == 'Buttongrid'">
+                        <table>
+                            <tr *ngFor="let row of getButtongridRowArray(widget); let i = index">
+                                <td *ngFor="let col of getButtongridColArray(widget, i); let j = index">
+                                    <button class="btn btn-outline-primary" [ngStyle]='tryGetBackgroundColor(widget.channel.steps[col].name)' (click)="action('buttongrid', widget, $event, col)">{{widget.channel.steps[col].name}}</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -75,20 +99,6 @@
                 <div class="col-9">
                     <input id="transitionTime" name="transitionTime" [(ngModel)]="currentWidget.config.transitionTime" placeholder="The time in milliseconds for the transition." type="number" min="0" class="form-control">
                     <span class="form-text text-slightly-muted">The default value is 0, which means no transition will be done. <b>Be careful with dimmers as they could suddenly draw a lot of power!</b></span>
-                </div>
-            </div>
-            <div class="form-group row" *ngIf="currentWidget.type == 'Button'">
-                <label for="buttonValue" class="col-3 col-form-label">Value</label>
-                <div class="col-9">
-                    <input id="buttonValue" name="buttonValue" [(ngModel)]="currentWidget.config.buttonValue" placeholder="The DMX value of this button's channel." type="number" min="0" max="255" class="form-control">
-                    <span class="form-text text-slightly-muted">It can be between 0 and 255.</span>
-                </div>
-            </div>
-            <div class="form-group row" *ngIf="currentWidget.type == 'Button'">
-                <label for="buttonName" class="col-3 col-form-label">Button Name</label>
-                <div class="col-9">
-                    <input id="buttonName" name="buttonName" [(ngModel)]="currentWidget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
-                    <span class="form-text text-slightly-muted">It can be everything you can possibly imagine.</span>
                 </div>
             </div>
         </form>
