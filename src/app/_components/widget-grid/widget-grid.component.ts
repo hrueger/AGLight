@@ -12,7 +12,7 @@ import * as smalltalkSelect from "../../_utils/smalltalk-select";
 import { LibraryService } from "../../_services/library.service";
 import { DmxService } from "../../_services/dmx.service";
 import { beautifyCamelCase } from "../../_utils/camelcase-beautifier";
-import { getChannelCount } from "../../_utils/channel-count";
+import { findChannelAddresses } from "../../_utils/find-channel-addresses";
 import { widgets, effectWidgets } from "../../_ressources/widgets";
 
 @Component({
@@ -165,6 +165,14 @@ export class WidgetGridComponent implements OnInit {
         }
     }
 
+    public toggleEffect(event: Event, widget: Widget): void {
+        if ((event.target as any).checked) {
+            this.dmxService.activateEffect(widget);
+        } else {
+            this.dmxService.deactivateEffect(widget);
+        }
+    }
+
     public addEffectWidget(fixture: Fixture): void {
         this.addWidget(fixture, true);
     }
@@ -177,11 +185,11 @@ export class WidgetGridComponent implements OnInit {
         let channels: number[];
         switch (type) {
         case "slider":
-            channels = this.findChannelAddresses(widget);
+            channels = findChannelAddresses(widget);
             this.dmxService.animateMultipleTo(event, channels, widget.config?.transitionTime);
             break;
         case "button":
-            channels = this.findChannelAddresses(widget);
+            channels = findChannelAddresses(widget);
             this.dmxService.animateMultipleTo(
                 widget.config?.buttonValue ? widget.config.buttonValue : 0,
                 channels,
@@ -189,12 +197,12 @@ export class WidgetGridComponent implements OnInit {
             );
             break;
         case "buttongrid":
-            // chl = this.findChannelAddress(widget);
+            // chl = findChannelAddress(widget);
             // val = widget.channel.steps[idx].start;
             // this.universe.update({ [chl]: val });
             break;
         case "colorpicker":
-            channels = this.findChannelAddresses(widget);
+            channels = findChannelAddresses(widget);
             for (const c of channels) {
                 this.dmxService.animateTo(
                     {
@@ -209,16 +217,6 @@ export class WidgetGridComponent implements OnInit {
         default:
             break;
         }
-    }
-
-    private findChannelAddresses(widget: Widget): number[] {
-        return new Array(widget.fixture.number)
-            .fill(null)
-            .map((_, idx) => widget.fixture.startAddress
-                + (idx * (getChannelCount(widget.fixture) + 1))
-                + widget.fixture.product.modes
-                    .filter((m) => m.name == widget.fixture.channelMode)[0]
-                    .channels.findIndex((c) => c == widget.channel));
     }
 
     public save(): void {

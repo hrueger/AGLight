@@ -3,6 +3,8 @@ import * as DMX from "dmx";
 import * as smalltalk from "smalltalk";
 import { StatusbarService } from "./statusbar.service";
 import * as smalltalkSelect from "../_utils/smalltalk-select";
+import { Widget } from "../_entities/widget";
+import { findChannelAddresses } from "../_utils/find-channel-addresses";
 
 @Injectable({
     providedIn: "root",
@@ -63,6 +65,7 @@ export class DmxService {
             deviceIdDescription: "Serial port of the device. For windows it is COM1, COM2, ...; For Linux it will be /dev/something",
         },
     }
+    private runningEffects: Widget[] = [];
     constructor(private statusbarService: StatusbarService) {}
 
     public init(): void {
@@ -79,6 +82,35 @@ export class DmxService {
                 ],
             },
         });
+        setTimeout(() => this.calculateEffects(), 1000);
+    }
+
+    private calculateEffects() {
+        if (this.runningEffects.length) {
+            const data = {};
+            const t = Date.now();
+            for (const e of this.runningEffects) {
+                const channelAddresses = findChannelAddresses(e);
+                e.effectData.f.forEach((f, idx) => {
+                    for (const a of channelAddresses) {
+                        data[a + idx] = f(t, e.effectConfig);
+                    }
+                });
+            }
+            this.update(data);
+        }
+        setTimeout(() => this.calculateEffects(), 10);
+    }
+
+    public activateEffect(widget: Widget): void {
+        if (!widget.effect) {
+            return;
+        }
+        this.runningEffects.push(widget);
+    }
+
+    public deactivateEffect(widget: Widget): void {
+        this.runningEffects = this.runningEffects.filter((w) => w.id != widget.id);
     }
 
     public update(data: { [ch: number]: number}): void {
