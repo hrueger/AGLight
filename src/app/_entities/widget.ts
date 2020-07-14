@@ -2,6 +2,7 @@ import {
     BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne,
 } from "typeorm";
 import { Fixture } from "./fixture";
+import { EffectOptionsData, EffectWidgetOption } from "../_ressources/widgets";
 
 export type WidgetType = "Fader" | "Button" | "Colorpicker" | "RGB Colorpicker" | "ButtonGrid";
 
@@ -44,6 +45,11 @@ export class Widget extends BaseEntity {
         buttonValue?: number;
         buttonName?: string;
     };
+
+    @Column({ type: "simple-json", default: "" })
+    public effectConfig: EffectOptionsData;
+
+    public effectData?: EffectWidgetOption;
 
     @ManyToOne(() => Fixture, (fixture) => fixture.widgets)
     public fixture: Fixture;

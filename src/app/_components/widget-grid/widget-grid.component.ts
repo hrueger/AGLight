@@ -286,6 +286,9 @@ export class WidgetGridComponent implements OnInit {
         this.widgets = await this.showService.connection.getRepository(Widget).find({ relations: ["fixture"] });
         for (const w of this.widgets) {
             [w.fixture.product] = products.filter((p) => p.name == w.fixture.name);
+            if (w.effect) {
+                [w.effectData] = effectWidgets.filter((e) => e.value == w.effect);
+            }
         }
     }
 
