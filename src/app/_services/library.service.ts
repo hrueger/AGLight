@@ -39,6 +39,7 @@ export class LibraryService {
         if (!fs.existsSync(path.join(this.libraryPath))) {
             this.sync();
         }
+        this.productCache = [];
         this.productCache.push(...JSON.parse(
             fs.readFileSync(this.libraryPath).toString(),
         ).fixtures);
