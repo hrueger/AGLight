@@ -12,12 +12,37 @@ import { DmxService } from "../../_services/dmx.service";
 import { beautifyCamelCase } from "../../_utils/camelcase-beautifier";
 import { getChannelCount } from "../../_utils/channel-count";
 
-const widgets: {
+type WidgetOption = {
+    name: string;
+    value: string;
+    description: string;
+    customChannelRequired?: string;
+};
+
+type EffectOptionsData = {
+    [key: string]: number,
+};
+type EffectOption = {
     name: string,
-    value: string,
     description: string,
-    customChannelRequired?: string,
-}[] = [
+    value: number,
+    key: string,
+    min: number,
+    max: number,
+};
+
+type EffectWidgetOption = {
+    value: string;
+    name: string;
+    description: string;
+    customChannelRequired?: string;
+    f: ((t: number, options: EffectOptionsData) => number)[];
+    singleCapability: boolean;
+    possibleCapabilities: string[];
+    options: EffectOption[];
+};
+
+const widgets: WidgetOption[] = [
     {
         name: "Fader",
         value: "Fader",
@@ -44,6 +69,31 @@ const widgets: {
         name: "Button Grid",
         value: "Button Grid",
         description: "A grid of buttons to have quick access to multiple channel values.",
+    },
+];
+
+const effectWidgets: EffectWidgetOption[] = [
+    {
+        name: "Sine wave",
+        value: "sinewave",
+        description: "Alternating between high and low using a nice sine wave",
+        f: [
+            (t: number, options: EffectOptionsData) => Math.round(
+                (1 / options.speed) * Math.sin(t),
+            ),
+        ],
+        singleCapability: true,
+        possibleCapabilities: ["Intensity", "ColorIntensity"],
+        options: [
+            {
+                name: "Speed",
+                description: "The speed of the sine wave.",
+                min: 1,
+                max: 100,
+                value: 50,
+                key: "speed",
+            },
+        ],
     },
 ];
 
@@ -105,7 +155,7 @@ export class WidgetGridComponent implements OnInit {
         }, () => undefined);
     }
 
-    public addWidget(fixture: Fixture): void {
+    public addWidget(fixture: Fixture, isEffect = false): void {
         const { channels } = fixture.product.modes.filter(
             (m) => m.name == fixture.channelMode,
         )[0];
@@ -143,23 +193,53 @@ export class WidgetGridComponent implements OnInit {
         });
         if (opts3.length) {
             smalltalkSelect.select("Add widget", "Choose the channel:", opts3).then(async (channel: string) => {
-                smalltalkSelect.select("Add widget",
-                    "Choose the widget you want to add:", widgets.filter((w) => (w.customChannelRequired ? channel.startsWith(`CUSTOM:${w.customChannelRequired}`) : !channel.startsWith("CUSTOM")))).then(async (control: WidgetType) => {
-                    const { customChannelRequired } = widgets.filter((x) => x.value == control)[0];
-                    const w = new Widget(0, 0, 1, 1, control, customChannelRequired ? channel.split(":")[2] : channel, fixture, customChannelRequired);
-                    await this.showService.connection.manager.save(w);
-                    await this.loadAll();
-                    // this.widgets.push(w);
-                }, () => undefined);
+                let availableWidgets;
+                if (isEffect) {
+                    availableWidgets = effectWidgets.filter((w) => {
+                        if (channel.startsWith("CUSTOM")) {
+                            if (w.customChannelRequired && channel.startsWith(`CUSTOM:${w.customChannelRequired}`)) {
+                                return true;
+                            }
+                        } else if (
+                            w.singleCapability
+                                && fixture.product.availableChannels[channel].singleCapability
+                                && w.possibleCapabilities.includes(
+                                    fixture.product.availableChannels[channel].capabilities[0].type,
+                                )
+                        ) {
+                            return true;
+                        } else if (fixture.product.availableChannels[channel].capabilities
+                            .filter((c) => !w.possibleCapabilities.includes(c.type)).length > 0) {
+                            //
+                        }
+                        return false;
+                    });
+                } else {
+                    availableWidgets = widgets.filter((w) => (w.customChannelRequired ? channel.startsWith(`CUSTOM:${w.customChannelRequired}`) : !channel.startsWith("CUSTOM")));
+                }
+                if (availableWidgets.length) {
+                    smalltalkSelect.select(
+                        "Add widget",
+                        "Choose the widget you want to add:",
+                        availableWidgets,
+                    ).then(async (control: WidgetType) => {
+                        const { customChannelRequired } = (isEffect ? effectWidgets : widgets)
+                            .filter((x) => x.value == control)[0];
+                        const w = new Widget(0, 0, 1, 1, isEffect ? undefined : control, customChannelRequired ? channel.split(":")[2] : channel, fixture, customChannelRequired, isEffect ? control : undefined);
+                        await this.showService.connection.manager.save(w);
+                        await this.loadAll();
+                    }, () => undefined);
+                } else {
+                    this.alertNothingToDisplay();
+                }
             }, () => undefined);
         } else {
             this.alertNothingToDisplay();
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public addEffectWidget(fixture: Fixture): void {
-        this.alertNothingToDisplay();
+        this.addWidget(fixture, true);
     }
 
     public action(type: string, widget: Widget, event: Event | number | any, idx?: number): void {

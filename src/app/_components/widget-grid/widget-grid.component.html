@@ -21,6 +21,10 @@
                     </div>
                 </div>
                 <div class="p-3 gridster-item-content h-100">
+                    <div class="widget-slider" *ngIf="widget.effect">
+                        <h1>Effect</h1>
+                        <pre>{{widget | json}}</pre>
+                    </div>
 
                     <div class="widget-slider d-flex" *ngIf="widget.type == 'Fader'">
                         <ng5-slider [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: true}" (valueChange)="action('slider', widget, $event)"></ng5-slider>

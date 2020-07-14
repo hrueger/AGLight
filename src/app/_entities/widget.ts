@@ -22,8 +22,11 @@ export class Widget extends BaseEntity {
     @Column()
     public cols: number;
 
-    @Column()
+    @Column({ nullable: true })
     public type: WidgetType;
+
+    @Column({ default: "", nullable: true })
+    public effect?: string;
 
     @Column()
     public channel: string;
@@ -46,7 +49,7 @@ export class Widget extends BaseEntity {
     public fixture: Fixture;
 
     constructor(x: number, y: number, rows: number, cols: number, type: WidgetType,
-        channel: string, fixture: Fixture, customChannel = "") {
+        channel: string, fixture: Fixture, customChannel = "", effect?: string) {
         super();
         this.x = x;
         this.y = y;
@@ -56,6 +59,7 @@ export class Widget extends BaseEntity {
         this.channel = channel;
         this.fixture = fixture;
         this.customChannel = customChannel;
+        this.effect = effect;
         this.config = {
             transitionTime: 1000,
         };
