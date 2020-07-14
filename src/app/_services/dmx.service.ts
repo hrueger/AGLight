@@ -110,7 +110,14 @@ export class DmxService {
     }
 
     public deactivateEffect(widget: Widget): void {
-        this.runningEffects = this.runningEffects.filter((w) => w.id != widget.id);
+        this.runningEffects = this.runningEffects.filter((w) => {
+            if (w.id == widget.id) {
+                const channelAddresses = findChannelAddresses(w);
+                this.animateMultipleTo(0, channelAddresses, 500);
+                return false;
+            }
+            return true;
+        });
     }
 
     public update(data: { [ch: number]: number}): void {
