@@ -8,6 +8,7 @@
                 <div class="d-flex justify-content-between">
                     <span class="text-truncate">{{widget.displayName ? widget.displayName : (widget.type + " " + widget.channel + " - " + widget.fixture.displayName)}}</span>
                     <div class="item-buttons" *ngIf="editMode">
+                        <span [class]="'mr-3 text-' + (widget.config.transitionTime > 50 ? 'success' : 'warning')"><i class="far fa-play-circle"></i> {{widget.config.transitionTime ? widget.config.transitionTime / 1000 : 0}}s</span>
                         <button class="btn btn-outline-warning btn-round mr-2 drag-handler">
                             <i class="fas fa-arrows-alt"></i>
                         </button>
