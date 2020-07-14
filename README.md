@@ -6,13 +6,14 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/hrueger/AGLight?color=brightgreen)](https://github.com/hrueger/AGLight/commits)
 [![Maintenance](https://img.shields.io/maintenance/yes/2020)](https://github.com/hrueger/AGLight/commits) [![Greenkeeper badge](https://badges.greenkeeper.io/hrueger/AGLight.svg)](https://greenkeeper.io/)
 
-ToDo
-Fixtures padding between
-DMX Value updates for all in group
-RGB Picker
-Button
-WidgetOptions
-Preview in Config Mode
+## ToDo
+- Fixtures padding between
+- Preview in Config Mode
+- Multiple Button Actions
+- ButtonGrid
+- Wheels
+- Effects
+
 
 ## Note: ##
 This project is in development. It can't be used as of now!
