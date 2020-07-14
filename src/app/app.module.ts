@@ -24,6 +24,7 @@ import { ChannelNumberSumPipe } from "./_pipes/channel-number-sum.pipe";
 import { EffectAffectsSumPipe } from "./_pipes/effect-affects-sum.pipe";
 import { FirstLetterUppercasePipe } from "./_pipes/first-letter-uppercase.pipe";
 import { NumberArrayPipe } from "./_pipes/number-array.pipe";
+import { EffectNamePipe } from "./_pipes/effect-name.pipe";
 import { TruncatePipe } from "./_pipes/truncate.pipe";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -47,6 +48,7 @@ import { StatusbarComponent } from "./_components/statusbar/statusbar.component"
         EffectAffectsSumPipe,
         FirstLetterUppercasePipe,
         NumberArrayPipe,
+        EffectNamePipe,
         ViewerComponent,
         WidgetGridComponent,
         StatusbarComponent,
