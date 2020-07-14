@@ -4,6 +4,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as request from "request";
 import * as smalltalk from "smalltalk";
+import * as rimraf from "rimraf";
 import { StatusbarService } from "./statusbar.service";
 import { Product } from "../_entities/product";
 
@@ -12,6 +13,7 @@ import { Product } from "../_entities/product";
 })
 export class LibraryService {
     private libraryPath = path.join((electron.app || electron.remote.app).getPath("userData"), "library/library.json");
+    private tempStoragePath = path.join((electron.app || electron.remote.app).getPath("userData"), "library.tmp");
     private productCache: Product[] = [];
 
     constructor(private statusbarService: StatusbarService) { }
@@ -73,7 +75,7 @@ export class LibraryService {
             uri: "http://localhost:5000/download.aglight",
         });
 
-        const out = fs.createWriteStream(this.libraryPath);
+        const out = fs.createWriteStream(this.tempStoragePath);
         req.pipe(out);
 
         req.on("response", (data) => {
@@ -98,6 +100,8 @@ export class LibraryService {
                 icon: "check",
                 id: "library",
             });
+            fs.copyFileSync(this.tempStoragePath, this.libraryPath);
+            rimraf.sync(this.tempStoragePath);
             setTimeout(() => {
                 this.loadIntoCache();
             }, 2000);
