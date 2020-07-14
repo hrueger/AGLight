@@ -79,7 +79,7 @@
 
 <ng-template #configModal let-modal>
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Settings of <i>{{currentWidget.displayName ? currentWidget.displayName : (currentWidget.type + " " + currentWidget.channel + " - " + currentWidget.fixture.displayName)}}</i></h4>
+        <h4 class="modal-title" id="modal-basic-title">Settings of <i>{{currentWidget.displayName ? currentWidget.displayName : ((currentWidget.type || (currentWidget.effect | effectName)) + ": " + currentWidget.channel + " - " + currentWidget.fixture.displayName)}}</i></h4>
         <button type="button" class="close" (click)="modal.dismiss()"><span>&times;</span></button>
     </div>
     <div class="modal-body">
