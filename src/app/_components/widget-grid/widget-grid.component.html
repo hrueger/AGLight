@@ -23,7 +23,13 @@
                 <div class="p-3 gridster-item-content h-100">
                     <div class="widget-slider" *ngIf="widget.effect">
                         <h1>Effect</h1>
-                        <pre>{{widget | json}}</pre>
+                        <div class="form-group row" *ngFor="let option of widget.effectData.options">
+                            <label for="transitionTime" class="col-3 col-form-label">{{option.name}}</label>
+                            <div class="col-9">
+                                <input id="transitionTime" name="transitionTime" [(ngModel)]="widget.effectConfig[option.key]" [placeholder]="option.description" type="number" [min]="option.min" [max]="option.max" class="form-control">
+                                <span class="form-text text-slightly-muted">{{option.description}} Can be between {{option.min}} and {{option.max}}.</span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="widget-slider d-flex" *ngIf="widget.type == 'Fader'">
