@@ -64,7 +64,7 @@ export const effectWidgets: EffectWidgetOption[] = [
         value: "sinewave",
         description: "Alternating between high and low using a nice sine wave",
         f: [
-            (t: number, options: EffectOptionsData) => Math.round(
+            (t: number, options: EffectOptionsData): number => Math.round(
                 (1 / options.speed) * Math.sin(t),
             ),
         ],
