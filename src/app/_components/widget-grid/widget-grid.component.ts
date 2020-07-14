@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from "@angular/core";
 import { GridsterConfig } from "angular-gridster2";
 import * as smalltalk from "smalltalk";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Subject } from "rxjs";
+import { debounceTime } from "rxjs/operators";
 import { Fixture } from "../../_entities/fixture";
 import { Widget, WidgetType } from "../../_entities/widget";
 import { colors } from "../../_ressources/colors";
@@ -26,6 +28,7 @@ export class WidgetGridComponent implements OnInit {
     public widgetTypes = widgets;
     @Input() public editMode = false;
 
+    private debouncedSave: Subject<any> = new Subject<any>();
     private readonly shadeColorFactor = 35;
 
     constructor(
@@ -35,7 +38,15 @@ export class WidgetGridComponent implements OnInit {
         private modalService: NgbModal,
     ) { }
 
+    public saveDebounced(): void {
+        this.debouncedSave.next();
+    }
+
     public async ngOnInit(): Promise<void> {
+        this.debouncedSave.asObservable().pipe(debounceTime(1000)).subscribe(() => {
+            this.save();
+        });
+
         const that = this;
         this.options = {
             displayGrid: "onDrag&Resize",
@@ -158,6 +169,7 @@ export class WidgetGridComponent implements OnInit {
         this.addWidget(fixture, true);
     }
 
+    // eslint-disable-next-line
     public action(type: string, widget: Widget, event: Event | number | any, idx?: number): void {
         if (this.editMode) {
             return;
