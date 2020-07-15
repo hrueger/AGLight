@@ -12,7 +12,10 @@
 - Multiple Button Actions
 - ButtonGrid
 - Wheels
-- Effects
+- More Effects
+- Blackout button
+- FPS Display
+- Fixed DMX Values
 
 
 ## Note: ##
