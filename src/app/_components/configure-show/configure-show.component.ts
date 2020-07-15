@@ -3,6 +3,7 @@ import { LibraryService } from "../../_services/library.service";
 import { Fixture } from "../../_entities/fixture";
 import { ShowService } from "../../_services/show.service";
 import { WidgetGridComponent } from "../widget-grid/widget-grid.component";
+import { DmxService } from "../../_services/dmx.service";
 
 @Component({
     selector: "app-configure-show",
@@ -13,8 +14,13 @@ export class ConfigureShowComponent {
     public allFixtures: Fixture[] = [];
     public displayFixtures: Fixture[] = [];
     public searchValue = "";
+    public previewEnabled = false;
     @ViewChild("widgetGrid") public widgetGrid: WidgetGridComponent;
-    constructor(private libraryService: LibraryService, private showService: ShowService) { }
+    constructor(
+        private libraryService: LibraryService,
+        private showService: ShowService,
+        private dmxService: DmxService,
+    ) { }
 
     public async ngOnInit(): Promise<void> {
         const products = this.libraryService.getProducts();
@@ -23,6 +29,17 @@ export class ConfigureShowComponent {
             [fixture.product] = products.filter((p) => p.name == fixture.name);
         }
         this.displayFixtures = this.allFixtures;
+    }
+
+    public togglePreview(event: Event): void {
+        if (this.previewEnabled) {
+            this.previewEnabled = false;
+        } else if (this.dmxService.isConnected) {
+            this.previewEnabled = true;
+        } else {
+            this.previewEnabled = false;
+        }
+        event.preventDefault();
     }
 
     public search(e: string): void {
