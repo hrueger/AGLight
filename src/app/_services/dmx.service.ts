@@ -5,6 +5,7 @@ import { StatusbarService } from "./statusbar.service";
 import * as smalltalkSelect from "../_utils/smalltalk-select";
 import { Widget } from "../_entities/widget";
 import { findChannelAddresses } from "../_utils/find-channel-addresses";
+import * as serialport from "serialport";
 
 @Injectable({
     providedIn: "root",
@@ -27,42 +28,49 @@ export class DmxService {
             description: string,
             deviceId: string,
             deviceIdDescription: string,
+            hasSerialport: boolean;
     } } = {
         artnet: {
             name: "Artnet",
             description: "Driver for all Artnet Devices like the EnttecODE.",
             deviceId: "127.0.0.1",
             deviceIdDescription: "IP-Adress of the device",
+            hasSerialport: false,
         },
         bbdmx: {
             name: "BeagleBone-DMX",
             description: "A driver for the \"BeagleBone-DMX\" Interface.",
-            deviceId: "COM5",
+            deviceId: "",
             deviceIdDescription: "Serial port of the device. For windows it is COM1, COM2, ...; For Linux it will be /dev/something",
+            hasSerialport: true,
         },
         dmx4all: {
             name: "DMX4ALL",
             description: "A driver for DMX4ALL devices like the \"NanoDMX USB Interface\"",
-            deviceId: "COM5",
+            deviceId: "",
             deviceIdDescription: "Serial port of the device. For windows it is COM1, COM2, ...; For Linux it will be /dev/something",
+            hasSerialport: true,
         },
         "enttec-usb-dmx-pro": {
             name: "Enttec USB DMX Pro",
             description: "A driver for devices using a \"Enttec USB DMX Pro\" chip like those Enttec devices or the \"DMXKing ultraDMX Micro\".",
-            deviceId: "COM5",
+            deviceId: "",
             deviceIdDescription: "Serial port of the device. For windows it is COM1, COM2, ...; For Linux it will be /dev/something",
+            hasSerialport: true,
         },
         "enttec-open-usb-dmx": {
             name: "Enttec Open DMX USB",
             description: "A driver for \"Enttec Open DMX USB\". This device is NOT recommended, there are known hardware limitations and this driver is not very stable. (If possible better obtain a device with the \"pro\" chip)",
-            deviceId: "COM5",
+            deviceId: "",
             deviceIdDescription: "Serial port of the device. For windows it is COM1, COM2, ...; For Linux it will be /dev/something",
+            hasSerialport: true,
         },
         "dmxking-utra-dmx-pro": {
             name: "DMXKing Ultra DMX pro",
             description: "A driver for the \"DMXKing Ultra DMX pro\" interface. This driver supports multiple universe specify the options with Port = A or Port = B",
-            deviceId: "COM5",
+            deviceId: "",
             deviceIdDescription: "Serial port of the device. For windows it is COM1, COM2, ...; For Linux it will be /dev/something",
+            hasSerialport: true,
         },
     }
     private runningEffects: Widget[] = [];
@@ -166,8 +174,15 @@ export class DmxService {
                 value: key,
             }
         ));
-        smalltalkSelect.select("Connect DMX Interface", "Choose the driver for the device you want to connect to.", opts).then((key: string) => {
-            smalltalk.prompt("Device Identifier", this.devices[key].deviceIdDescription, this.devices[key].deviceId).then((deviceId) => {
+        smalltalkSelect.select("Connect DMX Interface", "Choose the driver for the device you want to connect to.", opts).then(async (key: string) => {
+            let defaultDeviceId = this.devices[key].deviceId;
+            if (this.devices[key].hasSerialport) {
+                const serialports = await serialport.list();
+                if (serialports && serialports[0] && serialports[0].path) {
+                    defaultDeviceId = serialports[0].path;
+                }
+            }
+            smalltalk.prompt("Device Identifier", `${this.devices[key].deviceIdDescription}<br>${defaultDeviceId == this.devices[key].deviceId ? "" : `<br>A device connected to <b>'${defaultDeviceId}'</b> was found. If you want to connect to that, just press 'OK'. In case that's not the correct device, just change it.`}`, defaultDeviceId).then((deviceId) => {
                 let connectedSuccessfully = true;
                 // needed because the driver does not throw an error...
                 // eslint-disable-next-line no-console
