@@ -86,7 +86,6 @@ export class WidgetGridComponent implements OnInit {
         const { channels } = fixture.product.modes.filter(
             (m) => m.name == fixture.channelMode,
         )[0];
-        console.log(fixture.product, channels);
         const opts3 = channels.map((ch, idx) => {
             const [channel, isFineChannel] = this.removeFineSuffix(ch);
             return {
@@ -103,7 +102,7 @@ export class WidgetGridComponent implements OnInit {
                   `,
                 name: `${fixture.startAddress - 1 + idx}: ${channel}${isFineChannel ? " fine" : ""}`,
                 value: ch,
-            }
+            };
         });
         const mappedChannels = channels.map((c) => {
             const [ch, isFineChannel] = this.removeFineSuffix(c);
@@ -160,7 +159,6 @@ export class WidgetGridComponent implements OnInit {
                     ).then(async (control: WidgetType) => {
                         const { customChannelRequired } = (isEffect ? effectWidgets : widgets)
                             .filter((x) => x.value == control)[0];
-                        console.log(channel);
                         const w = new Widget(0, 0, 1, 1, isEffect ? undefined : control, customChannelRequired ? channel.split(":")[2] : channel, fixture, customChannelRequired, isEffect ? control : undefined);
                         await this.showService.connection.manager.save(w);
                         await this.loadAll();

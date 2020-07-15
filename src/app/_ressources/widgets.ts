@@ -64,6 +64,7 @@ export const effectWidgets: EffectWidgetOption[] = [
         value: "sinewave",
         description: "Alternating between high and low using a nice sine wave",
         f: [
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             (t: number, options: EffectOptionsData): number => {
                 const b = 0.003;
                 const T = (2 * Math.PI) / b;
