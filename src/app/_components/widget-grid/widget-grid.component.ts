@@ -86,25 +86,33 @@ export class WidgetGridComponent implements OnInit {
         const { channels } = fixture.product.modes.filter(
             (m) => m.name == fixture.channelMode,
         )[0];
-        const opts3 = channels.map((channel, idx) => ({
-            description: `
+        console.log(fixture.product, channels);
+        const opts3 = channels.map((ch, idx) => {
+            const [channel, isFineChannel] = this.removeFineSuffix(ch);
+            return {
+                description: `
                     <table><thead><tr><th></th><th></th></tr></thead><tbody>
                     ${fixture.product.availableChannels[channel].capabilities.map((c: any) => `<tr>
 
                     <td class="text-muted">${c.dmxRange ? `${c.dmxRange[0]} - ${c.dmxRange[1]}` : "0 - 255"}:</td>
-                    <td><b>${beautifyCamelCase(c.type)}</b> ${c.effectPreset ? `(${beautifyCamelCase(c.effectPreset)})` : ""}</td></tr>
+                    <td><b>${beautifyCamelCase(c.type)}${isFineChannel ? " fine" : ""}</b> ${c.effectPreset ? `(${beautifyCamelCase(c.effectPreset)})` : ""}</td></tr>
                     ${c.comment ? `<tr><td></td><td><i>${c.comment}</i></td></tr>` : ""}
                     
                     `).join("")}
                     </tbody></table>
                   `,
-            name: `${fixture.startAddress - 1 + idx}: ${channel}`,
-            value: channel,
-        }));
-        const mappedChannels = channels.map((c) => ({
-            key: c,
-            value: fixture.product.availableChannels[c],
-        }));
+                name: `${fixture.startAddress - 1 + idx}: ${channel}${isFineChannel ? " fine" : ""}`,
+                value: ch,
+            }
+        });
+        const mappedChannels = channels.map((c) => {
+            const [ch, isFineChannel] = this.removeFineSuffix(c);
+            return {
+                key: c, // ch
+                value: fixture.product.availableChannels[ch], // ch
+                isFineChannel,
+            };
+        });
         mappedChannels.forEach((channel, idx) => {
             if (
                 channel.value.singleCapability && channel.value.capabilities[0].type == "ColorIntensity"
@@ -152,6 +160,7 @@ export class WidgetGridComponent implements OnInit {
                     ).then(async (control: WidgetType) => {
                         const { customChannelRequired } = (isEffect ? effectWidgets : widgets)
                             .filter((x) => x.value == control)[0];
+                        console.log(channel);
                         const w = new Widget(0, 0, 1, 1, isEffect ? undefined : control, customChannelRequired ? channel.split(":")[2] : channel, fixture, customChannelRequired, isEffect ? control : undefined);
                         await this.showService.connection.manager.save(w);
                         await this.loadAll();
@@ -163,6 +172,13 @@ export class WidgetGridComponent implements OnInit {
         } else {
             this.alertNothingToDisplay();
         }
+    }
+
+    private removeFineSuffix(channel: string): [string, boolean] {
+        if (channel.endsWith(" fine")) {
+            return [channel.replace(" fine", ""), true];
+        }
+        return [channel, false];
     }
 
     public toggleEffect(event: Event, widget: Widget): void {
