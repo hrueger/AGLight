@@ -8,7 +8,6 @@
 
 ## ToDo
 - Fixtures padding between
-- Preview in Config Mode
 - Multiple Button Actions
 - ButtonGrid
 - Wheels

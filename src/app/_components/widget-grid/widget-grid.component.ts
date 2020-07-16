@@ -4,6 +4,7 @@ import * as smalltalk from "smalltalk";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
+import { FixedChannel } from "../../_entities/fixed-channel";
 import { Fixture } from "../../_entities/fixture";
 import { Widget, WidgetType } from "../../_entities/widget";
 import { colors } from "../../_ressources/colors";
@@ -28,6 +29,7 @@ export class WidgetGridComponent implements OnInit {
     public widgetTypes = widgets;
     @Input() public editMode = false;
     @Input() public previewEnabled = false;
+    @Input() public fixedChannels: FixedChannel[] = [];
 
     private debouncedSave: Subject<any> = new Subject<any>();
     private readonly shadeColorFactor = 35;
@@ -90,7 +92,7 @@ export class WidgetGridComponent implements OnInit {
         this.dmxService.updateMultiple(value, findChannelAddresses(widget));
     }
 
-    public addWidget(fixture: Fixture, isEffect = false): void {
+    public addWidget(fixture: Fixture, isEffect = false, isFixedChannelValue = false): void {
         const { channels } = fixture.product.modes.filter(
             (m) => m.name == fixture.channelMode,
         )[0];
@@ -112,29 +114,37 @@ export class WidgetGridComponent implements OnInit {
                 value: ch,
             };
         });
-        const mappedChannels = channels.map((c) => {
-            const [ch, isFineChannel] = this.removeFineSuffix(c);
-            return {
-                key: c, // ch
-                value: fixture.product.availableChannels[ch], // ch
-                isFineChannel,
-            };
-        });
-        mappedChannels.forEach((channel, idx) => {
-            if (
-                channel.value.singleCapability && channel.value.capabilities[0].type == "ColorIntensity"
-                && mappedChannels[idx + 1] && mappedChannels[idx + 1].value.singleCapability && mappedChannels[idx + 1].value.capabilities[0].type == "ColorIntensity"
-                && mappedChannels[idx + 2] && mappedChannels[idx + 2].value.singleCapability && mappedChannels[idx + 2].value.capabilities[0].type == "ColorIntensity"
-            ) {
-                opts3.unshift({
-                    description: "This is a virtual channel. It bundles the Red, Green and Blue channel of the fixture(s). You can use this for colorpickers.",
-                    name: "RGB Channel (3 Channels)",
-                    value: `CUSTOM:rgb:${channel.key}`,
-                });
-            }
-        });
+        if (!isFixedChannelValue) {
+            const mappedChannels = channels.map((c) => {
+                const [ch, isFineChannel] = this.removeFineSuffix(c);
+                return {
+                    key: c, // ch
+                    value: fixture.product.availableChannels[ch], // ch
+                    isFineChannel,
+                };
+            });
+            mappedChannels.forEach((channel, idx) => {
+                if (
+                    channel.value.singleCapability && channel.value.capabilities[0].type == "ColorIntensity"
+                    && mappedChannels[idx + 1] && mappedChannels[idx + 1].value.singleCapability && mappedChannels[idx + 1].value.capabilities[0].type == "ColorIntensity"
+                    && mappedChannels[idx + 2] && mappedChannels[idx + 2].value.singleCapability && mappedChannels[idx + 2].value.capabilities[0].type == "ColorIntensity"
+                ) {
+                    opts3.unshift({
+                        description: "This is a virtual channel. It bundles the Red, Green and Blue channel of the fixture(s). You can use this for colorpickers.",
+                        name: "RGB Channel (3 Channels)",
+                        value: `CUSTOM:rgb:${channel.key}`,
+                    });
+                }
+            });
+        }
         if (opts3.length) {
             smalltalkSelect.select("Add widget", "Choose the channel:", opts3).then(async (channel: string) => {
+                if (isFixedChannelValue) {
+                    const w = new FixedChannel(fixture, channel);
+                    await this.showService.connection.manager.save(w);
+                    await this.loadAll();
+                    return;
+                }
                 let availableWidgets;
                 if (isEffect) {
                     availableWidgets = effectWidgets.filter((w) => {
@@ -197,6 +207,10 @@ export class WidgetGridComponent implements OnInit {
 
     public addEffectWidget(fixture: Fixture): void {
         this.addWidget(fixture, true);
+    }
+
+    public addFixedChannelWidget(fixture: Fixture): void {
+        this.addWidget(fixture, false, true);
     }
 
     // eslint-disable-next-line
@@ -321,6 +335,17 @@ export class WidgetGridComponent implements OnInit {
             if (w.effect) {
                 [w.effectData] = effectWidgets.filter((e) => e.value == w.effect);
             }
+        }
+
+        this.updateFixedChannels();
+    }
+
+    public updateFixedChannels(): void {
+        if ((this.dmxService.isConnected && this.previewEnabled) || !this.editMode) {
+            for (const f of this.fixedChannels) {
+                this.dmxService.updateMultiple(f.value, findChannelAddresses(f));
+            }
+            console.log("updated fixed channels");
         }
     }
 

@@ -1,9 +1,11 @@
 import { Component, ViewChild } from "@angular/core";
+import * as smalltalk from "smalltalk";
 import { LibraryService } from "../../_services/library.service";
 import { Fixture } from "../../_entities/fixture";
 import { ShowService } from "../../_services/show.service";
 import { WidgetGridComponent } from "../widget-grid/widget-grid.component";
 import { DmxService } from "../../_services/dmx.service";
+import { FixedChannel } from "../../_entities/fixed-channel";
 
 @Component({
     selector: "app-configure-show",
@@ -15,6 +17,7 @@ export class ConfigureShowComponent {
     public displayFixtures: Fixture[] = [];
     public searchValue = "";
     public previewEnabled = false;
+    public fixedChannels: FixedChannel[] = [];
     @ViewChild("widgetGrid") public widgetGrid: WidgetGridComponent;
     constructor(
         private libraryService: LibraryService,
@@ -29,6 +32,23 @@ export class ConfigureShowComponent {
             [fixture.product] = products.filter((p) => p.name == fixture.name);
         }
         this.displayFixtures = this.allFixtures;
+        this.fixedChannels = await this.showService.connection.getRepository(FixedChannel).find({ relations: ["fixture"] });
+        for (const f of this.fixedChannels) {
+            [f.fixture.product] = products.filter((p) => p.name == f.fixture.name);
+        }
+    }
+
+    public editFixedChannel(fixedChannel: FixedChannel): void {
+        smalltalk.prompt("Edit the value of the fixed channel", "Type in a value between 0 and 255", fixedChannel.value).then(async (v) => {
+            fixedChannel.value = v;
+            await this.showService.connection.getRepository(FixedChannel).save(fixedChannel);
+            this.widgetGrid.updateFixedChannels();
+        });
+    }
+
+    public async removeFixedChannel(fixedChannel: FixedChannel): Promise<void> {
+        this.showService.connection.getRepository(FixedChannel).delete(fixedChannel.id);
+        this.fixedChannels = this.fixedChannels.filter((f) => f.id !== fixedChannel.id);
     }
 
     public togglePreview(event: Event): void {

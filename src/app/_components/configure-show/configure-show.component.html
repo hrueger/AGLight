@@ -25,16 +25,36 @@
                                 <div>
                                     <button class="action-btn green" (click)="widgetGrid.addWidget(fixture)"><i class="fas fa-plus"></i></button>
                                     <button class="action-btn blue" (click)="widgetGrid.addEffectWidget(fixture)"><i class="fas fa-magic"></i></button>
+                                    <button class="action-btn yellow" (click)="widgetGrid.addFixedChannelWidget(fixture)"><i class="fas fa-thumbtack"></i></button>
                                 </div>
                             </a>
                         </li>
                     </ul>
                 </div>
+                <div>
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Fixed Channels</span>
+                    </h6>
+                    <div class="flex-grow-1 overflow-auto">
+                        <ul class="nav flex-column">
+                            <li class="nav-item" *ngFor="let fixedChannel of fixedChannels">
+                                <a class="nav-link d-flex justify-content-between">
+                                    <span>{{fixedChannel.channel}} <span class="text-muted">| {{fixedChannel.fixture.product.name}} |</span> {{fixedChannel.value}}</span>
+                                    <div>
+                                        <button class="action-btn blue" (click)="editFixedChannel(fixedChannel)"><i class="fas fa-pen"></i></button>
+                                        <button class="action-btn red" (click)="removeFixedChannel(fixedChannel)"><i class="fas fa-times"></i></button>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
             </div>
         </nav>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-            <widget-grid #widgetGrid [editMode]="true" [previewEnabled]="previewEnabled"></widget-grid>
+            <widget-grid #widgetGrid [editMode]="true" [previewEnabled]="previewEnabled" [fixedChannels]="fixedChannels"></widget-grid>
         </main>
     </div>
 </div>

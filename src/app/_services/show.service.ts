@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import * as db from "typeorm";
 import { Fixture } from "../_entities/fixture";
 import { Widget } from "../_entities/widget";
+import { FixedChannel } from "../_entities/fixed-channel";
 import { RecentShowsService } from "./recent-shows.service";
 import { ElectronService } from "./electron.service";
 
@@ -30,7 +31,7 @@ export class ShowService {
         }
         this.connection = await db.createConnection({
             database: path,
-            entities: [Widget, Fixture],
+            entities: [Widget, Fixture, FixedChannel],
             type: "sqlite",
         });
         await this.connection.synchronize();
