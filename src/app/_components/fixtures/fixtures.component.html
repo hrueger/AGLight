@@ -13,8 +13,8 @@
                 <div class="flex-grow-1 overflow-auto">
                     <ul class="nav flex-column">
                         <li class="nav-item" *ngFor="let fixture of displayFixtures">
-                            <a class="nav-link clickable" (click)="addFixture(fixture, addFixtureModal)" *ngIf="fixture.name && fixture.manufacturer && fixture.manufacturer.name">
-                              {{fixture.name}} <span class="text-muted">| {{fixture.manufacturer.name}}</span>
+                            <a class="nav-link clickable" (click)="addFixture(fixture, addFixtureModal)" *ngIf="fixture.name">
+                              {{fixture.name}} <span *ngIf="fixture.manufacturer && fixture.manufacturer.name" class="text-muted">| {{fixture.manufacturer.name}}</span>
                             </a>
                         </li>
                     </ul>
