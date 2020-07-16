@@ -24,9 +24,10 @@
                     <div class="widget-slider" *ngIf="widget.effect">
                         <div *ngIf="editMode">
                             <div class="form-group row" *ngFor="let option of widget.effectData.options">
-                                <label for="transitionTime" class="col-3 col-form-label">{{option.name}}</label>
+                                <label [for]="widget.id + '-effectoption-' + option.name" class="col-3 col-form-label">{{option.name}}</label>
                                 <div class="col-9">
-                                    <input id="transitionTime" name="transitionTime" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.effectConfig[option.key]" [placeholder]="option.description" type="number" [min]="option.min" [max]="option.max" class="form-control">
+                                    <input [id]="widget.id + '-effectoption-' + option.name" [name]="widget.id + 'effectoption-' + option.name" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.effectConfig[option.key]" [placeholder]="option.description" type="number" [min]="option.min"
+                                        [max]="option.max" class="form-control">
                                     <span class="form-text text-slightly-muted">{{option.description}} Can be between {{option.min}} and {{option.max}}.</span>
                                 </div>
                             </div>
