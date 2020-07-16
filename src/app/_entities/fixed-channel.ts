@@ -2,7 +2,6 @@ import {
     BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne,
 } from "typeorm";
 import { Fixture } from "./fixture";
-import { EffectOptionsData, EffectWidgetOption } from "../_ressources/widgets";
 
 @Entity()
 export class FixedChannel extends BaseEntity {

@@ -2,6 +2,7 @@ import { Component, ViewChild } from "@angular/core";
 import * as smalltalk from "smalltalk";
 import { LibraryService } from "../../_services/library.service";
 import { Fixture } from "../../_entities/fixture";
+import { Product } from "../../_entities/product";
 import { ShowService } from "../../_services/show.service";
 import { WidgetGridComponent } from "../widget-grid/widget-grid.component";
 import { DmxService } from "../../_services/dmx.service";
@@ -18,6 +19,7 @@ export class ConfigureShowComponent {
     public searchValue = "";
     public previewEnabled = false;
     public fixedChannels: FixedChannel[] = [];
+    public products: Product[] = [];
     @ViewChild("widgetGrid") public widgetGrid: WidgetGridComponent;
     constructor(
         private libraryService: LibraryService,
@@ -26,15 +28,26 @@ export class ConfigureShowComponent {
     ) { }
 
     public async ngOnInit(): Promise<void> {
-        const products = this.libraryService.getProducts();
+        this.products = this.libraryService.getProducts();
         this.allFixtures = await this.showService.connection.getRepository(Fixture).find();
         for (const fixture of this.allFixtures) {
-            [fixture.product] = products.filter((p) => p.name == fixture.name);
+            [fixture.product] = this.products.filter((p) => p.name == fixture.name);
         }
         this.displayFixtures = this.allFixtures;
+        this.updateFixedChannels();
+    }
+
+    public async updateFixedChannels(): Promise<void> {
         this.fixedChannels = await this.showService.connection.getRepository(FixedChannel).find({ relations: ["fixture"] });
         for (const f of this.fixedChannels) {
-            [f.fixture.product] = products.filter((p) => p.name == f.fixture.name);
+            [f.fixture.product] = this.products.filter((p) => p.name == f.fixture.name);
+        }
+    }
+
+    public onFixedChannedAdded(f: FixedChannel): void {
+        this.fixedChannels.push(f);
+        for (const c of this.fixedChannels) {
+            [c.fixture.product] = this.products.filter((p) => p.name == c.fixture.name);
         }
     }
 

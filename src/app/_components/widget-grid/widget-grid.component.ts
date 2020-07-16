@@ -1,4 +1,6 @@
-import { Component, Input, OnInit } from "@angular/core";
+import {
+    Component, Input, Output, EventEmitter, OnInit,
+} from "@angular/core";
 import { GridsterConfig } from "angular-gridster2";
 import * as smalltalk from "smalltalk";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -30,6 +32,8 @@ export class WidgetGridComponent implements OnInit {
     @Input() public editMode = false;
     @Input() public previewEnabled = false;
     @Input() public fixedChannels: FixedChannel[] = [];
+    @Output() public fixedChannelAdded: EventEmitter<FixedChannel>
+        = new EventEmitter<FixedChannel>();
 
     private debouncedSave: Subject<any> = new Subject<any>();
     private readonly shadeColorFactor = 35;
@@ -142,7 +146,9 @@ export class WidgetGridComponent implements OnInit {
                 if (isFixedChannelValue) {
                     const w = new FixedChannel(fixture, channel);
                     await this.showService.connection.manager.save(w);
-                    await this.loadAll();
+                    this.fixedChannels.push(w);
+                    this.updateFixedChannels();
+                    this.fixedChannelAdded.emit(w);
                     return;
                 }
                 let availableWidgets;
@@ -345,7 +351,6 @@ export class WidgetGridComponent implements OnInit {
             for (const f of this.fixedChannels) {
                 this.dmxService.updateMultiple(f.value, findChannelAddresses(f));
             }
-            console.log("updated fixed channels");
         }
     }
 
