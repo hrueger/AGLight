@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import * as DMX from "dmx";
 import * as smalltalk from "smalltalk";
+import * as serialport from "serialport";
 import { StatusbarService } from "./statusbar.service";
 import * as smalltalkSelect from "../_utils/smalltalk-select";
 import { Widget } from "../_entities/widget";
 import { findChannelAddresses } from "../_utils/find-channel-addresses";
-import * as serialport from "serialport";
 
 @Injectable({
     providedIn: "root",
