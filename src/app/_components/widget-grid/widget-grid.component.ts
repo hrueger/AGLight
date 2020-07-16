@@ -27,6 +27,7 @@ export class WidgetGridComponent implements OnInit {
     public currentWidget: Widget;
     public widgetTypes = widgets;
     @Input() public editMode = false;
+    @Input() public previewEnabled = false;
 
     private debouncedSave: Subject<any> = new Subject<any>();
     private readonly shadeColorFactor = 35;
@@ -193,7 +194,7 @@ export class WidgetGridComponent implements OnInit {
 
     // eslint-disable-next-line
     public action(type: string, widget: Widget, event: Event | number | any, idx?: number): void {
-        if (this.editMode) {
+        if (this.editMode && !this.previewEnabled) {
             return;
         }
         let channels: number[];
