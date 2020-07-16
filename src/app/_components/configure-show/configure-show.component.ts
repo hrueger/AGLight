@@ -44,7 +44,7 @@ export class ConfigureShowComponent {
         }
     }
 
-    public onFixedChannedAdded(f: FixedChannel): void {
+    public onFixedChannelAdded(f: FixedChannel): void {
         this.fixedChannels.push(f);
         for (const c of this.fixedChannels) {
             [c.fixture.product] = this.products.filter((p) => p.name == c.fixture.name);
