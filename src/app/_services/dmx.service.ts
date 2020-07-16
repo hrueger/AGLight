@@ -166,7 +166,7 @@ export class DmxService {
         // ToDo
     }
 
-    public async connectToDevice(): Promise<void> {
+    public async connectToDevice(onSuccessfulConnection?: () => void): Promise<void> {
         const opts = Object.keys(this.devices).map((key) => (
             {
                 description: this.devices[key].description,
@@ -240,6 +240,9 @@ export class DmxService {
                                 },
                             ],
                         });
+                        if (onSuccessfulConnection && typeof onSuccessfulConnection == "function") {
+                            onSuccessfulConnection();
+                        }
                     }
                 }, 500);
             });
