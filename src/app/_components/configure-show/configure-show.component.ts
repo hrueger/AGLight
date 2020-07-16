@@ -37,6 +37,7 @@ export class ConfigureShowComponent {
         } else if (this.dmxService.isConnected) {
             this.previewEnabled = true;
         } else {
+            this.dmxService.connectToDevice();
             this.previewEnabled = false;
         }
         event.preventDefault();
