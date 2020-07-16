@@ -347,11 +347,13 @@ export class WidgetGridComponent implements OnInit {
     }
 
     public updateFixedChannels(): void {
-        if ((this.dmxService.isConnected && this.previewEnabled) || !this.editMode) {
-            for (const f of this.fixedChannels) {
-                this.dmxService.updateMultiple(f.value, findChannelAddresses(f));
+        setTimeout(() => {
+            if ((this.dmxService.isConnected && this.previewEnabled) || !this.editMode) {
+                for (const f of this.fixedChannels) {
+                    this.dmxService.updateMultiple(f.value, findChannelAddresses(f));
+                }
             }
-        }
+        }, 200);
     }
 
     private replaceDarkOrLight(name: string): {backgroundColor?: string, color?: string} {
