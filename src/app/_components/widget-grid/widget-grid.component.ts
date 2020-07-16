@@ -83,6 +83,13 @@ export class WidgetGridComponent implements OnInit {
         }, () => undefined);
     }
 
+    public preview(widget: Widget, value: number): void {
+        if (!this.previewEnabled || !this.editMode) {
+            return;
+        }
+        this.dmxService.updateMultiple(value, findChannelAddresses(widget));
+    }
+
     public addWidget(fixture: Fixture, isEffect = false): void {
         const { channels } = fixture.product.modes.filter(
             (m) => m.name == fixture.channelMode,

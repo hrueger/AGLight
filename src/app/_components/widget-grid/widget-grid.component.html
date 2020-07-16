@@ -49,7 +49,7 @@
                             <div class="form-group row">
                                 <label for="buttonValue" class="col-3 col-form-label">Value</label>
                                 <div class="col-9">
-                                    <input id="buttonValue" name="buttonValue" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonValue" placeholder="The DMX value of this button's channel." type="number" min="0" max="255" class="form-control">
+                                    <input id="buttonValue" name="buttonValue" (ngModelChange)="saveDebounced(); preview(widget, $event);" [(ngModel)]="widget.config.buttonValue" placeholder="The DMX value of this button's channel." type="number" min="0" max="255" class="form-control">
                                     <span class="form-text text-slightly-muted">It can be between 0 and 255.</span>
                                 </div>
                             </div>
