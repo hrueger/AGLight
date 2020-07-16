@@ -47,7 +47,7 @@
                             <td class="editable" (click)="change('displayName', i)"><i class="fas fa-pen"></i> {{fixture.displayName}}
                             </td>
                             <td>{{fixture.product.name}}</td>
-                            <td>{{fixture.product.manufacturer.name}}</td>
+                            <td>{{fixture.product.manufacturer?.name}}</td>
                             <td class="editable" (click)="change('channelMode', i)"><i class="fas fa-pen"></i> {{ fixture.channelMode }} ({{getChannelCount(fixture)}} Channels)</td>
                             <td class="editable" (click)="change('number', i)"><i class="fas fa-pen"></i> {{fixture.number}}</td>
                             <td>{{fixture.number * getChannelCount(fixture)}}</td>
