@@ -15,7 +15,7 @@ import * as smalltalkSelect from "../../_utils/smalltalk-select";
 import { LibraryService } from "../../_services/library.service";
 import { DmxService } from "../../_services/dmx.service";
 import { beautifyCamelCase } from "../../_utils/camelcase-beautifier";
-import { findChannelAddresses } from "../../_utils/find-channel-addresses";
+import { findChannelAddresses, findChannelAddresses2 } from "../../_utils/find-channel-addresses";
 import { widgets, effectWidgets } from "../../_ressources/widgets";
 
 @Component({
@@ -219,6 +219,12 @@ export class WidgetGridComponent implements OnInit {
         this.addWidget(fixture, false, true);
     }
 
+    public async addBlackoutWidget() {
+        const w = new Widget(0, 0, 1, 1, "BlackoutButton", "", undefined);
+        await this.showService.connection.manager.save(w);
+        await this.loadAll();
+    }
+
     // eslint-disable-next-line
     public action(type: string, widget: Widget, event: Event | number | any, idx?: number): void {
         if (this.editMode && !this.previewEnabled) {
@@ -237,6 +243,23 @@ export class WidgetGridComponent implements OnInit {
                 channels,
                 widget.config?.transitionTime,
             );
+            break;
+        case "blackoutbutton":
+            for (const f of this.fixtures) {
+                const cm = f.product.modes.filter((m) => m.name == f.channelMode)[0];
+                for (let channelName of cm.channels) {
+                    channelName = channelName.replace(" fine", "");
+                    if (f.product.availableChannels[channelName].singleCapability && f.product.availableChannels[channelName].capabilities[0].type == "Intensity") {
+                        channels = findChannelAddresses2(f, channelName);
+                        console.log(f, channels)
+                        this.dmxService.animateMultipleTo(
+                            0,
+                            channels,
+                            widget.config?.transitionTime,
+                        );
+                    }
+                }
+            }
             break;
         case "buttongrid":
             // chl = findChannelAddress(widget);
@@ -337,7 +360,9 @@ export class WidgetGridComponent implements OnInit {
         }
         this.widgets = await this.showService.connection.getRepository(Widget).find({ relations: ["fixture"] });
         for (const w of this.widgets) {
-            [w.fixture.product] = products.filter((p) => p.name == w.fixture.name);
+            if (w.fixture) {
+                [w.fixture.product] = products.filter((p) => p.name == w.fixture.name);
+            }
             if (w.effect) {
                 [w.effectData] = effectWidgets.filter((e) => e.value == w.effect);
             }

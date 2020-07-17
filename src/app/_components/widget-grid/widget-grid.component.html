@@ -6,7 +6,7 @@
                     {{ widget | json }}
                 </pre>-->
                 <div class="d-flex justify-content-between">
-                    <span class="text-truncate">{{widget.displayName ? widget.displayName : ((widget.type || (widget.effect | effectName)) + ": " + widget.channel + " - " + widget.fixture.displayName)}}</span>
+                    <span class="text-truncate">{{widget.displayName ? widget.displayName : ((widget.type || (widget.effect | effectName)) + ": " + widget.channel + " - " + widget.fixture?.displayName)}}</span>
                     <div class="item-buttons" *ngIf="editMode">
                         <span [class]="'mr-3 text-' + (widget.config.transitionTime > 50 ? 'success' : 'warning')"><i class="far fa-play-circle"></i> {{widget.config.transitionTime ? widget.config.transitionTime / 1000 : 0}}s</span>
                         <button class="btn btn-outline-warning btn-round mr-2 drag-handler">
@@ -63,6 +63,19 @@
                             </div>
                         </div>
                     </div>
+                        
+                    <div class="widget-button" *ngIf="widget.type == 'BlackoutButton'">
+                        <button *ngIf="!editMode" class="btn btn-outline-secondary w-100 h-100" (click)="action('blackoutbutton', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Blackout"}}</button>
+                        <div *ngIf="editMode">
+                            <div class="form-group row">
+                                <label for="buttonName" class="col-3 col-form-label">Button Name</label>
+                                <div class="col-9">
+                                    <input id="buttonName" name="buttonName" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
+                                    <span class="form-text text-slightly-muted">It can be everything you can possibly imagine.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="widget-colorpicker" *ngIf="widget.type == 'Colorpicker'">
                         <color-circle circleSize="50" (onChangeComplete)="action('colorpicker', widget, $event)"></color-circle>
@@ -93,7 +106,7 @@
 
 <ng-template #configModal let-modal>
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Settings of <i>{{currentWidget.displayName ? currentWidget.displayName : ((currentWidget.type || (currentWidget.effect | effectName)) + ": " + currentWidget.channel + " - " + currentWidget.fixture.displayName)}}</i></h4>
+        <h4 class="modal-title" id="modal-basic-title">Settings of <i>{{currentWidget.displayName ? currentWidget.displayName : ((currentWidget.type || (currentWidget.effect | effectName)) + ": " + currentWidget.channel + " - " + currentWidget.fixture?.displayName)}}</i></h4>
         <button type="button" class="close" (click)="modal.dismiss()"><span>&times;</span></button>
     </div>
     <div class="modal-body">

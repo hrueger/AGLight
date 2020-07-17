@@ -4,7 +4,7 @@ import {
 import { Fixture } from "./fixture";
 import { EffectOptionsData, EffectWidgetOption } from "../_ressources/widgets";
 
-export type WidgetType = "Fader" | "Button" | "Colorpicker" | "RGB Colorpicker" | "ButtonGrid";
+export type WidgetType = "Fader" | "Button" | "Colorpicker" | "RGB Colorpicker" | "ButtonGrid" | "BlackoutButton";
 
 @Entity()
 export class Widget extends BaseEntity {
