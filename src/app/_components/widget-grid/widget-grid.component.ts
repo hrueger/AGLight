@@ -249,9 +249,8 @@ export class WidgetGridComponent implements OnInit {
                 const cm = f.product.modes.filter((m) => m.name == f.channelMode)[0];
                 for (let channelName of cm.channels) {
                     channelName = channelName.replace(" fine", "");
-                    if (f.product.availableChannels[channelName].singleCapability && f.product.availableChannels[channelName].capabilities[0].type == "Intensity") {
+                    if (f.product.availableChannels[channelName].singleCapability && (f.product.availableChannels[channelName].capabilities[0].type == "Intensity" || f.product.availableChannels[channelName].capabilities[0].type == "ColorIntensity")) {
                         channels = findChannelAddresses2(f, channelName);
-                        console.log(f, channels)
                         this.dmxService.animateMultipleTo(
                             0,
                             channels,
