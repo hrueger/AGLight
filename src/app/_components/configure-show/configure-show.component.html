@@ -4,14 +4,20 @@
             <div class="sidebar-sticky h-100 d-flex flex-column pb-4">
                 <div>
                     <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mb-1 text-muted">Settings</h6>
-                    <div class="px-3 pb-5">
+                    <div class="px-3">
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="togglePreview" [ngModel]="previewEnabled" (click)="togglePreview($event)">
                             <label class="custom-control-label" for="togglePreview" (click)="togglePreview($event)">Enable preview</label>
                         </div>
-                        <button class="action-btn green" (click)="widgetGrid.addBlackoutWidget()"><i class="fas fa-power-off"></i></button>
                     </div>
-                    <div class="px-3">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>General widgets</span>
+                    </h6>
+                    <div class="px-3 d-flex justify-content-between">
+                        <span>Blackout</span>
+                        <button class="action-btn green" (click)="widgetGrid.addBlackoutWidget()"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <div class="px-3 mt-4">
                         <input class="form-control" type="text" placeholder="Search" [(ngModel)]="searchValue" (ngModelChange)="search($event)">
                     </div>
                     <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
