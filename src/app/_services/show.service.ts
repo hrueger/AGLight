@@ -15,6 +15,7 @@ export class ShowService {
         return this.pshowLoaded;
     }
     public connection: db.Connection;
+    public currentShowName: string;
     private pshowLoaded = false;
     private currentShowFilePath: string;
 
@@ -37,7 +38,9 @@ export class ShowService {
         await this.connection.synchronize();
         this.pshowLoaded = true;
         this.recentShowsService.add(path);
-        this.electronService.setTitle(path.split("\\").pop());
+        const showname = path.split("\\").pop().replace(".aglshow", "");
+        this.electronService.setTitle(showname);
+        this.currentShowName = showname;
         this.currentShowFilePath = path;
         this.router.navigate(["fixtures"]);
     }

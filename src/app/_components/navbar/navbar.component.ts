@@ -35,7 +35,7 @@ export class NavbarComponent {
       },
   ];
   private win: any;
-  constructor(private showService: ShowService, private router: Router) {}
+  constructor(public showService: ShowService, private router: Router) {}
 
   public ngOnInit(): void {
       this.win = remote.getCurrentWindow();
