@@ -102,6 +102,14 @@
                                 .wheel-slot {
                                     cursor: pointer;
                                 }
+                                .wheel-slot circle:hover {
+                                    r: 13;
+                                    transition: .5s;
+                                }
+                                .wheel-slot circle {
+                                    r: 10;
+                                    transition: .5s;
+                                }
                             </style>
                             <circle cx="0" cy="0" r="50" fill="#444" class="wheel"></circle>
                             <circle cx="0" cy="0" r="3" fill="#fff" class="hole"></circle>
@@ -114,7 +122,7 @@
                             <g [attr.transform]="'rotate(' + (360 / widget.fixture.product.wheels[widget.channel].slots.length * idx) + ', 0, 0)'" class="slot" *ngFor="let slot of widget.fixture.product.wheels[widget.channel].slots; let idx = index">
                                 <title>Slot {{idx + 1}}: {{slot.name || slot.type}}</title>
                                 <g class="wheel-slot" transform="translate(0, -36.367246225096906)" (click)="action('wheel', widget, $event, idx)">
-                                    <circle cx="0" cy="0" r="10.632753774903094" [attr.fill]="slot.type == 'Color' ? slot.colors[0] : '#555555'" />
+                                    <circle cx="0" cy="0" r="10" [attr.fill]="slot.type == 'Color' ? slot.colors[0] : '#555555'" />
                                 </g>
                             </g>
                         </svg>
