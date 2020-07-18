@@ -56,7 +56,7 @@ export class Product {
 }
 
 // tslint:disable-next-line: max-classes-per-file
-type Capability = CapabilityBase & {
+type Capability = CapabilityBase & ({
     type: "NoFunction";
 } | {
     type: "ShutterStrobe";
@@ -324,7 +324,7 @@ type Capability = CapabilityBase & {
     parameterEnd: any;
 } | {
     type: "Generic";
-}
+})
 
 // tslint:disable-next-line: max-classes-per-file
 class Channel {
