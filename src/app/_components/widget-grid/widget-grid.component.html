@@ -7,15 +7,15 @@
                 </pre>-->
                 <div class="d-flex justify-content-between">
                     <span class="text-truncate">{{widget.displayName ? widget.displayName : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + widget.fixture?.displayName)}}</span>
-                    <div class="item-buttons" *ngIf="editMode">
-                        <span [class]="'mr-3 text-' + (widget.config.transitionTime > 50 ? 'success' : 'warning')"><i class="far fa-play-circle"></i> {{widget.config.transitionTime ? widget.config.transitionTime / 1000 : 0}}s</span>
-                        <button class="btn btn-outline-warning btn-round mr-2 drag-handler">
+                    <div class="item-buttons d-flex flex-nowrap" *ngIf="editMode">
+                        <span [class]="'d-flex flex-nowrap text-' + (widget.config.transitionTime > 50 ? 'success' : 'warning')"><i class="far fa-play-circle mt-1"></i> {{widget.config.transitionTime ? widget.config.transitionTime / 1000 : 0}}s</span>
+                        <button class="action-btn yellow ml-1 drag-handler">
                             <i class="fas fa-arrows-alt"></i>
                         </button>
-                        <button class="btn btn-outline-primary btn-round mr-2" (click)="openConfig($event, widget, configModal)" (touchstart)="openConfig($event, widget, configModal)">
+                        <button class="action-btn blue mx-1" (click)="openConfig($event, widget, configModal)" (touchstart)="openConfig($event, widget, configModal)">
                             <i class="fas fa-cog"></i>
                         </button>
-                        <button class="btn btn-outline-danger btn-round" (click)="removeItem($event, widget)" (touchstart)="removeItem($event, widget)">
+                        <button class="action-btn red" (click)="removeItem($event, widget)" (touchstart)="removeItem($event, widget)">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
