@@ -28,7 +28,7 @@
                                 <div class="col-9">
                                     <input [id]="widget.id + '-effectoption-' + option.name" [name]="widget.id + 'effectoption-' + option.name" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.effectConfig[option.key]" [placeholder]="option.description" type="number" [min]="option.min"
                                         [max]="option.max" class="form-control">
-                                    <span class="form-text text-slightly-muted">{{option.description}} Can be between {{option.min}} and {{option.max}}.</span>
+                                    <span class="form-text text-slightly-muted">{{option.description}} ({{option.min}} - {{option.max}})</span>
                                 </div>
                             </div>
                         </div>
@@ -51,14 +51,13 @@
                                 <label for="buttonValue" class="col-3 col-form-label">Value</label>
                                 <div class="col-9">
                                     <input id="buttonValue" name="buttonValue" (ngModelChange)="saveDebounced(); preview(widget, $event);" [(ngModel)]="widget.config.buttonValue" placeholder="The DMX value of this button's channel." type="number" min="0" max="255" class="form-control">
-                                    <span class="form-text text-slightly-muted">It can be between 0 and 255.</span>
+                                    <span class="form-text text-slightly-muted">0 - 255</span>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="buttonName" class="col-3 col-form-label">Button Name</label>
                                 <div class="col-9">
                                     <input id="buttonName" name="buttonName" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
-                                    <span class="form-text text-slightly-muted">It can be everything you can possibly imagine.</span>
                                 </div>
                             </div>
                         </div>
@@ -71,7 +70,6 @@
                                 <label for="buttonName" class="col-3 col-form-label">Button Name</label>
                                 <div class="col-9">
                                     <input id="buttonName" name="buttonName" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
-                                    <span class="form-text text-slightly-muted">It can be everything you can possibly imagine.</span>
                                 </div>
                             </div>
                         </div>
