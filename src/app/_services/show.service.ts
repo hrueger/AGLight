@@ -26,7 +26,7 @@ export class ShowService {
 
     public async loadShow(path: string): Promise<void> {
         if (this.connection) {
-            this.connection.close();
+            await this.connection.close();
             this.connection = undefined;
         }
         this.connection = await db.createConnection({
