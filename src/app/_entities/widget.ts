@@ -11,16 +11,16 @@ export class Widget extends BaseEntity {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column()
+    @Column({ nullable: true })
     public x: number;
 
-    @Column()
+    @Column({ nullable: true })
     public y: number;
 
-    @Column()
+    @Column({ nullable: true })
     public rows: number;
 
-    @Column()
+    @Column({ nullable: true })
     public cols: number;
 
     @Column({ nullable: true })
@@ -29,7 +29,7 @@ export class Widget extends BaseEntity {
     @Column({ default: "", nullable: true })
     public effect?: string;
 
-    @Column()
+    @Column({ nullable: true })
     public channel: string;
 
     @Column({ default: "" })
@@ -57,12 +57,12 @@ export class Widget extends BaseEntity {
     constructor(x: number, y: number, rows: number, cols: number, type: WidgetType,
         channel: string, fixture: Fixture, customChannel = "", effect?: string) {
         super();
-        this.x = x;
-        this.y = y;
-        this.cols = cols;
-        this.rows = rows;
-        this.type = type;
-        this.channel = channel;
+        this.x = x || 0;
+        this.y = y || 0;
+        this.cols = cols || 1;
+        this.rows = rows || 1;
+        this.type = type || "Button";
+        this.channel = channel || "";
         this.fixture = fixture;
         this.customChannel = customChannel;
         this.effect = effect;

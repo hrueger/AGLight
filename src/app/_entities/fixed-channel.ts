@@ -8,10 +8,10 @@ export class FixedChannel extends BaseEntity {
     @PrimaryGeneratedColumn()
     public id: number;
 
-    @Column()
+    @Column({ nullable: true })
     public channel: string;
 
-    @Column()
+    @Column({ default: 0, nullable: true })
     public value: number;
 
     @ManyToOne(() => Fixture, (fixture) => fixture.widgets)
