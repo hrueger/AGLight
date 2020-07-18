@@ -92,6 +92,33 @@
                             </tr>
                         </table>
                     </div>
+
+                    <div class="widget-wheel" *ngIf="widget.type == 'Wheel'">
+                        <!--{{widget.fixture.product.availableChannels[widget.channel] | json}}-->
+                        <!--{{widget.fixture.product.wheels[widget.channel] | json}}-->
+
+                        <svg width="300" height="300" viewBox="-50 -50 100 100">
+                            <style>
+                                .wheel-slot {
+                                    cursor: pointer;
+                                }
+                            </style>
+                            <circle cx="0" cy="0" r="50" fill="#444" class="wheel"></circle>
+                            <circle cx="0" cy="0" r="3" fill="#fff" class="hole"></circle>
+                            <g transform="scale(1, 1)" class="arrow">
+                                <g transform="rotate(-30)">
+                                    <path d="M 0,-6 C 3,-6 6,-3 6,0" fill="none" stroke="#aaa" stroke-width="1"></path>
+                                    <path d="M 0,-8 -4,-6 0,-4 Z" fill="#aaa"></path>
+                                </g>
+                            </g>
+                            <g [attr.transform]="'rotate(' + (360 / widget.fixture.product.wheels[widget.channel].slots.length * idx) + ', 0, 0)'" class="slot" *ngFor="let slot of widget.fixture.product.wheels[widget.channel].slots; let idx = index">
+                                <title>Slot {{idx + 1}}: {{slot.name || slot.type}}</title>
+                                <g class="wheel-slot" transform="translate(0, -36.367246225096906)" (click)="action('wheel', widget, $event, idx)">
+                                    <circle cx="0" cy="0" r="10.632753774903094" [attr.fill]="slot.type == 'Color' ? slot.colors[0] : '#555555'" />
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>

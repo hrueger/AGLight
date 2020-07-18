@@ -219,13 +219,12 @@ export class WidgetGridComponent implements OnInit {
         this.addWidget(fixture, false, true);
     }
 
-    public async addBlackoutWidget(): void {
+    public async addBlackoutWidget(): Promise<void> {
         const w = new Widget(0, 0, 1, 1, "BlackoutButton", "", undefined);
         await this.showService.connection.manager.save(w);
         await this.loadAll();
     }
 
-    // eslint-disable-next-line
     public action(type: string, widget: Widget, event: Event | number | any, idx?: number): void {
         if (this.editMode && !this.previewEnabled) {
             return;
@@ -264,6 +263,14 @@ export class WidgetGridComponent implements OnInit {
             // chl = findChannelAddress(widget);
             // val = widget.channel.steps[idx].start;
             // this.universe.update({ [chl]: val });
+            break;
+        case "wheel":
+            const capability = widget.fixture.product.availableChannels[widget.channel].capabilities.filter((s) => s.type == "WheelSlot" && s.slotNumber == idx + 1)[0];
+            this.dmxService.animateMultipleTo(
+                Math.round((capability.dmxRange[0] + capability.dmxRange[1]) / 2),
+                findChannelAddresses(widget),
+                widget.config?.transitionTime,
+            );
             break;
         case "colorpicker":
             channels = findChannelAddresses(widget);

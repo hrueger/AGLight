@@ -56,6 +56,11 @@ export const widgets: WidgetOption[] = [
         value: "Button Grid",
         description: "A grid of buttons to have quick access to multiple channel values.",
     },
+    {
+        name: "Wheel",
+        value: "Wheel",
+        description: "A wheel with all the colors / gobos of your fixture.",
+    },
 ];
 
 export const effectWidgets: EffectWidgetOption[] = [
