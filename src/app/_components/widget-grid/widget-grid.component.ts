@@ -219,7 +219,7 @@ export class WidgetGridComponent implements OnInit {
         this.addWidget(fixture, false, true);
     }
 
-    public async addBlackoutWidget() {
+    public async addBlackoutWidget(): void {
         const w = new Widget(0, 0, 1, 1, "BlackoutButton", "", undefined);
         await this.showService.connection.manager.save(w);
         await this.loadAll();
