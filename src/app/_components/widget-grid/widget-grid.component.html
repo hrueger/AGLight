@@ -6,7 +6,7 @@
                     {{ widget | json }}
                 </pre>-->
                 <div class="d-flex justify-content-between">
-                    <span class="text-truncate">{{widget.displayName ? widget.displayName : ((widget.type || (widget.effect | effectName)) + ": " + widget.channel + " - " + widget.fixture?.displayName)}}</span>
+                    <span class="text-truncate">{{widget.displayName ? widget.displayName : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + widget.fixture?.displayName)}}</span>
                     <div class="item-buttons" *ngIf="editMode">
                         <span [class]="'mr-3 text-' + (widget.config.transitionTime > 50 ? 'success' : 'warning')"><i class="far fa-play-circle"></i> {{widget.config.transitionTime ? widget.config.transitionTime / 1000 : 0}}s</span>
                         <button class="btn btn-outline-warning btn-round mr-2 drag-handler">
@@ -63,7 +63,7 @@
                             </div>
                         </div>
                     </div>
-                        
+
                     <div class="widget-button" *ngIf="widget.type == 'BlackoutButton'">
                         <button *ngIf="!editMode" class="btn btn-outline-secondary w-100 h-100" (click)="action('blackoutbutton', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Blackout"}}</button>
                         <div *ngIf="editMode">
