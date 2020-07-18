@@ -18,7 +18,7 @@ function createWindow() {
     // Create the browser window.
     win = new BrowserWindow({
         frame: false,
-        icon: path.join(__dirname, "src/favicon.png"),
+        icon: path.join(__dirname, "src/assets/icons/favicon.png"),
         show: false,
         webPreferences: { nodeIntegration: true },
         x: 0,
@@ -54,7 +54,7 @@ function createWindow() {
         brand: "H. Rüger",
         color: "#f1c40f",
         height: 300,
-        logo: path.join(__dirname, "src/favicon.png"),
+        logo: path.join(__dirname, "src/assets/icons/favicon.png"),
         mainWindow: win,
         productName: "AGLight",
         text: "Initializing ...",
