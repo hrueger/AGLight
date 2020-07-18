@@ -245,8 +245,8 @@ export class DmxService {
                         }
                     }
                 }, 500);
-            });
-        });
+            }, () => undefined);
+        }, () => undefined);
     }
 
     private testDmxDimming() {
