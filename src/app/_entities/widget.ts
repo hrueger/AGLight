@@ -3,8 +3,9 @@ import {
 } from "typeorm";
 import { Fixture } from "./fixture";
 import { EffectOptionsData, EffectWidgetOption } from "../_ressources/widgets";
+import { MultiActionItem } from "./multi-action-item";
 
-export type WidgetType = "Fader" | "Button" | "Colorpicker" | "RGB Colorpicker" | "ButtonGrid" | "BlackoutButton";
+export type WidgetType = "Fader" | "Button" | "Colorpicker" | "RGB Colorpicker" | "ButtonGrid" | "BlackoutButton" | "MultiAction";
 
 @Entity()
 export class Widget extends BaseEntity {
@@ -53,6 +54,9 @@ export class Widget extends BaseEntity {
 
     @ManyToOne(() => Fixture, (fixture) => fixture.widgets)
     public fixture: Fixture;
+
+    @ManyToOne(() => MultiActionItem, (item) => item.widget)
+    public multiActionItems: MultiActionItem[];
 
     constructor(x: number, y: number, rows: number, cols: number, type: WidgetType,
         channel: string, fixture: Fixture, customChannel = "", effect?: string) {

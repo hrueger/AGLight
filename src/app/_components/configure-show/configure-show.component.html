@@ -15,7 +15,11 @@
                     </h6>
                     <div class="px-3 d-flex justify-content-between">
                         <span>Blackout</span>
-                        <button class="action-btn green" (click)="widgetGrid.addBlackoutWidget()"><i class="fas fa-plus"></i></button>
+                        <button class="action-btn green" (click)="widgetGrid.addGeneralWidget('blackout')"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <div class="px-3 d-flex justify-content-between">
+                        <span>Multi Action</span>
+                        <button class="action-btn green" (click)="widgetGrid.addGeneralWidget('multiaction')"><i class="fas fa-plus"></i></button>
                     </div>
                     <div class="px-3 mt-4">
                         <input class="form-control" type="text" placeholder="Search" [(ngModel)]="searchValue" (ngModelChange)="search($event)">

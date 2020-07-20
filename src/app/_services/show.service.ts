@@ -6,6 +6,7 @@ import { Widget } from "../_entities/widget";
 import { FixedChannel } from "../_entities/fixed-channel";
 import { RecentShowsService } from "./recent-shows.service";
 import { ElectronService } from "./electron.service";
+import { MultiActionItem } from "../_entities/multi-action-item";
 
 @Injectable({
     providedIn: "root",
@@ -32,7 +33,7 @@ export class ShowService {
         }
         this.connection = await db.createConnection({
             database: path,
-            entities: [Widget, Fixture, FixedChannel],
+            entities: [Widget, Fixture, FixedChannel, MultiActionItem],
             type: "sqlite",
         });
         await this.connection.synchronize();

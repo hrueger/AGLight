@@ -219,8 +219,18 @@ export class WidgetGridComponent implements OnInit {
         this.addWidget(fixture, false, true);
     }
 
-    public async addBlackoutWidget(): Promise<void> {
-        const w = new Widget(0, 0, 1, 1, "BlackoutButton", "", undefined);
+    public async addGeneralWidget(t: "blackout" | "multiaction"): Promise<void> {
+        let w;
+        switch (t) {
+        case "blackout":
+            w = new Widget(0, 0, 1, 1, "BlackoutButton", "", undefined);
+            break;
+        case "multiaction":
+            w = new Widget(0, 0, 1, 1, "MultiAction", "", undefined);
+            break;
+        default:
+            break;
+        }
         await this.showService.connection.manager.save(w);
         await this.loadAll();
     }

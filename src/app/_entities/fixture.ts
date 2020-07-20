@@ -3,6 +3,7 @@ import {
 } from "typeorm";
 import { Product } from "./product";
 import { Widget } from "./widget";
+import { MultiActionItem } from "./multi-action-item";
 
 @Entity()
 export class Fixture extends BaseEntity {
@@ -26,6 +27,9 @@ export class Fixture extends BaseEntity {
 
     @OneToMany(() => Widget, (widget) => widget.fixture)
     public widgets: Widget[];
+
+    @OneToMany(() => MultiActionItem, (multiActionItem) => multiActionItem.fixture)
+    public multiActionItems: MultiActionItem[];
 
     public object?: {
         fixture: import("babylonjs/Meshes/mesh").Mesh;
