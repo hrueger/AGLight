@@ -45,6 +45,7 @@
         "bootstrap": "^4.4.1",
         "dmx": "0.2.4",
         "electron-splashscreen": "^1.0.0",
+        "electron-updater": "^4.3.1",
         "jquery": "^3.5.0",
         "ng5-slider": "^1.2.4",
         "ngx-color": "^5.0.1",
