@@ -10,11 +10,8 @@
 - Fixtures padding between
 - Multiple Button Actions
 - ButtonGrid
-- Wheels
 - More Effects
-- Blackout button
 - FPS Display
-- Fixed DMX Values
 
 
 ## Note: ##
