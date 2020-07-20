@@ -6,7 +6,7 @@
                     {{ widget | json }}
                 </pre>-->
                 <div class="d-flex justify-content-between">
-                    <span class="text-truncate" [title]='widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + widget.fixture?.displayName))'>{{widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + widget.fixture?.displayName))}}</span>
+                    <span class="text-truncate" [title]='widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : widget.type == "MultiAction" ? "Multi Action Button" : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + widget.fixture?.displayName))'>{{widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : widget.type == "MultiAction" ? "Multi Action Button" : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + widget.fixture?.displayName))}}</span>
                     <div class="item-buttons d-flex flex-nowrap" *ngIf="editMode">
                         <span [class]="'d-flex flex-nowrap text-' + (widget.config.transitionTime > 50 ? 'success' : 'warning')"><i class="far fa-play-circle mt-1"></i> {{widget.config.transitionTime ? widget.config.transitionTime / 1000 : 0}}s</span>
                         <button class="action-btn yellow ml-1 drag-handler">
@@ -65,6 +65,18 @@
 
                     <div class="widget-button" *ngIf="widget.type == 'BlackoutButton'">
                         <button *ngIf="!editMode" class="btn btn-outline-secondary w-100 h-100" (click)="action('blackoutbutton', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Blackout"}}</button>
+                        <div *ngIf="editMode">
+                            <div class="form-group row">
+                                <label for="buttonName" class="col-3 col-form-label">Button Name</label>
+                                <div class="col-9">
+                                    <input id="buttonName" name="buttonName" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-button" *ngIf="widget.type == 'MultiAction'">
+                        <button *ngIf="!editMode" class="btn btn-outline-primary w-100 h-100" (click)="action('multiActionButton', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Multi Action"}}</button>
                         <div *ngIf="editMode">
                             <div class="form-group row">
                                 <label for="buttonName" class="col-3 col-form-label">Button Name</label>
