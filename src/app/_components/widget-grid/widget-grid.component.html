@@ -48,16 +48,16 @@
                         <button *ngIf="!editMode" class="btn btn-outline-primary w-100 h-100" (click)="action('button', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Button"}}</button>
                         <div *ngIf="editMode">
                             <div class="form-group row">
-                                <label for="buttonValue" class="col-3 col-form-label">Value</label>
+                                <label [for]="'buttonValue' +  widget.id" class="col-3 col-form-label">Value</label>
                                 <div class="col-9">
-                                    <input id="buttonValue" name="buttonValue" (ngModelChange)="saveDebounced(); preview(widget, $event);" [(ngModel)]="widget.config.buttonValue" placeholder="The DMX value of this button's channel." type="number" min="0" max="255" class="form-control">
+                                    <input [id]="'buttonValue' +  widget.id" (ngModelChange)="saveDebounced(); preview(widget, $event);" [(ngModel)]="widget.config.buttonValue" placeholder="The DMX value of this button's channel." type="number" min="0" max="255" class="form-control">
                                     <span class="form-text text-slightly-muted">0 - 255</span>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="buttonName" class="col-3 col-form-label">Button Name</label>
+                                <label [for]="'buttonName' +  widget.id" class="col-3 col-form-label">Button Name</label>
                                 <div class="col-9">
-                                    <input id="buttonName" name="buttonName" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
+                                    <input [id]="'buttonName' +  widget.id" [name]="'buttonName' +  widget.id" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -67,9 +67,9 @@
                         <button *ngIf="!editMode" class="btn btn-outline-secondary w-100 h-100" (click)="action('blackoutbutton', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Blackout"}}</button>
                         <div *ngIf="editMode">
                             <div class="form-group row">
-                                <label for="buttonName" class="col-3 col-form-label">Button Name</label>
+                                <label [for]="'buttonName' +  widget.id" class="col-3 col-form-label">Button Name</label>
                                 <div class="col-9">
-                                    <input id="buttonName" name="buttonName" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
+                                    <input [id]="'buttonName' +  widget.id" [name]="'buttonName' +  widget.id" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -79,9 +79,9 @@
                         <button *ngIf="!editMode" class="btn btn-outline-primary w-100 h-100" (click)="action('multiActionButton', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Multi Action"}}</button>
                         <div *ngIf="editMode">
                             <div class="form-group row">
-                                <label for="buttonName" class="col-3 col-form-label">Button Name</label>
+                                <label [for]="'buttonName' +  widget.id" class="col-3 col-form-label">Button Name</label>
                                 <div class="col-9">
-                                    <input id="buttonName" name="buttonName" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
+                                    <input [id]="'buttonName' +  widget.id" [name]="'buttonName' +  widget.id" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
                                 </div>
                             </div>
                         </div>
