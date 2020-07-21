@@ -44,5 +44,10 @@
             "AppImage"
         ],
         "publish": ["github"]
-    }
+    },
+    "fileAssociations": [{
+        "ext": "aglshow",
+        "name": "AGLight Show",
+        "description": "AGLight Show"
+    }]
 }
