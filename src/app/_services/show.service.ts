@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import * as db from "typeorm";
+import { ipcRenderer } from "electron";
 import { Fixture } from "../_entities/fixture";
 import { Widget } from "../_entities/widget";
 import { FixedChannel } from "../_entities/fixed-channel";
 import { RecentShowsService } from "./recent-shows.service";
 import { ElectronService } from "./electron.service";
 import { MultiActionItem } from "../_entities/multi-action-item";
-import { ipcRenderer } from "electron";
 
 @Injectable({
     providedIn: "root",

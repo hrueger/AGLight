@@ -111,10 +111,10 @@ export class WidgetGridComponent implements OnInit {
                 this.currentWidget.multiActionItems = [];
             }
             item.widget = this.currentWidget;
-            console.log(await this.showService.connection.getRepository(MultiActionItem).save(item));
+            await this.showService.connection.getRepository(MultiActionItem).save(item);
             // delete item.widget; // otherwise the json debug pipe won't work
             this.currentWidget.multiActionItems.push(item);
-            console.log(await this.showService.connection.getRepository(Widget).save(this.currentWidget));
+            await this.showService.connection.getRepository(Widget).save(this.currentWidget);
             document.getElementsByTagName("ngb-modal-window")[0].setAttribute("style", "");
             document.getElementsByTagName("ngb-modal-backdrop")[0].setAttribute("style", "");
         });
@@ -427,7 +427,6 @@ export class WidgetGridComponent implements OnInit {
                 [w.effectData] = effectWidgets.filter((e) => e.value == w.effect);
             }
         }
-        console.log(this.widgets);
         this.updateFixedChannels();
     }
 
