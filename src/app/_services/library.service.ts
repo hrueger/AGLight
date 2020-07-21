@@ -16,6 +16,7 @@ export class LibraryService {
     private tempStoragePath = path.join((electron.app || electron.remote.app).getPath("userData"), "library.tmp");
     private productCache: Product[] = [];
     public resources: { gobos: { [key: string]: string } };
+    public readonly supportedLibraryVersion = "1.0.0";
 
     constructor(private statusbarService: StatusbarService) { }
 
@@ -44,6 +45,10 @@ export class LibraryService {
         const data = JSON.parse(
             fs.readFileSync(this.libraryPath).toString(),
         );
+        if (data.version !== this.supportedLibraryVersion) {
+            smalltalk.alert("Error", `The installed library version is not compatible with this version of AGLight. The supported version is ${this.supportedLibraryVersion} but the library is version ${data.version}. Please update the library / AGLight`);
+            return;
+        }
         this.productCache.push(...data.fixtures);
         this.resources = data.resources;
         this.statusbarService.setItem({
