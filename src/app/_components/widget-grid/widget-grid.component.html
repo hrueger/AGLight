@@ -84,6 +84,14 @@
                                     <input [id]="'buttonName' +  widget.id" [name]="'buttonName' +  widget.id" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label [for]="'buttonName' +  widget.id" class="col-3 col-form-label">Configure</label>
+                                <div class="col-9">
+                                    <button class="btn btn-outline-primary" (click)="openConfig($event, widget, multiActionConfigModal)" (touchstart)="openConfig($event, widget, multiActionConfigModal)">
+                                        <i class="fas fa-wrench"></i> Configure
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -181,6 +189,42 @@
         </form>
     </div>
     <div class="modal-footer">
+        <button type="button" class="btn btn-outline-success" (click)="modal.close()">Save</button>
+    </div>
+</ng-template>
+
+
+<ng-template #multiActionConfigModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Settings of <i>{{currentWidget.displayName ? currentWidget.displayName : "Multi Action Button"}}</i></h4>
+        <button type="button" class="close" (click)="modal.dismiss()"><span>&times;</span></button>
+    </div>
+    <div class="modal-body">
+        <ul>
+            <li *ngFor="let actionItem of currentWidget.multiActionItems">
+                {{actionItem.fixture.name}} {{actionItem.channel}} {{actionItem.id}}
+            </li>
+        </ul>
+        <!--<form>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" for="name">Name</label>
+                <div class="col-9">
+                    <input id="name" name="name" ngbAutofocus placeholder="The widget's name" [(ngModel)]="currentWidget.displayName" type="text" class="form-control">
+                    <span class="form-text text-slightly-muted">If not set, it will be "Multi Action Button".</span>
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label for="transitionTime" class="col-3 col-form-label">Transition time</label>
+                <div class="col-9">
+                    <input id="transitionTime" name="transitionTime" [(ngModel)]="currentWidget.config.transitionTime" placeholder="The time in milliseconds for the transition." type="number" min="0" class="form-control">
+                    <span class="form-text text-slightly-muted">The default value is 0, which means no transition will be done. <b>Be careful with dimmers as they could suddenly draw a lot of power!</b></span>
+                </div>
+            </div>
+        </form>-->
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-outline-primary mr-auto" (click)="addMultiActionItemToCurrentWidget()"><i class="fas fa-plus"></i>Add item</button>
         <button type="button" class="btn btn-outline-success" (click)="modal.close()">Save</button>
     </div>
 </ng-template>

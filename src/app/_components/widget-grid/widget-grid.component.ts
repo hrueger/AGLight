@@ -17,6 +17,7 @@ import { DmxService } from "../../_services/dmx.service";
 import { beautifyCamelCase } from "../../_utils/camelcase-beautifier";
 import { findChannelAddresses, findChannelAddresses2 } from "../../_utils/find-channel-addresses";
 import { widgets, effectWidgets } from "../../_ressources/widgets";
+import { MultiActionItem } from "../../_entities/multi-action-item";
 
 @Component({
     selector: "widget-grid",
@@ -96,14 +97,43 @@ export class WidgetGridComponent implements OnInit {
         this.dmxService.updateMultiple(value, findChannelAddresses(widget));
     }
 
-    public addWidget(fixture: Fixture, isEffect = false, isFixedChannelValue = false): void {
-        const { channels } = fixture.product.modes.filter(
-            (m) => m.name == fixture.channelMode,
-        )[0];
-        const opts3 = channels.map((ch, idx) => {
-            const [channel, isFineChannel] = this.removeFineSuffix(ch);
-            return {
-                description: `
+    public addMultiActionItemToCurrentWidget(): void {
+        document.getElementsByTagName("ngb-modal-window")[0].setAttribute("style", "display:none !important");
+        document.getElementsByTagName("ngb-modal-backdrop")[0].setAttribute("style", "display:none !important");
+        smalltalkSelect.select("Add Multi Action", "Choose the fixture:", this.fixtures.map((f) => ({
+            name: f.displayName,
+            description: `${f.number}x ${f.product.name} <span class="text-muted">(${f.product.manufacturer.name})</span>`,
+            value: f.id,
+        }))).then(async (fixtureId: number) => {
+            const item = new MultiActionItem();
+            item.fixture = this.fixtures.find((f) => f.id == fixtureId);
+            if (!this.currentWidget.multiActionItems) {
+                this.currentWidget.multiActionItems = [];
+            }
+            item.widget = this.currentWidget;
+            console.log(await this.showService.connection.getRepository(MultiActionItem).save(item));
+            // delete item.widget; // otherwise the json debug pipe won't work
+            this.currentWidget.multiActionItems.push(item);
+            console.log(await this.showService.connection.getRepository(Widget).save(this.currentWidget));
+            document.getElementsByTagName("ngb-modal-window")[0].setAttribute("style", "");
+            document.getElementsByTagName("ngb-modal-backdrop")[0].setAttribute("style", "");
+        });
+    }
+
+    public addWidget(
+        fixture: Fixture,
+        isEffect = false,
+        isFixedChannelValue = false,
+        returnChannel = false,
+    ): Promise<any> {
+        return new Promise((resolve) => {
+            const { channels } = fixture.product.modes.filter(
+                (m) => m.name == fixture.channelMode,
+            )[0];
+            const opts3 = channels.map((ch, idx) => {
+                const [channel, isFineChannel] = this.removeFineSuffix(ch);
+                return {
+                    description: `
                     <table><thead><tr><th></th><th></th></tr></thead><tbody>
                     ${fixture.product.availableChannels[channel].capabilities.map((c: any) => `<tr>
 
@@ -114,86 +144,100 @@ export class WidgetGridComponent implements OnInit {
                     `).join("")}
                     </tbody></table>
                   `,
-                name: `${fixture.startAddress - 1 + idx}: ${channel}${isFineChannel ? " fine" : ""}`,
-                value: ch,
-            };
-        });
-        if (!isFixedChannelValue) {
-            const mappedChannels = channels.map((c) => {
-                const [ch, isFineChannel] = this.removeFineSuffix(c);
-                return {
-                    key: c, // ch
-                    value: fixture.product.availableChannels[ch], // ch
-                    isFineChannel,
+                    name: `${fixture.startAddress - 1 + idx}: ${channel}${isFineChannel ? " fine" : ""}`,
+                    value: ch,
                 };
             });
-            mappedChannels.forEach((channel, idx) => {
-                if (
-                    channel.value.singleCapability && channel.value.capabilities[0].type == "ColorIntensity"
-                    && mappedChannels[idx + 1] && mappedChannels[idx + 1].value.singleCapability && mappedChannels[idx + 1].value.capabilities[0].type == "ColorIntensity"
-                    && mappedChannels[idx + 2] && mappedChannels[idx + 2].value.singleCapability && mappedChannels[idx + 2].value.capabilities[0].type == "ColorIntensity"
-                ) {
-                    opts3.unshift({
-                        description: "This is a virtual channel. It bundles the Red, Green and Blue channel of the fixture(s). You can use this for colorpickers.",
-                        name: "RGB Channel (3 Channels)",
-                        value: `CUSTOM:rgb:${channel.key}`,
-                    });
-                }
-            });
-        }
-        if (opts3.length) {
-            smalltalkSelect.select("Add widget", "Choose the channel:", opts3).then(async (channel: string) => {
-                if (isFixedChannelValue) {
-                    const w = new FixedChannel(fixture, channel);
-                    await this.showService.connection.manager.save(w);
-                    this.fixedChannels.push(w);
-                    this.updateFixedChannels();
-                    this.fixedChannelAdded.emit(w);
-                    return;
-                }
-                let availableWidgets;
-                if (isEffect) {
-                    availableWidgets = effectWidgets.filter((w) => {
-                        if (channel.startsWith("CUSTOM")) {
-                            if (w.customChannelRequired && channel.startsWith(`CUSTOM:${w.customChannelRequired}`)) {
-                                return true;
-                            }
-                        } else if (
-                            w.singleCapability
+            if (!isFixedChannelValue) {
+                const mappedChannels = channels.map((c) => {
+                    const [ch, isFineChannel] = this.removeFineSuffix(c);
+                    return {
+                        key: c, // ch
+                        value: fixture.product.availableChannels[ch], // ch
+                        isFineChannel,
+                    };
+                });
+                mappedChannels.forEach((channel, idx) => {
+                    if (
+                        channel.value.singleCapability && channel.value.capabilities[0].type == "ColorIntensity"
+                        && mappedChannels[idx + 1] && mappedChannels[idx + 1].value.singleCapability && mappedChannels[idx + 1].value.capabilities[0].type == "ColorIntensity"
+                        && mappedChannels[idx + 2] && mappedChannels[idx + 2].value.singleCapability && mappedChannels[idx + 2].value.capabilities[0].type == "ColorIntensity"
+                    ) {
+                        opts3.unshift({
+                            description: "This is a virtual channel. It bundles the Red, Green and Blue channel of the fixture(s). You can use this for colorpickers.",
+                            name: "RGB Channel (3 Channels)",
+                            value: `CUSTOM:rgb:${channel.key}`,
+                        });
+                    }
+                });
+            }
+            if (opts3.length) {
+                smalltalkSelect.select("Add widget", "Choose the channel:", opts3).then(async (channel: string) => {
+                    if (isFixedChannelValue) {
+                        const w = new FixedChannel(fixture, channel);
+                        await this.showService.connection.manager.save(w);
+                        this.fixedChannels.push(w);
+                        this.updateFixedChannels();
+                        this.fixedChannelAdded.emit(w);
+                        return;
+                    }
+                    if (returnChannel) {
+                        resolve(channel);
+                    }
+                    let availableWidgets;
+                    if (isEffect) {
+                        availableWidgets = effectWidgets.filter((w) => {
+                            if (channel.startsWith("CUSTOM")) {
+                                if (w.customChannelRequired && channel.startsWith(`CUSTOM:${w.customChannelRequired}`)) {
+                                    return true;
+                                }
+                            } else if (
+                                w.singleCapability
                                 && fixture.product.availableChannels[channel].singleCapability
                                 && w.possibleCapabilities.includes(
                                     fixture.product.availableChannels[channel].capabilities[0].type,
                                 )
-                        ) {
-                            return true;
-                        } else if (fixture.product.availableChannels[channel].capabilities
-                            .filter((c) => !w.possibleCapabilities.includes(c.type)).length > 0) {
-                            //
-                        }
-                        return false;
-                    });
-                } else {
-                    availableWidgets = widgets.filter((w) => (w.customChannelRequired ? channel.startsWith(`CUSTOM:${w.customChannelRequired}`) : !channel.startsWith("CUSTOM")));
-                }
-                if (availableWidgets.length) {
-                    smalltalkSelect.select(
-                        "Add widget",
-                        "Choose the widget you want to add:",
-                        availableWidgets,
-                    ).then(async (control: WidgetType) => {
-                        const { customChannelRequired } = (isEffect ? effectWidgets : widgets)
-                            .filter((x) => x.value == control)[0];
-                        const w = new Widget(0, 0, 1, 1, isEffect ? undefined : control, customChannelRequired ? channel.split(":")[2] : channel, fixture, customChannelRequired, isEffect ? control : undefined);
-                        await this.showService.connection.manager.save(w);
-                        await this.loadAll();
-                    }, () => undefined);
-                } else {
-                    this.alertNothingToDisplay();
-                }
-            }, () => undefined);
-        } else {
-            this.alertNothingToDisplay();
-        }
+                            ) {
+                                return true;
+                            } else if (fixture.product.availableChannels[channel].capabilities
+                                .filter((c) => !w.possibleCapabilities
+                                    .includes(c.type)).length > 0) {
+                                //
+                            }
+                            return false;
+                        });
+                    } else {
+                        availableWidgets = widgets.filter((w) => (w.customChannelRequired ? channel.startsWith(`CUSTOM:${w.customChannelRequired}`) : !channel.startsWith("CUSTOM")));
+                    }
+                    if (availableWidgets.length) {
+                        this.askForWidgetType(availableWidgets, isEffect, channel, fixture);
+                    } else {
+                        this.alertNothingToDisplay();
+                    }
+                }, () => undefined);
+            } else {
+                this.alertNothingToDisplay();
+            }
+        });
+    }
+
+    private askForWidgetType(
+        availableWidgets: any,
+        isEffect: boolean,
+        channel: string,
+        fixture: Fixture,
+    ) {
+        smalltalkSelect.select(
+            "Add widget",
+            "Choose the widget you want to add:",
+            availableWidgets,
+        ).then(async (control: WidgetType) => {
+            const { customChannelRequired } = (isEffect ? effectWidgets : widgets)
+                .filter((x) => x.value == control)[0];
+            const w = new Widget(0, 0, 1, 1, isEffect ? undefined : control, customChannelRequired ? channel.split(":")[2] : channel, fixture, customChannelRequired, isEffect ? control : undefined);
+            await this.showService.connection.manager.save(w);
+            await this.loadAll();
+        }, () => undefined);
     }
 
     private removeFineSuffix(channel: string): [string, boolean] {
@@ -374,7 +418,7 @@ export class WidgetGridComponent implements OnInit {
         for (const fixture of this.fixtures) {
             [fixture.product] = products.filter((p) => p.name == fixture.name);
         }
-        this.widgets = await this.showService.connection.getRepository(Widget).find({ relations: ["fixture"] });
+        this.widgets = await this.showService.connection.getRepository(Widget).find({ relations: ["fixture", "multiActionItems", "multiActionItems.fixture"] });
         for (const w of this.widgets) {
             if (w.fixture) {
                 [w.fixture.product] = products.filter((p) => p.name == w.fixture.name);
@@ -383,7 +427,7 @@ export class WidgetGridComponent implements OnInit {
                 [w.effectData] = effectWidgets.filter((e) => e.value == w.effect);
             }
         }
-
+        console.log(this.widgets);
         this.updateFixedChannels();
     }
 
