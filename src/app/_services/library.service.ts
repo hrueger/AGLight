@@ -15,6 +15,7 @@ export class LibraryService {
     private libraryPath = path.join((electron.app || electron.remote.app).getPath("userData"), "library/library.json");
     private tempStoragePath = path.join((electron.app || electron.remote.app).getPath("userData"), "library.tmp");
     private productCache: Product[] = [];
+    public resources: { gobos: { [key: string]: string } };
 
     constructor(private statusbarService: StatusbarService) { }
 
@@ -40,9 +41,11 @@ export class LibraryService {
             this.sync();
         }
         this.productCache = [];
-        this.productCache.push(...JSON.parse(
+        const data = JSON.parse(
             fs.readFileSync(this.libraryPath).toString(),
-        ).fixtures);
+        );
+        this.productCache.push(...data.fixtures);
+        this.resources = data.resources;
         this.statusbarService.setItem({
             name: "Library loaded",
             icon: "check",
