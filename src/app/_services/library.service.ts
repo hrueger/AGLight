@@ -57,7 +57,7 @@ export class LibraryService {
             id: "library",
             dropup: {
                 title: "Library status",
-                content: `Library loaded succcessfully. There are ${this.productCache.length} fixtures available.`,
+                content: `Library (v${this.supportedLibraryVersion}) loaded succcessfully. There are ${this.productCache.length} fixtures available.`,
                 actions: [
                     {
                         text: "Update",
