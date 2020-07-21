@@ -1,5 +1,5 @@
 import {
-    BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne,
+    BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany,
 } from "typeorm";
 import { Fixture } from "./fixture";
 import { EffectOptionsData, EffectWidgetOption } from "../_ressources/widgets";
@@ -55,7 +55,7 @@ export class Widget extends BaseEntity {
     @ManyToOne(() => Fixture, (fixture) => fixture.widgets)
     public fixture: Fixture;
 
-    @ManyToOne(() => MultiActionItem, (item) => item.widget)
+    @OneToMany(() => MultiActionItem, (item) => item.widget)
     public multiActionItems: MultiActionItem[];
 
     constructor(x: number, y: number, rows: number, cols: number, type: WidgetType,
