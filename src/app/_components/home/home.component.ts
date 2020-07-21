@@ -15,7 +15,6 @@ import { ConsoleService } from "../../_services/console.service";
 export class HomeComponent {
     public recentShows: any[] = [];
     public showRecentDropdown = false;
-    private readonly waitTime: number = 3000;
     constructor(private showService: ShowService,
         private router: Router,
         private recentShowsService: RecentShowsService,
@@ -24,9 +23,7 @@ export class HomeComponent {
         private consoleService: ConsoleService) { }
 
     public async ngOnInit(): Promise<void> {
-        setTimeout(() => {
-            ipcRenderer.send("ready");
-        }, this.waitTime);
+        ipcRenderer.send("ready");
         this.recentShows = this.recentShowsService.get();
         this.dmxService.init();
         this.consoleService.init();
