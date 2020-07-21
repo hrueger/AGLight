@@ -46,9 +46,9 @@ export class ShowService {
         this.router.navigate(["fixtures"]);
     }
 
-    public createShow(path: string): Promise<void> {
+    public async createShow(path: string): Promise<void> {
         if (this.connection) {
-            this.connection.close();
+            await this.connection.close();
             this.connection = undefined;
         }
         return this.loadShow(path);
