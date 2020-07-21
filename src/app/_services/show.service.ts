@@ -7,6 +7,7 @@ import { FixedChannel } from "../_entities/fixed-channel";
 import { RecentShowsService } from "./recent-shows.service";
 import { ElectronService } from "./electron.service";
 import { MultiActionItem } from "../_entities/multi-action-item";
+import { ipcRenderer } from "electron";
 
 @Injectable({
     providedIn: "root",
@@ -24,7 +25,11 @@ export class ShowService {
         private recentShowsService: RecentShowsService,
         private router: Router,
         private electronService: ElectronService,
-    ) { }
+    ) {
+        ipcRenderer.on("openFile", (_, file: string) => {
+            this.loadShow(file);
+        });
+    }
 
     public async loadShow(path: string): Promise<void> {
         if (this.connection) {

@@ -9,6 +9,7 @@ import { initSplashScreen, OfficeTemplate } from "electron-splashscreen";
 import * as path from "path";
 import * as url from "url";
 import { autoUpdater } from "electron-updater";
+import * as fs from "fs";
 
 let win: BrowserWindow;
 let viewerWindow;
@@ -68,6 +69,9 @@ function createWindow() {
         hideSplashscreen();
         win.maximize();
         autoUpdater.checkForUpdatesAndNotify();
+        if (process.argv[1] && fs.existsSync(process.argv[1])) {
+            win.webContents.send("openFile", process.argv[1]);
+        }
     });
     ipcMain.on("viewerEvent", (e, a, arg) => {
         switch (a) {
