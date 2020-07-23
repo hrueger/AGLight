@@ -43,6 +43,21 @@ export class DialogService {
         return modal.result;
     }
 
+    public select(
+        title: string,
+        message: string,
+        options: { name: string, value: any, description: string }[],
+    ): Promise<any> {
+        const modal = this.modalService.open(DialogComponent, { size: "xl" });
+        (modal.componentInstance as DialogComponent).config = {
+            type: "select",
+            title,
+            message,
+            options,
+        };
+        return modal.result;
+    }
+
     public alert(title: string, message: string): void {
         const modal = this.modalService.open(DialogComponent);
         (modal.componentInstance as DialogComponent).config = {

@@ -10,8 +10,19 @@
         <input [type]="config.isNumber ? 'number' : 'text'" (keypress)="enterPressed($event)" ngbAutofocus class="form-control" [ngModel]="config.value" (ngModelChange)="changed($event)">
     </div>
     <div *ngIf="['confirm', 'alert'].includes(config.type)" ngbAutofocus></div>
+    <div *ngIf="config.type == 'select'" ngbAutofocus>
+        <div class="card-columns">
+            <div class="card" *ngFor="let option of config.options">
+                <div class="card-body">
+                    <h5 class="card-title" [innerHtml]="option.name | safe"></h5>
+                    <p class="card-text" [innerHtml]="option.description | safe"></p>
+                    <a routerLink="" (click)="activeModal.close(option.value)" class="btn btn-outline-primary stretched-link">Choose</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="modal-footer">
-    <button type="button" *ngIf="config.type !== 'alert'" class="btn btn-outline-danger mr-auto" (click)="activeModal.dismiss()">Cancel</button>
-    <button type="button" class="btn btn-outline-success" (click)="activeModal.close(config.value)">OK</button>
+    <button type="button" *ngIf="config.type !== 'alert'" class="btn btn-outline-danger" [class.mr-auto]="config.type !== 'select'" (click)="activeModal.dismiss()">Cancel</button>
+    <button type="button" *ngIf="config.type !== 'select'" class="btn btn-outline-success" (click)="activeModal.close(config.value)">OK</button>
 </div>

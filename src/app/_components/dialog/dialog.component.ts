@@ -17,6 +17,7 @@ export class DialogComponent {
         message: string,
         isNumber?: boolean,
         value?: string | number,
+        options?: { name: string, value: any, description: string }[],
     }
 
     @Output() public onChange: EventEmitter<number | string> = new EventEmitter<number | string>();
