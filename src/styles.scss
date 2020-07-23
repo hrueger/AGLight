@@ -306,3 +306,7 @@ pre {
 .btn-round {
     border-radius: 1000px;
 }
+
+*:focus {
+    outline: none !important;
+}
