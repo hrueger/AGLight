@@ -29,6 +29,7 @@ import { TruncatePipe } from "./_pipes/truncate.pipe";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { StatusbarComponent } from "./_components/statusbar/statusbar.component";
+import { DialogComponent } from "./_components/dialog/dialog.component";
 
 @NgModule({
     bootstrap: [AppComponent],
@@ -52,6 +53,7 @@ import { StatusbarComponent } from "./_components/statusbar/statusbar.component"
         ViewerComponent,
         WidgetGridComponent,
         StatusbarComponent,
+        DialogComponent,
     ],
     imports: [
         BrowserModule,
@@ -63,6 +65,9 @@ import { StatusbarComponent } from "./_components/statusbar/statusbar.component"
         Ng5SliderModule,
         ColorCircleModule,
         ColorSwatchesModule,
+    ],
+    entryComponents: [
+        DialogComponent,
     ],
     providers: [],
 })

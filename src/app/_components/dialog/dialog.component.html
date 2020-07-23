@@ -1,0 +1,16 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{config.title}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span>&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+    {{config.message}}
+    <div *ngIf="config.type == 'prompt'">
+        <input [type]="config.isNumber ? 'number' : 'text'" class="form-control" [(ngModel)]="config.value">
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-danger mr-auto" (click)="activeModal.dismiss()">Cancel</button>
+    <button type="button" class="btn btn-outline-success" (click)="activeModal.close(config.value)">OK</button>
+</div>
