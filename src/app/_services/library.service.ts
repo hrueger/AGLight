@@ -84,7 +84,7 @@ export class LibraryService {
 
         const req = request({
             method: "GET",
-            uri: "http://localhost:5000/download.aglight",
+            uri: "https://open-fixture-library-pr-1357.herokuapp.com/download.aglight",
         });
 
         const out = fs.createWriteStream(this.tempStoragePath);
