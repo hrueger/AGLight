@@ -9,7 +9,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
     styleUrls: ["./dialog.component.scss"],
 })
 export class DialogComponent {
-    constructor(public activeModal: NgbActiveModal) { }
+    constructor(public activeModal: NgbActiveModal) {}
 
     @Input() public config: {
         type: "prompt" | "confirm" | "alert" | "select",
@@ -24,5 +24,11 @@ export class DialogComponent {
     public changed(val: number | string): void {
         this.config.value = val;
         this.onChange.emit(val);
+    }
+
+    public enterPressed(e: KeyboardEvent): void {
+        if (e.key == "Enter") {
+            this.activeModal.close(this.config.value);
+        }
     }
 }
