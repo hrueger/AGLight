@@ -27,7 +27,9 @@ export class ShowService {
         private electronService: ElectronService,
     ) {
         ipcRenderer.on("openFile", (_, file: string) => {
-            this.loadShow(file);
+            if (file !== "./") {
+                this.loadShow(file);
+            }
         });
     }
 
