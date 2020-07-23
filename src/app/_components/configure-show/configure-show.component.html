@@ -47,6 +47,9 @@
                         <span>Fixed Channels</span>
                     </h6>
                     <div class="flex-grow-1 overflow-auto">
+                        <span class="text-muted mx-3" *ngIf="fixedChannels?.length == 0">
+                            No fixed channels
+                        </span>
                         <ul class="nav flex-column">
                             <li class="nav-item" *ngFor="let fixedChannel of fixedChannels">
                                 <a class="nav-link d-flex justify-content-between">
