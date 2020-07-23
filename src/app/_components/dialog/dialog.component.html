@@ -9,9 +9,9 @@
     <div *ngIf="config.type == 'prompt'">
         <input [type]="config.isNumber ? 'number' : 'text'" ngbAutofocus class="form-control" [ngModel]="config.value" (ngModelChange)="changed($event)">
     </div>
-    <div *ngIf="config.type == 'confirm'" ngbAutofocus></div>
+    <div *ngIf="['confirm', 'alert'].includes(config.type)" ngbAutofocus></div>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-outline-danger mr-auto" (click)="activeModal.dismiss()">Cancel</button>
+    <button type="button" *ngIf="config.type !== 'alert'" class="btn btn-outline-danger mr-auto" (click)="activeModal.dismiss()">Cancel</button>
     <button type="button" class="btn btn-outline-success" (click)="activeModal.close(config.value)">OK</button>
 </div>

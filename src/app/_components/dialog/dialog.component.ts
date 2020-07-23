@@ -12,7 +12,7 @@ export class DialogComponent {
     constructor(public activeModal: NgbActiveModal) { }
 
     @Input() public config: {
-        type: "prompt" | "confirm" | "select",
+        type: "prompt" | "confirm" | "alert" | "select",
         title: string,
         message: string,
         isNumber?: boolean,
