@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import * as DMX from "dmx";
-import * as smalltalk from "smalltalk";
 import * as serialport from "serialport";
 import { StatusbarService } from "./statusbar.service";
 import * as smalltalkSelect from "../_utils/smalltalk-select";
@@ -189,7 +188,7 @@ export class DmxService {
                 // eslint-disable-next-line no-console
                 const originalWarn = console.warn;
                 const onError = (e) => {
-                    smalltalk.alert("Error while connecting", e.toString());
+                    this.dialogService.alert("Error while connecting", e.toString());
                     this.statusbarService.setItem({
                         name: "Error while connecting",
                         icon: "exclamation-triangle",

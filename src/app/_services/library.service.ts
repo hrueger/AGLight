@@ -3,8 +3,8 @@ import * as electron from "electron";
 import * as fs from "fs";
 import * as path from "path";
 import * as request from "request";
-import * as smalltalk from "smalltalk";
 import * as rimraf from "rimraf";
+import { DialogService } from "./dialog.service";
 import { StatusbarService } from "./statusbar.service";
 import { Product } from "../_entities/product";
 
@@ -18,7 +18,10 @@ export class LibraryService {
     public resources: { gobos: { [key: string]: string } };
     public readonly supportedLibraryVersion = "1.0.0";
 
-    constructor(private statusbarService: StatusbarService) { }
+    constructor(
+        private statusbarService: StatusbarService,
+        private dialogService: DialogService,
+    ) { }
 
     public getProducts(): Product[] {
         return this.productCache;
@@ -46,7 +49,7 @@ export class LibraryService {
             fs.readFileSync(this.libraryPath).toString(),
         );
         if (data.version !== this.supportedLibraryVersion) {
-            smalltalk.alert("Error", `The installed library version is not compatible with this version of AGLight. The supported version is ${this.supportedLibraryVersion} but the library is version ${data.version}. Please update the library / AGLight`);
+            this.dialogService.alert("Error", `The installed library version is not compatible with this version of AGLight. The supported version is ${this.supportedLibraryVersion} but the library is version ${data.version}. Please update the library / AGLight`);
             return;
         }
         this.productCache.push(...data.fixtures);
@@ -128,7 +131,7 @@ export class LibraryService {
             });
             // eslint-disable-next-line no-console
             console.log(e);
-            smalltalk.alert("Library status", "The library couldn't be updated. However, this is no problem. The cache version will be used.");
+            this.dialogService.alert("Library status", "The library couldn't be updated. However, this is no problem. The cache version will be used.");
             this.loadIntoCache();
         });
     }

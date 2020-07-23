@@ -42,4 +42,13 @@ export class DialogService {
         };
         return modal.result;
     }
+
+    public alert(title: string, message: string): void {
+        const modal = this.modalService.open(DialogComponent);
+        (modal.componentInstance as DialogComponent).config = {
+            type: "alert",
+            title,
+            message,
+        };
+    }
 }

@@ -2,7 +2,6 @@ import {
     Component, Input, Output, EventEmitter, OnInit,
 } from "@angular/core";
 import { GridsterConfig } from "angular-gridster2";
-import * as smalltalk from "smalltalk";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
@@ -68,7 +67,7 @@ export class WidgetGridComponent implements OnInit {
             resizable: { enabled: this.editMode },
         };
         if (!this.dmxService.isConnected && !this.editMode) {
-            smalltalk.alert("Error", "No DMX output connected!<br>Click the button in the statusbar to get to the DMX setup wizard.");
+            this.dialogService.alert("Error", "No DMX output connected!<br>Click the button in the statusbar to get to the DMX setup wizard.");
         } else {
             await this.loadAll();
         }
@@ -525,6 +524,6 @@ export class WidgetGridComponent implements OnInit {
     }
 
     private alertNothingToDisplay() {
-        smalltalk.alert("Error", "Unfortunately there is nothing to display... Please try other options!");
+        this.dialogService.alert("Error", "Unfortunately there is nothing to display... Please try other options!");
     }
 }
