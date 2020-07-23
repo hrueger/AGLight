@@ -14,13 +14,9 @@
 - FPS Display
 - autoremove widgets when removing fixture
 - transition time in seconds
-- close modal dialogs by pressing Enter key
-- replace smalltalk dialog
 - fixed channel value dialog live preview
 - second click on color field should make color black
 - blackout only for some fixtures
-- open files with AGLight
-- register AGLight for .aglshow file extension
 
 
 ## Note: ##
