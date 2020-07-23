@@ -1,6 +1,6 @@
 {
     "name": "aglight",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "main": "main.js",
     "description": "A intuitive software for controlling DMX lights.",
     "homepage": "https://github.com/hrueger/AGLight",
