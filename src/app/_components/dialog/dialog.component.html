@@ -16,7 +16,7 @@
                 <div class="card-body">
                     <h5 class="card-title" [innerHtml]="option.name | safe"></h5>
                     <p class="card-text" [innerHtml]="option.description | safe"></p>
-                    <a routerLink="" (click)="activeModal.close(option.value)" class="btn btn-outline-primary stretched-link">Choose</a>
+                    <a [routerLink]="" (click)="activeModal.close(option.value)" class="btn btn-outline-primary stretched-link">Choose</a>
                 </div>
             </div>
         </div>
