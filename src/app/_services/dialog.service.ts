@@ -14,7 +14,7 @@ export class DialogService {
         value: string | number,
         isNumber = false,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        onChange?: (val: string) => void,
+        onChange?: (val: string | number) => void,
     ): Promise<string | number> {
         return new Promise((resolve, reject) => {
             const modal = this.modalService.open(DialogComponent);
@@ -26,6 +26,10 @@ export class DialogService {
                 isNumber,
             };
             modal.result.then((v) => resolve(v), (e) => reject(e));
+            if (typeof onChange == "function") {
+                (modal.componentInstance as DialogComponent)
+                    .onChange.subscribe((val: string | number) => onChange(val));
+            }
         });
     }
 }
