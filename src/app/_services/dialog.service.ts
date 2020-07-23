@@ -32,4 +32,14 @@ export class DialogService {
             }
         });
     }
+
+    public confirm(title: string, message: string): Promise<void> {
+        const modal = this.modalService.open(DialogComponent);
+        (modal.componentInstance as DialogComponent).config = {
+            type: "confirm",
+            title,
+            message,
+        };
+        return modal.result;
+    }
 }
