@@ -10,7 +10,6 @@ import { Fixture } from "../../_entities/fixture";
 import { Widget, WidgetType } from "../../_entities/widget";
 import { colors } from "../../_ressources/colors";
 import { ShowService } from "../../_services/show.service";
-import * as smalltalkSelect from "../../_utils/smalltalk-select";
 import { LibraryService } from "../../_services/library.service";
 import { DialogService } from "../../_services/dialog.service";
 import { DmxService } from "../../_services/dmx.service";
@@ -101,7 +100,7 @@ export class WidgetGridComponent implements OnInit {
     public addMultiActionItemToCurrentWidget(): void {
         document.getElementsByTagName("ngb-modal-window")[0].setAttribute("style", "display:none !important");
         document.getElementsByTagName("ngb-modal-backdrop")[0].setAttribute("style", "display:none !important");
-        smalltalkSelect.select("Add Multi Action", "Choose the fixture:", this.fixtures.map((f) => ({
+        this.dialogService.select("Add Multi Action", "Choose the fixture:", this.fixtures.map((f) => ({
             name: f.displayName,
             description: `${f.number}x ${f.product.name} <span class="text-muted">(${f.product.manufacturer.name})</span>`,
             value: f.id,
@@ -173,7 +172,7 @@ export class WidgetGridComponent implements OnInit {
                 });
             }
             if (opts3.length) {
-                smalltalkSelect.select("Add widget", "Choose the channel:", opts3).then(async (channel: string) => {
+                this.dialogService.select("Add widget", "Choose the channel:", opts3).then(async (channel: any) => {
                     if (isFixedChannelValue) {
                         const w = new FixedChannel(fixture, channel);
                         await this.showService.connection.manager.save(w);
@@ -228,11 +227,7 @@ export class WidgetGridComponent implements OnInit {
         channel: string,
         fixture: Fixture,
     ) {
-        smalltalkSelect.select(
-            "Add widget",
-            "Choose the widget you want to add:",
-            availableWidgets,
-        ).then(async (control: WidgetType) => {
+        this.dialogService.select("Add widget", "Choose the widget you want to add:", availableWidgets).then(async (control: WidgetType) => {
             const { customChannelRequired } = (isEffect ? effectWidgets : widgets)
                 .filter((x) => x.value == control)[0];
             const w = new Widget(0, 0, 1, 1, isEffect ? undefined : control, customChannelRequired ? channel.split(":")[2] : channel, fixture, customChannelRequired, isEffect ? control : undefined);

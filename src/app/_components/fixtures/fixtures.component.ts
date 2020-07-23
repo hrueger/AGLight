@@ -7,7 +7,6 @@ import { ShowService } from "../../_services/show.service";
 import { LibraryService } from "../../_services/library.service";
 import { DialogService } from "../../_services/dialog.service";
 import { getChannelCount } from "../../_utils/channel-count";
-import * as smalltalkSelect from "../../_utils/smalltalk-select";
 
 @Component({
     selector: "app-fixtures",
@@ -140,7 +139,7 @@ export class FixturesComponent implements OnInit {
                 }
             }, () => undefined);
         } else {
-            smalltalkSelect.select(title, message, options).then((res: any) => {
+            this.dialogService.select(title, message, options).then((res: any) => {
                 if (res) {
                     this.fixtures[i].channelMode = res.name;
                 }

@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import * as DMX from "dmx";
 import * as serialport from "serialport";
 import { StatusbarService } from "./statusbar.service";
-import * as smalltalkSelect from "../_utils/smalltalk-select";
 import { Widget } from "../_entities/widget";
 import { findChannelAddresses } from "../_utils/find-channel-addresses";
 import { DialogService } from "./dialog.service";
@@ -174,7 +173,7 @@ export class DmxService {
                 value: key,
             }
         ));
-        smalltalkSelect.select("Connect DMX Interface", "Choose the driver for the device you want to connect to.", opts).then(async (key: string) => {
+        this.dialogService.select("Connect DMX Interface", "Choose the driver for the device you want to connect to.", opts).then(async (key: string) => {
             let defaultDeviceId = this.devices[key].deviceId;
             if (this.devices[key].hasSerialport) {
                 const serialports = await serialport.list();
