@@ -1,8 +1,8 @@
 import { Component } from "@angular/core";
 import { Router, RouterEvent } from "@angular/router";
 import { remote } from "electron";
-import * as smalltalk from "smalltalk";
 import { ShowService } from "../../_services/show.service";
+import { DialogService } from "../../_services/dialog.service";
 
 @Component({
     selector: "app-navbar",
@@ -36,7 +36,11 @@ export class NavbarComponent {
         },
     ];
     private win: any;
-    constructor(public showService: ShowService, private router: Router) { }
+    constructor(
+        public showService: ShowService,
+        private router: Router,
+        private dialogService: DialogService,
+    ) { }
 
     public ngOnInit(): void {
         this.win = remote.getCurrentWindow();
@@ -68,7 +72,7 @@ export class NavbarComponent {
         }
     }
     public async closeWindow(): Promise<void> {
-        smalltalk.confirm("Close AGLight", "Do you really want to close the application?").then(() => {
+        this.dialogService.confirm("Close AGLight", "Do you really want to close the application?").then(() => {
             this.win.close();
             remote.app.quit();
         }, () => undefined);

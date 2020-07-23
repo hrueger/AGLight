@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import * as smalltalk from "smalltalk";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { shell } from "electron";
 import { Fixture } from "../../_entities/fixture";
@@ -151,7 +150,7 @@ export class FixturesComponent implements OnInit {
     }
 
     public deleteFixture(i: number): void {
-        smalltalk.confirm("Delete fixture(s)",
+        this.dialogService.confirm("Delete fixture(s)",
             "Are you sure that this fixture(s) should be deleted? You won't be able to restore it.").then(async () => {
             await this.showService.connection.getRepository(Fixture).remove(this.fixtures[i]);
             this.fixtures.splice(i, 1);

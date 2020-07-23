@@ -13,6 +13,7 @@ import { colors } from "../../_ressources/colors";
 import { ShowService } from "../../_services/show.service";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
 import { LibraryService } from "../../_services/library.service";
+import { DialogService } from "../../_services/dialog.service";
 import { DmxService } from "../../_services/dmx.service";
 import { beautifyCamelCase } from "../../_utils/camelcase-beautifier";
 import { findChannelAddresses, findChannelAddresses2 } from "../../_utils/find-channel-addresses";
@@ -44,6 +45,7 @@ export class WidgetGridComponent implements OnInit {
         private libraryService: LibraryService,
         private dmxService: DmxService,
         private modalService: NgbModal,
+        private dialogService: DialogService,
     ) { }
 
     public saveDebounced(): void {
@@ -75,7 +77,7 @@ export class WidgetGridComponent implements OnInit {
     public async removeItem($event: Event, item: Widget): Promise<void> {
         $event.preventDefault();
         $event.stopPropagation();
-        smalltalk.confirm("Are you sure?", "Do you really want to remove this widget?").then(async () => {
+        this.dialogService.confirm("Are you sure?", "Do you really want to remove this widget?").then(async () => {
             await this.showService.connection.getRepository(Widget).remove(item);
             this.widgets.splice(this.widgets.indexOf(item), 1);
         }, () => undefined);
