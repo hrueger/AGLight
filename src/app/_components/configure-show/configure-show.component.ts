@@ -1,11 +1,11 @@
 import { Component, ViewChild } from "@angular/core";
-import * as smalltalk from "smalltalk";
 import { LibraryService } from "../../_services/library.service";
 import { Fixture } from "../../_entities/fixture";
 import { Product } from "../../_entities/product";
 import { ShowService } from "../../_services/show.service";
 import { WidgetGridComponent } from "../widget-grid/widget-grid.component";
 import { DmxService } from "../../_services/dmx.service";
+import { DialogService } from "../../_services/dialog.service";
 import { FixedChannel } from "../../_entities/fixed-channel";
 
 @Component({
@@ -25,6 +25,7 @@ export class ConfigureShowComponent {
         private libraryService: LibraryService,
         private showService: ShowService,
         private dmxService: DmxService,
+        private dialogService: DialogService,
     ) { }
 
     public async ngOnInit(): Promise<void> {
@@ -52,7 +53,7 @@ export class ConfigureShowComponent {
     }
 
     public editFixedChannel(fixedChannel: FixedChannel): void {
-        smalltalk.prompt("Edit the value of the fixed channel", "Type in a value between 0 and 255", fixedChannel.value).then(async (v) => {
+        this.dialogService.prompt("Edit the value of the fixed channel", "Type in a value between 0 and 255", fixedChannel.value, true).then(async (v: number) => {
             fixedChannel.value = v;
             await this.showService.connection.getRepository(FixedChannel).save(fixedChannel);
             this.widgetGrid.updateFixedChannels();

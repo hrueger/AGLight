@@ -6,6 +6,7 @@ import { StatusbarService } from "./statusbar.service";
 import * as smalltalkSelect from "../_utils/smalltalk-select";
 import { Widget } from "../_entities/widget";
 import { findChannelAddresses } from "../_utils/find-channel-addresses";
+import { DialogService } from "./dialog.service";
 
 @Injectable({
     providedIn: "root",
@@ -74,7 +75,7 @@ export class DmxService {
         },
     }
     private runningEffects: Widget[] = [];
-    constructor(private statusbarService: StatusbarService) {}
+    constructor(private statusbarService: StatusbarService, private dialogService: DialogService) {}
 
     public init(): void {
         this.dmx = new DMX();
@@ -182,7 +183,7 @@ export class DmxService {
                     defaultDeviceId = serialports[0].path;
                 }
             }
-            smalltalk.prompt("Device Identifier", `${this.devices[key].deviceIdDescription}<br>${defaultDeviceId == this.devices[key].deviceId ? "" : `<br>A device connected to <b>'${defaultDeviceId}'</b> was found. If you want to connect to that, just press 'OK'. In case that's not the correct device, just change it.`}`, defaultDeviceId).then((deviceId) => {
+            this.dialogService.prompt("Device Identifier", `${this.devices[key].deviceIdDescription}<br>${defaultDeviceId == this.devices[key].deviceId ? "" : `<br>A device connected to <b>'${defaultDeviceId}'</b> was found. If you want to connect to that, just press 'OK'. In case that's not the correct device, just change it.`}`, defaultDeviceId).then(async (deviceId: string) => {
                 let connectedSuccessfully = true;
                 // needed because the driver does not throw an error...
                 // eslint-disable-next-line no-console

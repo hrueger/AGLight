@@ -6,6 +6,7 @@ import { Fixture } from "../../_entities/fixture";
 import { Product } from "../../_entities/product";
 import { ShowService } from "../../_services/show.service";
 import { LibraryService } from "../../_services/library.service";
+import { DialogService } from "../../_services/dialog.service";
 import { getChannelCount } from "../../_utils/channel-count";
 import * as smalltalkSelect from "../../_utils/smalltalk-select";
 
@@ -27,6 +28,7 @@ export class FixturesComponent implements OnInit {
         private showService: ShowService,
         private modalService: NgbModal,
         private libraryService: LibraryService,
+        private dialogService: DialogService,
     ) { }
 
     public async ngOnInit(): Promise<void> {
@@ -74,7 +76,7 @@ export class FixturesComponent implements OnInit {
     public addFixture(fixture: Fixture, content: unknown): void {
         this.currentFixture = fixture as any;
         this.modalService.open(content, { size: "xl" }).result.then((result) => {
-            smalltalk.prompt("Number of fixtures", "Type in the number of fixtures you want to add:", 2).then((n) => {
+            this.dialogService.prompt("Number of fixtures", "Type in the number of fixtures you want to add:", 2, true).then(async (n: number) => {
                 const f = new Fixture("Change this", n, 1, result.fixture.name, result.mode.name);
                 f.product = this.libraryService.getProduct(result.fixture.name);
                 this.fixtures.push(f);
@@ -119,7 +121,7 @@ export class FixturesComponent implements OnInit {
             break;
         }
         if (!selectBox) {
-            smalltalk.prompt(title, message, val).then((res) => {
+            this.dialogService.prompt(title, message, val, field !== "displayName").then(async (res: any) => {
                 if (res) {
                     switch (field) {
                     case "number":
