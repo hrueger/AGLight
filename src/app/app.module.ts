@@ -22,6 +22,7 @@ import { ViewerComponent } from "./_components/viewer/viewer.component";
 import { WidgetGridComponent } from "./_components/widget-grid/widget-grid.component";
 import { ChannelNumberSumPipe } from "./_pipes/channel-number-sum.pipe";
 import { EffectAffectsSumPipe } from "./_pipes/effect-affects-sum.pipe";
+import { SafePipe } from "./_pipes/safe.pipe";
 import { FirstLetterUppercasePipe } from "./_pipes/first-letter-uppercase.pipe";
 import { NumberArrayPipe } from "./_pipes/number-array.pipe";
 import { EffectNamePipe } from "./_pipes/effect-name.pipe";
@@ -54,6 +55,7 @@ import { DialogComponent } from "./_components/dialog/dialog.component";
         WidgetGridComponent,
         StatusbarComponent,
         DialogComponent,
+        SafePipe,
     ],
     imports: [
         BrowserModule,
