@@ -105,7 +105,8 @@ export class WidgetGridComponent implements OnInit {
             description: `${f.number}x ${f.product.name} <span class="text-muted">(${f.product.manufacturer.name})</span>`,
             value: f.id,
         }))).then(async (fixtureId: number) => {
-            this.dialogService.select("Add Multi Action", "Choose the channel", this.getSelectChannelOptions(this.fixtures.find((f) => f.id == fixtureId))).then(async (channel: string) => {
+            this.dialogService.select("Add Multi Action", "Choose the channel:", this.getSelectChannelOptions(this.fixtures.find((f) => f.id == fixtureId))).then((channel: string) => {
+                this.dialogService.prompt("Add Multi Action", "Input the value for that channel:", 0, true).then(async (val: number) => {
                 const item = new MultiActionItem();
                 item.fixture = this.fixtures.find((f) => f.id == fixtureId);
                 if (!this.currentWidget.multiActionItems) {
@@ -113,14 +114,15 @@ export class WidgetGridComponent implements OnInit {
                 }
                 item.widget = this.currentWidget;
                 item.channel = channel;
+                item.value = val;
                 await this.showService.connection.getRepository(MultiActionItem).save(item);
                 // delete item.widget; // otherwise the json debug pipe won't work
                 this.currentWidget.multiActionItems.push(item);
                 await this.showService.connection.getRepository(Widget).save(this.currentWidget);
                 document.getElementsByTagName("ngb-modal-window")[0].setAttribute("style", "");
                 document.getElementsByTagName("ngb-modal-backdrop")[0].setAttribute("style", "");
-
-            })
+                });
+            });
         });
     }
 
