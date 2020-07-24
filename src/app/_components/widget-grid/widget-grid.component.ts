@@ -141,6 +141,14 @@ export class WidgetGridComponent implements OnInit {
         });
     }
 
+    public changeMultiActionItemValue(item: MultiActionItem): void {
+        console.log(item);
+        this.dialogService.prompt("Edit Multi Action", "Input the value:", item.value).then(async (value: number) => {
+            item.value = value;
+            await this.showService.connection.getRepository(MultiActionItem).save(item);
+        });
+    }
+
     public addWidget(
         fixture: Fixture,
         isEffect = false,

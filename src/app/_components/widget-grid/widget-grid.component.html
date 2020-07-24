@@ -214,7 +214,7 @@
                     <td><button class="action-btn red" (click)="removeMultiActionItem(actionItem)"><i class="fas fa-times"></i></button></td>
                     <td>{{actionItem.fixture.displayName}}</td>
                     <td class="editable" (click)="changeMultiActionItemChannel(actionItem)"><i class="fas fa-pen"></i> {{actionItem.channel}}</td>
-                    <td class="editable" (click)="change('startAddress', i)"><i class="fas fa-pen"></i> {{actionItem.value}}
+                    <td class="editable" (click)="changeMultiActionItemValue(actionItem)"><i class="fas fa-pen"></i> {{actionItem.value}}
                     </td>
                 </tr>
             </tbody>
