@@ -133,6 +133,14 @@ export class WidgetGridComponent implements OnInit {
         }, () => undefined);
     }
 
+    public changeMultiActionItemChannel(item: MultiActionItem): void {
+        console.log(item);
+        this.dialogService.select("Edit Multi Action", "Choose the channel:", this.getSelectChannelOptions(this.fixtures.find((f) => f.id == item.fixture.id))).then(async (channel: string) => {
+            item.channel = channel;
+            await this.showService.connection.getRepository(MultiActionItem).save(item);
+        });
+    }
+
     public addWidget(
         fixture: Fixture,
         isEffect = false,

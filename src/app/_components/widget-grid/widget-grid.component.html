@@ -213,7 +213,7 @@
                 <tr *ngFor="let actionItem of currentWidget.multiActionItems; let i = index">
                     <td><button class="action-btn red" (click)="removeMultiActionItem(actionItem)"><i class="fas fa-times"></i></button></td>
                     <td>{{actionItem.fixture.displayName}}</td>
-                    <td class="editable"><i class="fas fa-pen"></i> {{actionItem.channel}}</td>
+                    <td class="editable" (click)="changeMultiActionItemChannel(actionItem)"><i class="fas fa-pen"></i> {{actionItem.channel}}</td>
                     <td class="editable" (click)="change('startAddress', i)"><i class="fas fa-pen"></i> {{actionItem.value}}
                     </td>
                 </tr>
@@ -238,7 +238,7 @@
         </form>-->
     </div>
     <div class="modal-footer">
-        <button class="btn btn-outline-primary mr-auto" (click)="addMultiActionItemToCurrentWidget()"><i class="fas fa-plus"></i>Add item</button>
+        <button class="btn btn-outline-primary mr-auto" (click)="addMultiActionItemToCurrentWidget()"><i class="fas fa-plus"></i> Add item</button>
         <button type="button" class="btn btn-outline-success" (click)="modal.close()">Save</button>
     </div>
 </ng-template>
