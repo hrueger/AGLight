@@ -105,18 +105,22 @@ export class WidgetGridComponent implements OnInit {
             description: `${f.number}x ${f.product.name} <span class="text-muted">(${f.product.manufacturer.name})</span>`,
             value: f.id,
         }))).then(async (fixtureId: number) => {
-            const item = new MultiActionItem();
-            item.fixture = this.fixtures.find((f) => f.id == fixtureId);
-            if (!this.currentWidget.multiActionItems) {
-                this.currentWidget.multiActionItems = [];
-            }
-            item.widget = this.currentWidget;
-            await this.showService.connection.getRepository(MultiActionItem).save(item);
-            // delete item.widget; // otherwise the json debug pipe won't work
-            this.currentWidget.multiActionItems.push(item);
-            await this.showService.connection.getRepository(Widget).save(this.currentWidget);
-            document.getElementsByTagName("ngb-modal-window")[0].setAttribute("style", "");
-            document.getElementsByTagName("ngb-modal-backdrop")[0].setAttribute("style", "");
+            this.dialogService.select("Add Multi Action", "Choose the channel", this.getSelectChannelOptions(this.fixtures.find((f) => f.id == fixtureId))).then(async (channel: string) => {
+                const item = new MultiActionItem();
+                item.fixture = this.fixtures.find((f) => f.id == fixtureId);
+                if (!this.currentWidget.multiActionItems) {
+                    this.currentWidget.multiActionItems = [];
+                }
+                item.widget = this.currentWidget;
+                item.channel = channel;
+                await this.showService.connection.getRepository(MultiActionItem).save(item);
+                // delete item.widget; // otherwise the json debug pipe won't work
+                this.currentWidget.multiActionItems.push(item);
+                await this.showService.connection.getRepository(Widget).save(this.currentWidget);
+                document.getElementsByTagName("ngb-modal-window")[0].setAttribute("style", "");
+                document.getElementsByTagName("ngb-modal-backdrop")[0].setAttribute("style", "");
+
+            })
         });
     }
 
@@ -127,50 +131,7 @@ export class WidgetGridComponent implements OnInit {
         returnChannel = false,
     ): Promise<any> {
         return new Promise((resolve) => {
-            const { channels } = fixture.product.modes.filter(
-                (m) => m.name == fixture.channelMode,
-            )[0];
-            const opts3 = channels.map((ch, idx) => {
-                const [channel, isFineChannel] = this.removeFineSuffix(ch);
-                return {
-                    description: `
-                    <table><thead><tr><th></th><th></th></tr></thead><tbody>
-                    ${fixture.product.availableChannels[channel].capabilities.map((c: any) => `<tr>
-
-                    <td class="text-muted">${c.dmxRange ? `${c.dmxRange[0]} - ${c.dmxRange[1]}` : "0 - 255"}:</td>
-                    <td><b>${beautifyCamelCase(c.type)}${isFineChannel ? " fine" : ""}</b> ${c.effectPreset ? `(${beautifyCamelCase(c.effectPreset)})` : ""}</td></tr>
-                    ${c.comment ? `<tr><td></td><td><i>${c.comment}</i></td></tr>` : ""}
-                    
-                    `).join("")}
-                    </tbody></table>
-                  `,
-                    name: `${fixture.startAddress - 1 + idx}: ${channel}${isFineChannel ? " fine" : ""}`,
-                    value: ch,
-                };
-            });
-            if (!isFixedChannelValue) {
-                const mappedChannels = channels.map((c) => {
-                    const [ch, isFineChannel] = this.removeFineSuffix(c);
-                    return {
-                        key: c, // ch
-                        value: fixture.product.availableChannels[ch], // ch
-                        isFineChannel,
-                    };
-                });
-                mappedChannels.forEach((channel, idx) => {
-                    if (
-                        channel.value.singleCapability && channel.value.capabilities[0].type == "ColorIntensity"
-                        && mappedChannels[idx + 1] && mappedChannels[idx + 1].value.singleCapability && mappedChannels[idx + 1].value.capabilities[0].type == "ColorIntensity"
-                        && mappedChannels[idx + 2] && mappedChannels[idx + 2].value.singleCapability && mappedChannels[idx + 2].value.capabilities[0].type == "ColorIntensity"
-                    ) {
-                        opts3.unshift({
-                            description: "This is a virtual channel. It bundles the Red, Green and Blue channel of the fixture(s). You can use this for colorpickers.",
-                            name: "RGB Channel (3 Channels)",
-                            value: `CUSTOM:rgb:${channel.key}`,
-                        });
-                    }
-                });
-            }
+            const opts3 = this.getSelectChannelOptions(fixture, isFixedChannelValue);
             if (opts3.length) {
                 this.dialogService.select("Add widget", "Choose the channel:", opts3).then(async (channel: any) => {
                     if (isFixedChannelValue) {
@@ -219,6 +180,60 @@ export class WidgetGridComponent implements OnInit {
                 this.alertNothingToDisplay();
             }
         });
+    }
+
+    private getSelectChannelOptions(fixture: Fixture, noCustomChannels = false) {
+        const { channels } = fixture.product.modes.filter(
+            (m) => m.name == fixture.channelMode)[0];
+        const opts3 = channels.map((ch, idx) => {
+            const [channel, isFineChannel] = this.removeFineSuffix(ch);
+            if (!fixture.product.availableChannels[channel]) {
+                fixture.product.availableChannels[channel] = {} as any;
+                fixture.product.availableChannels[channel].capabilities = [
+                    {
+                        type: "Intensity",
+                        dmxRange: [0, 255],
+                    } as any
+                ];
+            }
+            return {
+                description: `
+                    <table><thead><tr><th></th><th></th></tr></thead><tbody>
+                    ${fixture.product.availableChannels[channel].capabilities.map((c: any) => `<tr>
+
+                    <td class="text-muted">${c.dmxRange ? `${c.dmxRange[0]} - ${c.dmxRange[1]}` : "0 - 255"}:</td>
+                    <td><b>${beautifyCamelCase(c.type)}${isFineChannel ? " fine" : ""}</b> ${c.effectPreset ? `(${beautifyCamelCase(c.effectPreset)})` : ""}</td></tr>
+                    ${c.comment ? `<tr><td></td><td><i>${c.comment}</i></td></tr>` : ""}
+                    
+                    `).join("")}
+                    </tbody></table>
+                  `,
+                name: `${fixture.startAddress - 1 + idx}: ${channel}${isFineChannel ? " fine" : ""}`,
+                value: ch,
+            };
+        });
+        if (!noCustomChannels) {
+            const mappedChannels = channels.map((c) => {
+                const [ch, isFineChannel] = this.removeFineSuffix(c);
+                return {
+                    key: c,
+                    value: fixture.product.availableChannels[ch],
+                    isFineChannel,
+                };
+            });
+            mappedChannels.forEach((channel, idx) => {
+                if (channel.value.singleCapability && channel.value.capabilities[0].type == "ColorIntensity"
+                    && mappedChannels[idx + 1] && mappedChannels[idx + 1].value.singleCapability && mappedChannels[idx + 1].value.capabilities[0].type == "ColorIntensity"
+                    && mappedChannels[idx + 2] && mappedChannels[idx + 2].value.singleCapability && mappedChannels[idx + 2].value.capabilities[0].type == "ColorIntensity") {
+                    opts3.unshift({
+                        description: "This is a virtual channel. It bundles the Red, Green and Blue channel of the fixture(s). You can use this for colorpickers.",
+                        name: "RGB Channel (3 Channels)",
+                        value: `CUSTOM:rgb:${channel.key}`,
+                    });
+                }
+            });
+        }
+        return opts3;
     }
 
     private askForWidgetType(
