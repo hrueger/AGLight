@@ -207,6 +207,7 @@
                     <td>Name</td>
                     <td>Channel</td>
                     <td>Value</td>
+                    <td>Transition time</td>
                 </tr>
             </thead>
             <tbody>
@@ -215,6 +216,8 @@
                     <td>{{actionItem.fixture.displayName}}</td>
                     <td class="editable" (click)="changeMultiActionItemChannel(actionItem)"><i class="fas fa-pen"></i> {{actionItem.channel}}</td>
                     <td class="editable" (click)="changeMultiActionItemValue(actionItem)"><i class="fas fa-pen"></i> {{actionItem.value}}
+                    </td>
+                    <td class="editable" (click)="changeMultiActionItemTransitionTime(actionItem)"><i class="fas fa-pen"></i> {{actionItem.transitionTime}}
                     </td>
                 </tr>
             </tbody>

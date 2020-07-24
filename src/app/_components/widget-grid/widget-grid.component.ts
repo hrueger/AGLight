@@ -148,6 +148,14 @@ export class WidgetGridComponent implements OnInit {
             await this.showService.connection.getRepository(MultiActionItem).save(item);
         });
     }
+    
+    public changeMultiActionItemTransitionTime(item: MultiActionItem): void {
+        console.log(item);
+        this.dialogService.prompt("Edit Multi Action", "Input the transition time in milliseconds:", item.transitionTime).then(async (value: number) => {
+            item.transitionTime = value;
+            await this.showService.connection.getRepository(MultiActionItem).save(item);
+        });
+    }
 
     public addWidget(
         fixture: Fixture,
@@ -360,7 +368,7 @@ export class WidgetGridComponent implements OnInit {
                 this.dmxService.animateMultipleTo(
                     item.value ? item.value : 0,
                     channels,
-                    widget.config?.transitionTime,
+                    item.transitionTime,
                 );
             }
             break;

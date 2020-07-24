@@ -18,6 +18,9 @@ export class MultiActionItem extends BaseEntity {
     @Column({ default: 0 })
     public value: number;
 
+    @Column({ default: 1000 })
+    public transitionTime: number;
+
     @ManyToOne(() => Fixture, (fixture) => fixture.multiActionItems)
     public fixture: Fixture;
 
