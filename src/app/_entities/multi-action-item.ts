@@ -15,6 +15,9 @@ export class MultiActionItem extends BaseEntity {
     @Column({ default: "" })
     public customChannel: string;
 
+    @Column({ default: 0 })
+    public value: number;
+
     @ManyToOne(() => Fixture, (fixture) => fixture.multiActionItems)
     public fixture: Fixture;
 
