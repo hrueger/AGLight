@@ -126,6 +126,11 @@ export class WidgetGridComponent implements OnInit {
         });
     }
 
+    public async removeMultiActionItem(item: MultiActionItem) {
+        await this.showService.connection.getRepository(MultiActionItem).remove(item);
+        this.currentWidget.multiActionItems = this.currentWidget.multiActionItems.filter((i) => i.id != item.id);
+    }
+
     public addWidget(
         fixture: Fixture,
         isEffect = false,
