@@ -20,7 +20,7 @@ export class ShowComponent implements OnInit {
     public async ngOnInit(): Promise<void> {
         const products = this.libraryService.getProducts();
         this.widgets = await this.showService.connection.getRepository(Widget).find();
-        this.fixedChannels = await this.showService.connection.getRepository(FixedChannel).find({ relations: ["fixture", "multiActionItems", "multiActionItems.fixture"] });
+        this.fixedChannels = await this.showService.connection.getRepository(FixedChannel).find({ relations: ["fixture"] });
         for (const f of this.fixedChannels) {
             [f.fixture.product] = products.filter((p) => p.name == f.fixture.name);
         }
