@@ -98,8 +98,6 @@ export class WidgetGridComponent implements OnInit {
     }
 
     public addMultiActionItemToCurrentWidget(): void {
-        document.getElementsByTagName("ngb-modal-window")[0].setAttribute("style", "display:none !important");
-        document.getElementsByTagName("ngb-modal-backdrop")[0].setAttribute("style", "display:none !important");
         this.dialogService.select("Add Multi Action", "Choose the fixture:", this.fixtures.map((f) => ({
             name: f.displayName,
             description: `${f.number}x ${f.product.name} <span class="text-muted">(${f.product.manufacturer.name})</span>`,
@@ -107,34 +105,33 @@ export class WidgetGridComponent implements OnInit {
         }))).then(async (fixtureId: number) => {
             this.dialogService.select("Add Multi Action", "Choose the channel:", this.getSelectChannelOptions(this.fixtures.find((f) => f.id == fixtureId))).then((channel: string) => {
                 this.dialogService.prompt("Add Multi Action", "Input the value for that channel:", 0, true).then(async (val: number) => {
-                const item = new MultiActionItem();
-                item.fixture = this.fixtures.find((f) => f.id == fixtureId);
-                if (!this.currentWidget.multiActionItems) {
-                    this.currentWidget.multiActionItems = [];
-                }
-                item.widget = this.currentWidget;
-                item.channel = channel;
-                item.value = val;
-                await this.showService.connection.getRepository(MultiActionItem).save(item);
-                // delete item.widget; // otherwise the json debug pipe won't work
-                this.currentWidget.multiActionItems.push(item);
-                await this.showService.connection.getRepository(Widget).save(this.currentWidget);
-                document.getElementsByTagName("ngb-modal-window")[0].setAttribute("style", "");
-                document.getElementsByTagName("ngb-modal-backdrop")[0].setAttribute("style", "");
+                    const item = new MultiActionItem();
+                    item.fixture = this.fixtures.find((f) => f.id == fixtureId);
+                    if (!this.currentWidget.multiActionItems) {
+                        this.currentWidget.multiActionItems = [];
+                    }
+                    item.widget = this.currentWidget;
+                    item.channel = channel;
+                    item.value = val;
+                    await this.showService.connection.getRepository(MultiActionItem).save(item);
+                    // delete item.widget; // otherwise the json debug pipe won't work
+                    this.currentWidget.multiActionItems.push(item);
+                    await this.showService.connection
+                        .getRepository(Widget).save(this.currentWidget);
                 });
             });
         });
     }
 
-    public removeMultiActionItem(item: MultiActionItem) {
+    public removeMultiActionItem(item: MultiActionItem): void {
         this.dialogService.confirm("Are you sure?", "Do you really want to remove this Multi Action Item?").then(async () => {
             await this.showService.connection.getRepository(MultiActionItem).remove(item);
-            this.currentWidget.multiActionItems = this.currentWidget.multiActionItems.filter((i) => i.id != item.id);
+            this.currentWidget.multiActionItems = this.currentWidget
+                .multiActionItems.filter((i) => i.id != item.id);
         }, () => undefined);
     }
 
     public changeMultiActionItemChannel(item: MultiActionItem): void {
-        console.log(item);
         this.dialogService.select("Edit Multi Action", "Choose the channel:", this.getSelectChannelOptions(this.fixtures.find((f) => f.id == item.fixture.id))).then(async (channel: string) => {
             item.channel = channel;
             await this.showService.connection.getRepository(MultiActionItem).save(item);
@@ -142,15 +139,13 @@ export class WidgetGridComponent implements OnInit {
     }
 
     public changeMultiActionItemValue(item: MultiActionItem): void {
-        console.log(item);
         this.dialogService.prompt("Edit Multi Action", "Input the value:", item.value).then(async (value: number) => {
             item.value = value;
             await this.showService.connection.getRepository(MultiActionItem).save(item);
         });
     }
-    
+
     public changeMultiActionItemTransitionTime(item: MultiActionItem): void {
-        console.log(item);
         this.dialogService.prompt("Edit Multi Action", "Input the transition time in milliseconds:", item.transitionTime).then(async (value: number) => {
             item.transitionTime = value;
             await this.showService.connection.getRepository(MultiActionItem).save(item);
@@ -217,7 +212,8 @@ export class WidgetGridComponent implements OnInit {
 
     private getSelectChannelOptions(fixture: Fixture, noCustomChannels = false) {
         const { channels } = fixture.product.modes.filter(
-            (m) => m.name == fixture.channelMode)[0];
+            (m) => m.name == fixture.channelMode,
+        )[0];
         const opts3 = channels.map((ch, idx) => {
             const [channel, isFineChannel] = this.removeFineSuffix(ch);
             if (!fixture.product.availableChannels[channel]) {
@@ -226,7 +222,7 @@ export class WidgetGridComponent implements OnInit {
                     {
                         type: "Intensity",
                         dmxRange: [0, 255],
-                    } as any
+                    } as any,
                 ];
             }
             return {
@@ -364,7 +360,10 @@ export class WidgetGridComponent implements OnInit {
             break;
         case "multiActionButton":
             for (const item of widget.multiActionItems) {
-                channels = findChannelAddresses2(this.fixtures.find((f) => f.id == item.fixture.id), item.channel);
+                channels = findChannelAddresses2(
+                    this.fixtures.find((f) => f.id == item.fixture.id),
+                    item.channel,
+                );
                 this.dmxService.animateMultipleTo(
                     item.value ? item.value : 0,
                     channels,
