@@ -8,7 +8,6 @@
 
 ## ToDo
 - Fixtures padding between
-- Multiple Button Actions
 - ButtonGrid
 - More Effects
 - FPS Display
@@ -17,6 +16,7 @@
 - fixed channel value dialog live preview
 - second click on color field should make color black
 - blackout only for some fixtures
+- switch on off buttons
 
 
 ## Note: ##
