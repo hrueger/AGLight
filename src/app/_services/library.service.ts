@@ -60,6 +60,7 @@ export class LibraryService {
                         if ((p.templateChannels[key] as any).capability) {
                             p.templateChannels[key].capabilities = [(p.templateChannels[key] as any).capability];
                             p.templateChannels[key].singleCapability = true;
+                            (delete p.templateChannels[key] as any).capability;
                         }
                     }
                 }
