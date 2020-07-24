@@ -58,7 +58,7 @@ export class LibraryService {
                 if (p.templateChannels) {
                     for (const key of Object.keys(p.templateChannels) as any) {
                         if ((p.templateChannels[key] as any).capability) {
-                            p.templateChannels[key].capabilities = (p.templateChannels[key] as any).capability;
+                            p.templateChannels[key].capabilities = [(p.templateChannels[key] as any).capability];
                             p.templateChannels[key].singleCapability = true;
                         }
                     }
