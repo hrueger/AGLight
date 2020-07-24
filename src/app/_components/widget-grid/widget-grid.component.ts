@@ -354,6 +354,16 @@ export class WidgetGridComponent implements OnInit {
             // val = widget.channel.steps[idx].start;
             // this.universe.update({ [chl]: val });
             break;
+        case "multiActionButton":
+            for (const item of widget.multiActionItems) {
+                channels = findChannelAddresses2(this.fixtures.find((f) => f.id == item.fixture.id), item.channel);
+                this.dmxService.animateMultipleTo(
+                    item.value ? item.value : 0,
+                    channels,
+                    widget.config?.transitionTime,
+                );
+            }
+            break;
         case "wheel":
             const capability = widget.fixture.product.availableChannels[widget.channel].capabilities.filter((s) => s.type == "WheelSlot" && s.slotNumber == idx + 1)[0];
             this.dmxService.animateMultipleTo(
