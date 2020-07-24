@@ -55,17 +55,6 @@ export class LibraryService {
         this.productCache.push(...data.fixtures);
         for (const p of this.productCache) {
             for (const mode of p.modes) {
-                mode.channels = mode.channels.map((channel: any) => {
-                    if (typeof channel == "object") {
-                        if (channel?.insert == "matrixChannels" && Array.isArray(channel?.repeatFor)) {
-                            channel = channel.repeatFor.map((i) => (
-                                channel.templateChannels.map((t) => (t.replace("$pixelKey", i)))
-                            )).flat();
-                        }
-                    }
-                    return channel;
-                });
-                mode.channels = (mode.channels as any).flat();
                 if (p.templateChannels) {
                     for (const key of Object.keys(p.templateChannels) as any) {
                         if ((p.templateChannels[key] as any).capability) {
@@ -74,6 +63,24 @@ export class LibraryService {
                         }
                     }
                 }
+                mode.channels = mode.channels.map((channel: any) => {
+                    if (typeof channel == "object") {
+                        if (channel?.insert == "matrixChannels" && Array.isArray(channel?.repeatFor)) {
+                            channel = channel.repeatFor.map((i) => (
+                                channel.templateChannels.map((t) => {
+                                    const channelName = t.replace("$pixelKey", i);
+                                    if (!p.availableChannels) {
+                                        p.availableChannels = {};
+                                    }
+                                    p.availableChannels[channelName] = p.templateChannels[t];
+                                    return channelName;
+                                })
+                            )).flat();
+                        }
+                    }
+                    return channel;
+                });
+                mode.channels = (mode.channels as any).flat();
             }
         }
         this.resources = data.resources;
