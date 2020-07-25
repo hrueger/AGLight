@@ -4,7 +4,7 @@
 [![Lint](https://github.com/hrueger/AGLight/workflows/Lint/badge.svg)](https://github.com/hrueger/AGLight/actions)
 [![License](https://img.shields.io/badge/License-MIT-blue)](./LICENSE.md)
 [![GitHub last commit](https://img.shields.io/github/last-commit/hrueger/AGLight?color=brightgreen)](https://github.com/hrueger/AGLight/commits)
-[![Maintenance](https://img.shields.io/maintenance/yes/2020)](https://github.com/hrueger/AGLight/commits) [![Greenkeeper badge](https://badges.greenkeeper.io/hrueger/AGLight.svg)](https://greenkeeper.io/)
+[![Maintenance](https://img.shields.io/maintenance/yes/2020)](https://github.com/hrueger/AGLight/commits)
 
 ## Screenshots
 Dashboard | Fixture Editor | Choose between channel modes 
@@ -34,18 +34,12 @@ The Electron Angular App will send over the dmx universe over to different devic
 
 ## How does it work?
 ### I want to use this software
-1. Download a the latest release for your operating system.
-2. Install it.
-3. Run the setup wizard
-4. Have fun!
+1. Download a the latest release for your operating system [here](https://github.com/hrueger/AGLight/releases/latest)
+2. Install it
+3. Have fun!
 
 ### I want to contribute
 1. Clone this repository by typing `git clone https://github.com/hrueger/AGLight` in your command prompt
 2. `cd AGLight`
 3. Type `npm start` to start your dev session with LiveSync!
 4. Before creating a pull request be sure to check for linting errors with `npm run lint`
-
-#### Add effects
-1. All effects are classes stored in `src/app/_ressources/effects`
-2. Copy the base effect file and edit all properties and methods.
-3. Register your effect in `notexistingyet.ts`
