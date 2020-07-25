@@ -6,10 +6,6 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/hrueger/AGLight?color=brightgreen)](https://github.com/hrueger/AGLight/commits)
 [![Maintenance](https://img.shields.io/maintenance/yes/2020)](https://github.com/hrueger/AGLight/commits) [![Greenkeeper badge](https://badges.greenkeeper.io/hrueger/AGLight.svg)](https://greenkeeper.io/)
 
-## Note: ##
-This project is in development. It can't be used as of now!
-But feel free to contribute!
-
 ## Screenshots
 Dashboard | Fixture Editor | Choose between channel modes 
 ----- | ----- | -----
