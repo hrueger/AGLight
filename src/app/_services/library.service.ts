@@ -53,28 +53,6 @@ export class LibraryService {
             return;
         }
         this.productCache.push(...data.fixtures);
-        for (const p of this.productCache) {
-            for (const mode of p.modes) {
-                mode.channels = mode.channels.map((channel: any) => {
-                    if (typeof channel == "object") {
-                        if (channel?.insert == "matrixChannels" && Array.isArray(channel?.repeatFor)) {
-                            channel = channel.repeatFor.map((i) => (
-                                channel.templateChannels.map((t) => {
-                                    const channelName = t.replace("$pixelKey", i);
-                                    if (!p.availableChannels) {
-                                        p.availableChannels = {};
-                                    }
-                                    p.availableChannels[channelName] = p.templateChannels[t];
-                                    return channelName;
-                                })
-                            )).flat();
-                        }
-                    }
-                    return channel;
-                });
-                mode.channels = (mode.channels as any).flat();
-            }
-        }
         this.resources = data.resources;
         this.statusbarService.setItem({
             name: "Library loaded",
