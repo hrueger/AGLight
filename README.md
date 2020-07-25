@@ -11,11 +11,11 @@ This project is in development. It can't be used as of now!
 But feel free to contribute!
 
 ## Screenshots
-Dashboard | Head Editor | Fixtures
+Dashboard | Fixture Editor | Choose between channel modes 
 ----- | ----- | -----
 ![Screenshot 1](./screenshots/01.png) | ![Screenshot 2](./screenshots/02.png) | ![Screenshot 3](./screenshots/03.png)
 
-Configure Show | Drag and Drop| 3D Preview
+Completely configure your UI | Advanced settings available | Supported interfaces
 ----- | ----- | -----
 ![Screenshot 4](./screenshots/04.png) | ![Screenshot 5](./screenshots/05.png) | ![Screenshot 6](./screenshots/06.png)
 
