@@ -55,17 +55,6 @@ export class LibraryService {
         this.productCache.push(...data.fixtures);
         for (const p of this.productCache) {
             for (const mode of p.modes) {
-                if (p.templateChannels) {
-                    for (const key of Object.keys(p.templateChannels) as any) {
-                        if ((p.templateChannels[key] as any).capability) {
-                            p.templateChannels[key].capabilities = [
-                                (p.templateChannels[key] as any).capability,
-                            ];
-                            p.templateChannels[key].singleCapability = true;
-                            delete (p.templateChannels[key] as any).capability;
-                        }
-                    }
-                }
                 mode.channels = mode.channels.map((channel: any) => {
                     if (typeof channel == "object") {
                         if (channel?.insert == "matrixChannels" && Array.isArray(channel?.repeatFor)) {
