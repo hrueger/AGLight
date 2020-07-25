@@ -6,19 +6,6 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/hrueger/AGLight?color=brightgreen)](https://github.com/hrueger/AGLight/commits)
 [![Maintenance](https://img.shields.io/maintenance/yes/2020)](https://github.com/hrueger/AGLight/commits) [![Greenkeeper badge](https://badges.greenkeeper.io/hrueger/AGLight.svg)](https://greenkeeper.io/)
 
-## ToDo
-- Fixtures padding between
-- ButtonGrid
-- More Effects
-- FPS Display
-- autoremove widgets when removing fixture
-- transition time in seconds
-- fixed channel value dialog live preview
-- second click on color field should make color black
-- blackout only for some fixtures
-- switch on off buttons
-
-
 ## Note: ##
 This project is in development. It can't be used as of now!
 But feel free to contribute!
