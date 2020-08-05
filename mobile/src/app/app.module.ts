@@ -10,6 +10,7 @@ import { FeaturedComponent } from "./_components/featured/featured.component";
 import { BrowseComponent } from "./_components/browse/browse.component";
 import { SearchComponent } from "./_components/search/search.component";
 import { SettingsComponent } from "./_components/settings/settings.component";
+import { NavbarComponent } from "./_components/navbar/navbar.component";
 // eslint-disable-next-line
 registerElement("BarcodeScanner", () => require("nativescript-barcodescanner").BarcodeScannerView);
 
@@ -29,6 +30,7 @@ registerElement("BarcodeScanner", () => require("nativescript-barcodescanner").B
         BrowseComponent,
         SearchComponent,
         SettingsComponent,
+        NavbarComponent,
     ],
     schemas: [
         NO_ERRORS_SCHEMA,

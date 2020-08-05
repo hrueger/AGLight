@@ -1,6 +1,4 @@
 import { Component } from "@angular/core";
-import { RadSideDrawer } from "nativescript-ui-sidedrawer";
-import * as app from "tns-core-modules/application";
 import { BarcodeScanner } from "nativescript-barcodescanner";
 
 @Component({
@@ -8,11 +6,6 @@ import { BarcodeScanner } from "nativescript-barcodescanner";
     templateUrl: "./home.component.html",
 })
 export class HomeComponent {
-    onDrawerButtonTap(): void {
-        const sideDrawer = <RadSideDrawer>app.getRootView();
-        sideDrawer.showDrawer();
-    }
-
     public scan(): void {
         const barcodeScanner = new BarcodeScanner();
         barcodeScanner.scan({
