@@ -1,6 +1,7 @@
 {
+    "name": "aglight-mobile",
     "nativescript": {
-        "id": "org.nativescript.AGLight",
+        "id": "de.hannesrueger.aglight",
         "tns-android": {
             "version": "6.5.0"
         },
@@ -8,9 +9,9 @@
             "version": "6.5.0"
         }
     },
-    "description": "NativeScript Application",
-    "license": "SEE LICENSE IN <your-license-filename>",
-    "repository": "<fill-your-repository-here>",
+    "description": "An intuitive software for controlling DMX lights. ",
+    "license": "MIT",
+    "repository": "https://github.com/hrueger/AGLight/",
     "scripts": {
         "lint": "tslint \"src/**/*.ts\""
     },
