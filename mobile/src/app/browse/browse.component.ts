@@ -19,4 +19,8 @@ export class BrowseComponent implements OnInit {
         const sideDrawer = <RadSideDrawer>app.getRootView();
         sideDrawer.showDrawer();
     }
+
+    scanResult(e) {
+        console.log(e);
+    }
 }
