@@ -11,6 +11,8 @@ import * as url from "url";
 import { autoUpdater } from "electron-updater";
 import * as fs from "fs";
 
+app.allowRendererProcessReuse = false;
+
 let win: BrowserWindow;
 let viewerWindow;
 const args = process.argv.slice(1);
