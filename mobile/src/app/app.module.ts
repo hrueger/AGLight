@@ -5,11 +5,11 @@ import { NativeScriptUISideDrawerModule } from "nativescript-ui-sidedrawer/angul
 import { registerElement } from "@nativescript/angular";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { HomeComponent } from "./home/home.component";
-import { FeaturedComponent } from "./featured/featured.component";
-import { BrowseComponent } from "./browse/browse.component";
-import { SearchComponent } from "./search/search.component";
-import { SettingsComponent } from "./settings/settings.component";
+import { HomeComponent } from "./_components/home/home.component";
+import { FeaturedComponent } from "./_components/featured/featured.component";
+import { BrowseComponent } from "./_components/browse/browse.component";
+import { SearchComponent } from "./_components/search/search.component";
+import { SettingsComponent } from "./_components/settings/settings.component";
 // eslint-disable-next-line
 registerElement("BarcodeScanner", () => require("nativescript-barcodescanner").BarcodeScannerView);
 

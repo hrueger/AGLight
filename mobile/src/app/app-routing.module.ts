@@ -1,11 +1,11 @@
 import { NgModule } from "@angular/core";
 import { Routes } from "@angular/router";
 import { NativeScriptRouterModule } from "nativescript-angular/router";
-import { HomeComponent } from "./home/home.component";
-import { BrowseComponent } from "./browse/browse.component";
-import { SearchComponent } from "./search/search.component";
-import { FeaturedComponent } from "./featured/featured.component";
-import { SettingsComponent } from "./settings/settings.component";
+import { HomeComponent } from "./_components/home/home.component";
+import { BrowseComponent } from "./_components/browse/browse.component";
+import { SearchComponent } from "./_components/search/search.component";
+import { FeaturedComponent } from "./_components/featured/featured.component";
+import { SettingsComponent } from "./_components/settings/settings.component";
 
 const routes: Routes = [
     { path: "", redirectTo: "/home", pathMatch: "full" },
