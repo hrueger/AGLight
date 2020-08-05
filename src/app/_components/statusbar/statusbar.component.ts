@@ -3,6 +3,7 @@ import { StatusbarService } from "../../_services/statusbar.service";
 import { LibraryService } from "../../_services/library.service";
 import { DmxService } from "../../_services/dmx.service";
 import { ConsoleService } from "../../_services/console.service";
+import { MobileService } from "../../_services/mobile.service";
 
 @Component({
     selector: "app-statusbar",
@@ -18,6 +19,7 @@ export class StatusbarComponent {
     private statusbarService: StatusbarService,
     private libraryService: LibraryService,
     private dmxService: DmxService,
+    private mobileService: MobileService,
     private consoleService: ConsoleService) {}
 
   public ngOnInit(): void {

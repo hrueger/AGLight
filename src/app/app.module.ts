@@ -9,6 +9,7 @@ import { ColorSwatchesModule } from "ngx-color/swatches";
 import "reflect-metadata";
 import "../polyfills";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { QRCodeModule } from "angularx-qrcode";
 import { AboutComponent } from "./_components/about/about.component";
 import { ConfigureShowComponent } from "./_components/configure-show/configure-show.component";
 import { FixturesComponent } from "./_components/fixtures/fixtures.component";
@@ -31,6 +32,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { StatusbarComponent } from "./_components/statusbar/statusbar.component";
 import { DialogComponent } from "./_components/dialog/dialog.component";
+import { QRCodeComponent } from "./_components/qrcode/qrcode.component";
 
 @NgModule({
     bootstrap: [AppComponent],
@@ -56,6 +58,7 @@ import { DialogComponent } from "./_components/dialog/dialog.component";
         StatusbarComponent,
         DialogComponent,
         SafePipe,
+        QRCodeComponent,
     ],
     imports: [
         BrowserModule,
@@ -67,9 +70,11 @@ import { DialogComponent } from "./_components/dialog/dialog.component";
         Ng5SliderModule,
         ColorCircleModule,
         ColorSwatchesModule,
+        QRCodeModule,
     ],
     entryComponents: [
         DialogComponent,
+        QRCodeComponent,
     ],
     providers: [],
 })

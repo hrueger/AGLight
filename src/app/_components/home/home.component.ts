@@ -1,11 +1,11 @@
 import { Component } from "@angular/core";
-import { Router } from "@angular/router";
 import { ipcRenderer, remote, shell } from "electron";
 import { RecentShowsService } from "../../_services/recent-shows.service";
 import { ShowService } from "../../_services/show.service";
 import { LibraryService } from "../../_services/library.service";
 import { DmxService } from "../../_services/dmx.service";
 import { ConsoleService } from "../../_services/console.service";
+import { MobileService } from "../../_services/mobile.service";
 
 @Component({
     selector: "app-home",
@@ -16,17 +16,18 @@ export class HomeComponent {
     public recentShows: any[] = [];
     public showRecentDropdown = false;
     constructor(private showService: ShowService,
-        private router: Router,
         private recentShowsService: RecentShowsService,
         private libraryService: LibraryService,
         private dmxService: DmxService,
-        private consoleService: ConsoleService) { }
+        private consoleService: ConsoleService,
+        private mobileService: MobileService) { }
 
     public async ngOnInit(): Promise<void> {
         ipcRenderer.send("ready");
         this.recentShows = this.recentShowsService.get();
         this.dmxService.init();
         this.consoleService.init();
+        this.mobileService.init();
         await this.libraryService.loadIntoCache();
     }
     public newShow(): void {
