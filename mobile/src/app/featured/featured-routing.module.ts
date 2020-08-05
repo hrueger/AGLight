@@ -5,11 +5,11 @@ import { NativeScriptRouterModule } from "nativescript-angular/router";
 import { FeaturedComponent } from "./featured.component";
 
 const routes: Routes = [
-    { path: "", component: FeaturedComponent }
+    { path: "", component: FeaturedComponent },
 ];
 
 @NgModule({
     imports: [NativeScriptRouterModule.forChild(routes)],
-    exports: [NativeScriptRouterModule]
+    exports: [NativeScriptRouterModule],
 })
 export class FeaturedRoutingModule { }

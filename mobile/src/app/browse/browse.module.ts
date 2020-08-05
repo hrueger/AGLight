@@ -7,13 +7,13 @@ import { BrowseComponent } from "./browse.component";
 @NgModule({
     imports: [
         NativeScriptCommonModule,
-        BrowseRoutingModule
+        BrowseRoutingModule,
     ],
     declarations: [
-        BrowseComponent
+        BrowseComponent,
     ],
     schemas: [
-        NO_ERRORS_SCHEMA
-    ]
+        NO_ERRORS_SCHEMA,
+    ],
 })
 export class BrowseModule { }

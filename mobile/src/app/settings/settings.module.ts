@@ -7,13 +7,13 @@ import { SettingsComponent } from "./settings.component";
 @NgModule({
     imports: [
         NativeScriptCommonModule,
-        SettingsRoutingModule
+        SettingsRoutingModule,
     ],
     declarations: [
-        SettingsComponent
+        SettingsComponent,
     ],
     schemas: [
-        NO_ERRORS_SCHEMA
-    ]
+        NO_ERRORS_SCHEMA,
+    ],
 })
 export class SettingsModule { }

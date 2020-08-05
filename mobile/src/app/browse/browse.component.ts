@@ -4,10 +4,9 @@ import * as app from "tns-core-modules/application";
 
 @Component({
     selector: "Browse",
-    templateUrl: "./browse.component.html"
+    templateUrl: "./browse.component.html",
 })
 export class BrowseComponent implements OnInit {
-
     constructor() {
         // Use the component constructor to inject providers.
     }

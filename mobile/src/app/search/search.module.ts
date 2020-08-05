@@ -7,13 +7,13 @@ import { SearchComponent } from "./search.component";
 @NgModule({
     imports: [
         NativeScriptCommonModule,
-        SearchRoutingModule
+        SearchRoutingModule,
     ],
     declarations: [
-        SearchComponent
+        SearchComponent,
     ],
     schemas: [
-        NO_ERRORS_SCHEMA
-    ]
+        NO_ERRORS_SCHEMA,
+    ],
 })
 export class SearchModule { }

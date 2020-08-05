@@ -7,18 +7,18 @@ import { AppComponent } from "./app.component";
 
 @NgModule({
     bootstrap: [
-        AppComponent
+        AppComponent,
     ],
     imports: [
         AppRoutingModule,
         NativeScriptModule,
-        NativeScriptUISideDrawerModule
+        NativeScriptUISideDrawerModule,
     ],
     declarations: [
-        AppComponent
+        AppComponent,
     ],
     schemas: [
-        NO_ERRORS_SCHEMA
-    ]
+        NO_ERRORS_SCHEMA,
+    ],
 })
 export class AppModule { }
