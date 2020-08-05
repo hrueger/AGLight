@@ -2,6 +2,9 @@ name: Production build
 
 on: [push]
 
+env:
+  NODE_OPTIONS: "--max_old_space_size=8048"
+
 jobs:
   testbuild_on_linux:
     name: Testbuild on Linux
