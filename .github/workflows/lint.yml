@@ -12,5 +12,8 @@ jobs:
         node-version: 10
     - name: Install dependencies
       run: npm install
+    - name: Install dependencies 2
+      run: npm install
+      working-directory: mobile
     - name: Lint
       run: npm run lint
