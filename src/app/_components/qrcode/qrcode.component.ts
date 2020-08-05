@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import * as os from "os";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: "app-qrcode",
@@ -9,7 +10,7 @@ import * as os from "os";
 export class QRCodeComponent {
     public interfaces: { name: string, ip: string }[] = [];
     public currentInterfaceIndex: number;
-    constructor() {
+    constructor(public activeModal: NgbActiveModal) {
         const ifaces = os.networkInterfaces();
 
         for (const ifname of Object.keys(ifaces)) {
