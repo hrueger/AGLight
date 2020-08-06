@@ -1,11 +1,15 @@
 import { Component } from "@angular/core";
 import { BarcodeScanner } from "nativescript-barcodescanner";
+import * as dialogs from "tns-core-modules/ui/dialogs";
+import { Router } from "@angular/router";
+import { ConnectionService } from "../../_services/connection.service";
 
 @Component({
     selector: "Home",
     templateUrl: "./home.component.html",
 })
 export class HomeComponent {
+    constructor(private connectionService: ConnectionService, private router: Router) {}
     public scan(): void {
         const barcodeScanner = new BarcodeScanner();
         barcodeScanner.scan({
@@ -28,6 +32,18 @@ export class HomeComponent {
     }
 
     public type(): void {
-        //
+        dialogs.prompt({
+            title: "Connect",
+            message: "Type in the IP address",
+            okButtonText: "Connect",
+            defaultText: "192.168.178.100",
+            inputType: dialogs.inputType.text,
+        }).then((r) => this.connect(r.text));
+    }
+
+    private connect(ip: string): void {
+        if (this.connectionService.connect(ip)) {
+            this.router.navigate(["/show"]);
+        }
     }
 }
