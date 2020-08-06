@@ -7,7 +7,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { HomeComponent } from "./_components/home/home.component";
 import { FeaturedComponent } from "./_components/featured/featured.component";
-import { BrowseComponent } from "./_components/browse/browse.component";
+import { ShowComponent } from "./_components/show/show.component";
 import { SearchComponent } from "./_components/search/search.component";
 import { SettingsComponent } from "./_components/settings/settings.component";
 import { NavbarComponent } from "./_components/navbar/navbar.component";
@@ -27,7 +27,7 @@ registerElement("BarcodeScanner", () => require("nativescript-barcodescanner").B
         AppComponent,
         HomeComponent,
         FeaturedComponent,
-        BrowseComponent,
+        ShowComponent,
         SearchComponent,
         SettingsComponent,
         NavbarComponent,
