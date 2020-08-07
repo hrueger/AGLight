@@ -7,6 +7,9 @@ module.exports = {
         sqlite3: "require('sqlite3')",
         dmx: "require('dmx')",
         serialport: "require('serialport')",
+        ws: "require('ws')",
+        "socket.io": "require('socket.io')",
+        "express": "require('express')",
     },
     resolve: {
         alias: {
