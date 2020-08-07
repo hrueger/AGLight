@@ -16,4 +16,7 @@
             Scan this QR Code with the mobile app.
         </p>
     </div>
+    <div class="mt-3" *ngIf="isWindows">
+        <button class="btn btn-outline-primary" (click)="configWinFirewall()">Reconfigure Windows Firewall</button>
+    </div>
 </div>
