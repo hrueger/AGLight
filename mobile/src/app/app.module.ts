@@ -11,6 +11,7 @@ import { ShowComponent } from "./_components/show/show.component";
 import { SearchComponent } from "./_components/search/search.component";
 import { SettingsComponent } from "./_components/settings/settings.component";
 import { NavbarComponent } from "./_components/navbar/navbar.component";
+import { HttpClientModule } from "@angular/common/http";
 // eslint-disable-next-line
 registerElement("BarcodeScanner", () => require("nativescript-barcodescanner").BarcodeScannerView);
 
@@ -22,6 +23,7 @@ registerElement("BarcodeScanner", () => require("nativescript-barcodescanner").B
         AppRoutingModule,
         NativeScriptModule,
         NativeScriptUISideDrawerModule,
+        HttpClientModule,
     ],
     declarations: [
         AppComponent,

@@ -26,7 +26,7 @@ export class HomeComponent {
             presentInRootViewController: true,
         }).then((result) => {
             if (result.text.startsWith("aglight://")) {
-                // connect to this ip
+                this.connect(result.text.replace("aglight://", ""));
             }
         }, () => undefined);
     }
