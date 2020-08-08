@@ -5,11 +5,11 @@ import { DrawerTransitionBase, RadSideDrawer, SlideInOnTopTransition } from "nat
 import { filter } from "rxjs/operators";
 import * as app from "tns-core-modules/application";
 import * as appversion from "nativescript-appversion";
+import * as Utils from "tns-core-modules/utils/utils";
 
 @Component({
     selector: "ns-app",
     templateUrl: "app.component.html",
-    styles: ["app.component.css"],
 })
 export class AppComponent implements OnInit {
     private _activatedUrl: string;
@@ -51,5 +51,9 @@ export class AppComponent implements OnInit {
 
         const sideDrawer = <RadSideDrawer>app.getRootView();
         sideDrawer.closeDrawer();
+    }
+
+    public goToGitHub(): void {
+        Utils.openUrl("https://github.com/hrueger/AGLight");
     }
 }

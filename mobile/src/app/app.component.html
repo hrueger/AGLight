@@ -1,9 +1,9 @@
 <RadSideDrawer [drawerTransition]="sideDrawerTransition">
     <GridLayout tkDrawerContent rows="auto, *, auto" class="nt-drawer nt-drawer-left">
-        <StackLayout row="0" class="nt-drawer__header">
-            <Image class="nt-drawer__header-image" src="~/assets/logo.png"></Image>
-            <Label class="nt-drawer__header-brand" text="AGLight"></Label>
-            <Label class="footnote" [text]="'Version ' + version"></Label>
+        <StackLayout row="0" class="nt-drawer__header" backgroundColor="#FFC500">
+            <Image src="~/assets/logo.png" height="90" width="90" padding="0" margin-bottom="5" margin-top="5"></Image>
+            <Label color="#ffffff" text="AGLight"></Label>
+            <Label class="footnote" color="#ffffffaa" [text]="'Version ' + version"></Label>
         </StackLayout>
 
         <ScrollView row="1">
@@ -14,30 +14,20 @@
                 </GridLayout>
 
                 <GridLayout columns="auto, *" class="nt-drawer__list-item" [class.-selected]="isComponentSelected('/show')" (tap)="onNavItemTap('/show')">
-                    <Label col="0" text="&#xf1ea;" class="nt-icon far"></Label>
+                    <Label col="0" text="&#xf04b;" class="nt-icon fas"></Label>
                     <Label col="1" text="Show" class="p-r-10"></Label>
-                </GridLayout>
-
-                <GridLayout columns="auto, *" class="nt-drawer__list-item" [class.-selected]="isComponentSelected('/search')" (tap)="onNavItemTap('/search')">
-                    <Label col="0" text="&#xf002;" class="nt-icon fas"></Label>
-                    <Label col="1" text="Search" class="p-r-10"></Label>
-                </GridLayout>
-
-                <GridLayout columns="auto, *" class="nt-drawer__list-item" [class.-selected]="isComponentSelected('/featured')" (tap)="onNavItemTap('/featured')">
-                    <Label col="0" text="&#xf005;" class="nt-icon fas"></Label>
-                    <Label col="1" text="Featured" class="p-r-10"></Label>
                 </GridLayout>
 
                 <StackLayout class="hr"></StackLayout>
 
-                <GridLayout columns="auto, *" class="nt-drawer__list-item" [class.-selected]="isComponentSelected('/settings')" (tap)="onNavItemTap('/settings')">
-                    <Label col="0" text="&#xf013;" class="nt-icon fas"></Label>
-                    <Label col="1" text="Settings" class="p-r-10"></Label>
+                <GridLayout columns="auto, *" class="nt-drawer__list-item" (tap)="goToGitHub()">
+                    <Label col="0" text="&#xf09b;" class="nt-icon fab"></Label>
+                    <Label col="1" text="GitHub" class="p-r-10"></Label>
                 </GridLayout>
             </StackLayout>
         </ScrollView>
         <StackLayout row="2" verticalAlignment="bottom">
-            <Label class="footer p-5" text="© Hannes Rüger, 2019 - {{currentYear}}"></Label>
+            <Label textAlignment="center" color="#aaaaaa" text="© Hannes Rüger, 2019 - {{currentYear}}"></Label>
         </StackLayout>
     </GridLayout>
 
