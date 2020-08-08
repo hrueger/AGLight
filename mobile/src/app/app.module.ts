@@ -7,10 +7,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { HomeComponent } from "./_components/home/home.component";
-import { FeaturedComponent } from "./_components/featured/featured.component";
 import { ShowComponent } from "./_components/show/show.component";
-import { SearchComponent } from "./_components/search/search.component";
-import { SettingsComponent } from "./_components/settings/settings.component";
 import { NavbarComponent } from "./_components/navbar/navbar.component";
 // eslint-disable-next-line
 registerElement("BarcodeScanner", () => require("nativescript-barcodescanner").BarcodeScannerView);
@@ -28,10 +25,7 @@ registerElement("BarcodeScanner", () => require("nativescript-barcodescanner").B
     declarations: [
         AppComponent,
         HomeComponent,
-        FeaturedComponent,
         ShowComponent,
-        SearchComponent,
-        SettingsComponent,
         NavbarComponent,
     ],
     schemas: [
