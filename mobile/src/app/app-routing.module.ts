@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { Routes } from "@angular/router";
-import { NativeScriptRouterModule } from "nativescript-angular/router";
+import { NativeScriptRouterModule } from "@nativescript/angular";
 import { HomeComponent } from "./_components/home/home.component";
 import { ShowComponent } from "./_components/show/show.component";
 import { ConnectedGuard } from "./_guards/connected.guard";
