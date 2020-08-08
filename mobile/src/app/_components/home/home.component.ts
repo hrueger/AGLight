@@ -7,9 +7,10 @@ import { ConnectionService } from "../../_services/connection.service";
 @Component({
     selector: "Home",
     templateUrl: "./home.component.html",
+    styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent {
-    constructor(private connectionService: ConnectionService, private router: Router) { }
+    constructor(public connectionService: ConnectionService, private router: Router) { }
     public scan(): void {
         const barcodeScanner = new BarcodeScanner();
         barcodeScanner.scan({
