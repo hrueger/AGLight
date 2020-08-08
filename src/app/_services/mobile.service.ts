@@ -64,6 +64,7 @@ export class MobileService {
             });
             this.server.use(r);
             this.server.listen(4573, () => {
+                // eslint-disable-next-line no-console
                 console.log("listening on port 4573");
             });
         })();
