@@ -2,6 +2,15 @@
 
 <StackLayout class="page__content">
     <Label text="Not connected" class="h3"></Label>
-    <Button text="Scan a QR Code" (tap)="scan()"></Button>
-    <Button text="Set IP manually" (tap)="type()"></Button>
+    <Button (tap)="scan()">
+        <FormattedString>
+            <Span class="fas" text="&#xf029;"></Span>
+            <Span text=" Scan a QR-Code"></Span>
+        </FormattedString>
+    </Button>
+    <Button (tap)="type()">
+        <FormattedString>
+            <Span class="fas" text="&#xf11c;"></Span>
+            <Span text=" Manually set IP"></Span>
+        </FormattedString></Button>
 </StackLayout>
