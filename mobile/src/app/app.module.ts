@@ -3,6 +3,7 @@ import { NativeScriptModule } from "nativescript-angular/nativescript.module";
 import { NativeScriptUISideDrawerModule } from "nativescript-ui-sidedrawer/angular";
 
 import { registerElement } from "@nativescript/angular";
+import { HttpClientModule } from "@angular/common/http";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { HomeComponent } from "./_components/home/home.component";
@@ -11,7 +12,6 @@ import { ShowComponent } from "./_components/show/show.component";
 import { SearchComponent } from "./_components/search/search.component";
 import { SettingsComponent } from "./_components/settings/settings.component";
 import { NavbarComponent } from "./_components/navbar/navbar.component";
-import { HttpClientModule } from "@angular/common/http";
 // eslint-disable-next-line
 registerElement("BarcodeScanner", () => require("nativescript-barcodescanner").BarcodeScannerView);
 

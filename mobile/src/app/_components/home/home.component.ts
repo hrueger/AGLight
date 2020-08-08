@@ -9,7 +9,7 @@ import { ConnectionService } from "../../_services/connection.service";
     templateUrl: "./home.component.html",
 })
 export class HomeComponent {
-    constructor(private connectionService: ConnectionService, private router: Router) {}
+    constructor(private connectionService: ConnectionService, private router: Router) { }
     public scan(): void {
         const barcodeScanner = new BarcodeScanner();
         barcodeScanner.scan({
@@ -42,8 +42,10 @@ export class HomeComponent {
     }
 
     private connect(ip: string): void {
-        if (this.connectionService.connect(ip)) {
+        this.connectionService.connect(ip).then(() => {
             this.router.navigate(["/show"]);
-        }
+        }, () => {
+            dialogs.alert("Something went wrong.");
+        });
     }
 }
