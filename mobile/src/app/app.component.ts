@@ -3,9 +3,8 @@ import { NavigationEnd, Router } from "@angular/router";
 import { RouterExtensions } from "@nativescript/angular";
 import { DrawerTransitionBase, RadSideDrawer, SlideInOnTopTransition } from "nativescript-ui-sidedrawer";
 import { filter } from "rxjs/operators";
-import * as app from "tns-core-modules/application";
+import { Application, Utils } from "@nativescript/core";
 import * as appversion from "nativescript-appversion";
-import * as Utils from "tns-core-modules/utils/utils";
 
 @Component({
     selector: "ns-app",
@@ -49,7 +48,7 @@ export class AppComponent implements OnInit {
             },
         });
 
-        const sideDrawer = <RadSideDrawer>app.getRootView();
+        const sideDrawer = <RadSideDrawer>Application.getRootView();
         sideDrawer.closeDrawer();
     }
 

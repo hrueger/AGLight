@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { RadSideDrawer } from "nativescript-ui-sidedrawer";
-import * as app from "tns-core-modules/application";
+import { Application } from "@nativescript/core";
 
 @Component({
     selector: "app-navbar",
@@ -9,7 +9,7 @@ import * as app from "tns-core-modules/application";
 export class NavbarComponent {
     @Input() public title = "AGLight";
     onDrawerButtonTap(): void {
-        const sideDrawer = <RadSideDrawer>app.getRootView();
+        const sideDrawer = <RadSideDrawer>Application.getRootView();
         sideDrawer.showDrawer();
     }
 }
