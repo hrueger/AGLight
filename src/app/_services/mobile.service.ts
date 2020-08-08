@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import * as socketIO from "socket.io";
+import * as express from "express";
 import { StatusbarService } from "./statusbar.service";
 import { QRCodeComponent } from "../_components/qrcode/qrcode.component";
 
@@ -8,7 +8,7 @@ import { QRCodeComponent } from "../_components/qrcode/qrcode.component";
     providedIn: "root",
 })
 export class MobileService {
-    private server: socketIO.Server;
+    private server: express.Express;
     constructor(private statusbarService: StatusbarService, private modalService: NgbModal) { }
 
     public init(): void {
@@ -30,16 +30,14 @@ export class MobileService {
             },
         });
         (() => {
-            this.server = socketIO.listen(4573, {
-                serveClient: false,
+            this.server = express();
+            const r = express.Router();
+            r.get("/testConnection", (req, res) => {
+                res.send({ success: true });
             });
-            console.log(this.server);
-            this.server.on("connection", (socket) => {
-                console.log("user connected");
-                socket.emit("welcome", "welcome man");
-            });
-            this.server.on("hello", (socket) => {
-                console.log("hello");
+            this.server.use(r);
+            this.server.listen(4573, () => {
+                console.log("listening on port 4573");
             });
         })();
     }
