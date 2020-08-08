@@ -1,9 +1,9 @@
 <RadSideDrawer [drawerTransition]="sideDrawerTransition">
     <GridLayout tkDrawerContent rows="auto, *, auto" class="nt-drawer nt-drawer-left">
-        <StackLayout row="0" class="nt-drawer__header" backgroundColor="#FFC500">
-            <Image src="~/assets/logo.png" height="90" width="90" padding="0" margin-bottom="5" margin-top="5"></Image>
+        <StackLayout row="0" class="nt-drawer__header">
+            <Image class="nt-drawer__header-image" src="~/assets/logo.png"></Image>
             <Label color="#ffffff" text="AGLight"></Label>
-            <Label class="footnote" color="#ffffffaa" [text]="'Version ' + version"></Label>
+            <Label class="footnote" [text]="'Version ' + version"></Label>
         </StackLayout>
 
         <ScrollView row="1">
@@ -27,7 +27,7 @@
             </StackLayout>
         </ScrollView>
         <StackLayout row="2" verticalAlignment="bottom">
-            <Label textAlignment="center" color="#aaaaaa" text="© Hannes Rüger, 2019 - {{currentYear}}"></Label>
+            <Label class="footer p-5" text="© Hannes Rüger, 2019 - {{currentYear}}"></Label>
         </StackLayout>
     </GridLayout>
 

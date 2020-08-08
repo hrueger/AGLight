@@ -9,6 +9,7 @@ import * as appversion from "nativescript-appversion";
 @Component({
     selector: "ns-app",
     templateUrl: "app.component.html",
+    styleUrls: ["./app.component.scss"],
 })
 export class AppComponent implements OnInit {
     private _activatedUrl: string;

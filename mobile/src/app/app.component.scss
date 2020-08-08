@@ -1,0 +1,66 @@
+@import "../variables.scss";
+.nt-drawer__list-item-icon,
+.nt-drawer__list-item {
+    color: #022734;
+}
+
+.nt-drawer.nt-drawer-left {
+    background-color: $primary;
+}
+
+.nt-drawer.nt-drawer-left .nt-drawer__header-image {
+    color: #F8F8F8;
+    height: 90;
+    width: 90;
+    padding: 0;
+    margin-bottom: 5;
+    margin-top: 5;
+}
+
+.nt-drawer.nt-drawer-left .footnote {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.nt-drawer .nt-drawer__header {
+    background-color: $primary;
+}
+
+.nt-drawer .nt-drawer__header .nt-drawer__header-brand {
+    color: #fff;
+}
+
+.nt-drawer .nt-drawer-content {
+    background-color: #fff;
+}
+
+.nt-drawer .nt-drawer-content .nt-drawer__list-item {
+    padding-left: 15;
+    font-size: 15;
+}
+
+.nt-drawer .nt-drawer-content .nt-drawer__list-item Label {
+    vertical-align: center;
+    color: #022734;
+}
+
+.nt-drawer .nt-drawer-content .nt-drawer__list-item {
+    .fas,
+    .fab,
+    .far {
+        width: 20;
+        margin-right: 10;
+    }
+}
+
+.nt-drawer .nt-drawer-content .nt-drawer__list-item.selected {
+    background-color: #F8F8F8;
+}
+
+.nt-drawer .nt-drawer-content .nt-drawer__list-item.selected Label {
+    color: $primary;
+}
+
+.footer {
+    text-align: center;
+    color: rgba(0, 0, 0, 0.5);
+}
