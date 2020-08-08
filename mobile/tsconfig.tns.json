@@ -1,7 +1,16 @@
 {
-    "extends": "./tsconfig",
+    "extends": "./tsconfig.json",
     "compilerOptions": {
-        "module": "esNext",
-        "moduleResolution": "node"
-    }
-}
+      "module": "esnext",
+      "moduleResolution": "node",
+      "paths": {
+        "@src/*": [
+          "src/*.tns.ts",
+          "src/*.ts"
+        ]
+      }
+    },
+    "files": [
+      "src/main.ts"
+    ]
+  }

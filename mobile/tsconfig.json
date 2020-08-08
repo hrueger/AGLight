@@ -1,29 +1,35 @@
 {
+    "compileOnSave": false,
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "es5",
-        "experimentalDecorators": true,
+      "module": "esnext",
+        "outDir": "./dist/out-tsc",
+        "sourceMap": true,
+        "declaration": false,
+        "moduleResolution": "node",
         "emitDecoratorMetadata": true,
-        "noEmitHelpers": true,
-        "noEmitOnError": true,
+        "experimentalDecorators": true,
         "skipLibCheck": true,
+        "target": "es5",
+        "typeRoots": [
+            "node_modules/@types"
+        ],
         "lib": [
-            "es6",
+            "es2017",
             "dom",
-            "es2015.iterable"
+            "es6"
         ],
         "baseUrl": ".",
         "paths": {
-            "~/*": [
-                "src/*"
-            ],
-            "*": [
-                "./node_modules/*"
+            "@src/*": [
+                "src/*.android.ts",
+                "src/*.ios.ts",
+                "src/*.tns.ts",
+                "src/*.web.ts",
+                "src/*.ts"
             ]
         }
-    },
-    "exclude": [
-        "node_modules",
-        "platforms"
+     },
+     "files": [
+      "./src/main.ts",
     ]
-}
+  }

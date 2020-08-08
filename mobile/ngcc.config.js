@@ -16,27 +16,18 @@ module.exports = {
                 /@nativescript\/core\//,
             ],
         },
-        "nativescript-datetimepicker": {
+        "nativescript-localize": {
             entryPoints: {
                 ".": {
                     override: {
-                        main: "./index.js",
-                        typings: "./index.d.ts",
-                    },
-                    ignoreMissingDependencies: true,
-                },
-                angular: {
-                    override: {
-                        main: "./index.js",
-                        typings: "./index.d.ts",
+                        main: "./angular.js",
+                        typings: "./angular.d.ts",
                     },
                     ignoreMissingDependencies: true,
                 },
             },
             ignorableDeepImportMatchers: [
-                /tns-core-modules\//,
                 /@nativescript\/core\//,
-                /@nativescript\/angular\//,
             ],
         },
         "nativescript-ui-sidedrawer": {
@@ -70,6 +61,6 @@ module.exports = {
                 /@nativescript\/core\//,
                 /@nativescript\/angular\//,
             ],
-        },
+        }
     },
 };
