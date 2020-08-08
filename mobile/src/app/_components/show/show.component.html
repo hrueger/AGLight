@@ -1,5 +1,11 @@
 <app-navbar></app-navbar>
 
 <GridLayout class="page__content">
-    <Button (tap)="send()" text="send"></Button>
+    <Button (tap)="send()" text="Load Widgets" *ngIf="widgets.length == 0"></Button>
+    <GridLayout [columns]="getColumns()" [rows]="getRows()" *ngIf="widgets.length > 0">
+        <GridLayout rows="auto, *" columns="*" *ngFor="let widget of widgets" class="widget" [col]="widget.x" [row]="widget.y" [colspan]="widget.cols" [rowspan]="widget.rows">
+            <Label row="0" col="0" [text]='widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : widget.type == "MultiAction" ? "Multi Action Button" : ((editMode ? ((widget.type || (widget.effect)) + ": ") : "") + widget.channel + " - " + widget.fixture?.displayName))'></Label>
+            <Button *ngIf="widget.type == 'Button' || widget.type == 'BlackoutButton'" row="1" col="0" height="100%" [text]="widget.config.buttonName ? widget.config.buttonName : 'Button'"></Button>
+        </GridLayout>
+    </GridLayout>
 </GridLayout>
