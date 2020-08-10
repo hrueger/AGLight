@@ -27,7 +27,15 @@ export class QRCodeComponent {
             });
         }
 
-        if (this.isWindows && !execSync("netsh advfirewall firewall show rule name=AGLight").toString().trim().endsWith("OK.")) {
+        let ruleExists = false;
+        try {
+            if (execSync("netsh advfirewall firewall show rule name=AGLight").toString().trim().endsWith("OK.")) {
+                ruleExists = true;
+            }
+        } catch {
+            //
+        }
+        if (this.isWindows && !ruleExists) {
             remote.dialog.showMessageBox(undefined, {
                 message: "The Windows Firewall rule required to be able to have mobiles connect to AGLight Desktop is missing. Do you want to add it now? Administrator rights are necessary.",
                 title: "Windows Firewall Rule missing",
