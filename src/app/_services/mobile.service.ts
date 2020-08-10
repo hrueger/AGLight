@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, NgZone } from "@angular/core";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as express from "express";
 import { Router } from "@angular/router";
@@ -39,6 +39,7 @@ export class MobileService {
         private dmxService: DmxService,
         private recentShowsService: RecentShowsService,
         private router: Router,
+        private zone: NgZone,
     ) { }
 
     public init(): void {
@@ -75,7 +76,9 @@ export class MobileService {
             });
             r.post("/openRecentShow", async (req: any, res) => {
                 await this.showService.loadShow(req.jsonBody.show);
-                this.router.navigate(["/fixtures"]);
+                this.zone.run(() => {
+                    this.router.navigate(["/fixtures"]);
+                });
                 res.send({ success: true });
             });
             r.post("/disconnect", (req: any, res) => {
