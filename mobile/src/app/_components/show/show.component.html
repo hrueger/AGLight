@@ -1,7 +1,7 @@
 <app-navbar title="Show"></app-navbar>
 
 <GridLayout class="page__content">
-    <Button (tap)="send()" text="Load Widgets" *ngIf="widgets.length == 0"></Button>
+    <ActivityIndicator busy="true" *ngIf="widgets.length == 0"></ActivityIndicator>
     <GridLayout [columns]="getColumns()" [rows]="getRows()" *ngIf="widgets.length > 0">
         <GridLayout rows="auto, *" columns="*" *ngFor="let widget of widgets" class="widget" [col]="widget.x" [row]="widget.y" [colspan]="widget.cols" [rowspan]="widget.rows">
             <Label row="0" col="0" [text]='widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : widget.type == "MultiAction" ? "Multi Action Button" : ((editMode ? ((widget.type || (widget.effect)) + ": ") : "") + widget.channel + " - " + widget.fixture?.displayName))'></Label>

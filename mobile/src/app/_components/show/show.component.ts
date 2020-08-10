@@ -10,7 +10,7 @@ export class ShowComponent {
     public widgets: any[] = [];
     constructor(private connectionService: ConnectionService) { }
 
-    public send(): void {
+    public ngOnInit(): void {
         this.connectionService.get("widgets").subscribe((data) => {
             if (data && data.widgets) {
                 this.widgets = data.widgets;
