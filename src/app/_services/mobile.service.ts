@@ -30,6 +30,7 @@ export class MobileService {
         }
     }[] = [];
     private modal: NgbModalRef;
+    private expressRunning = false;
     constructor(
         private statusbarService: StatusbarService,
         private modalService: NgbModal,
@@ -45,6 +46,9 @@ export class MobileService {
     public init(): void {
         this.updateStatusbar();
         (() => {
+            if (this.expressRunning) {
+                return;
+            }
             this.server = express();
             this.server.use((req: any, res, next) => {
                 let data = "";
@@ -107,6 +111,7 @@ export class MobileService {
             this.server.listen(4573, () => {
                 // eslint-disable-next-line no-console
                 console.log("listening on port 4573");
+                this.expressRunning = true;
             });
         })();
     }
