@@ -4,8 +4,8 @@
     <GridLayout columns="auto, *" rows="auto, auto" class="m-20 p-10" [backgroundColor]="connectionService.isConnected ? '#5acc7a' : '#5ab0cc'">
         <Label [text]="(connectionService.isConnected ? '&#xf1e6;' : '&#xf05a;')+ ' '" class="fas h1 m-10" row="0" col="0" rowspan="2"></Label>
         <Label [text]="(connectionService.isConnected ? 'C' : 'Not c') + 'onnected'" class="h3" row="0" col="1"></Label>
-        <Label row="1" col="1" textWrap="true">
-            <FormattedString *ngIf="!connectionService.isConnected">
+        <Label row="1" col="1" textWrap="true" *ngIf="!connectionService.isConnected">
+            <FormattedString>
                 <Span text="This mobile is not connected to a Computer running "></Span>
                 <Span class="i" text="AGLight Desktop"></Span>
                 <Span text=". To connect, click in the blue statusbar at the bottom of "></Span>
@@ -14,7 +14,9 @@
                 <Span class="i" text="'No mobile connected'"></Span>
                 <Span text=" and follow the instructions. The, either scan the QR-Code or manaully input the IP address."></Span>
             </FormattedString>
-            <FormattedString *ngIf="connectionService.isConnected">
+        </Label>
+        <Label row="1" col="1" textWrap="true" *ngIf="connectionService.isConnected">
+            <FormattedString>
                 <Span text="This mobile is successfully connected to a Computer running "></Span>
                 <Span class="i" text="AGLight Desktop"></Span>
                 <Span text=". You can now go to"></Span>
@@ -23,15 +25,32 @@
             </FormattedString>
         </Label>
     </GridLayout>
-    <Button (tap)="scan()">
-        <FormattedString>
-            <Span class="fas" text="&#xf029;"></Span>
-            <Span text=" Scan a QR-Code"></Span>
-        </FormattedString>
-    </Button>
-    <Button (tap)="type()">
-        <FormattedString>
-            <Span class="fas" text="&#xf11c;"></Span>
-            <Span text=" Manually set IP"></Span>
-        </FormattedString></Button>
+    <ng-container *ngIf="!connectionService.isConnected">
+        <Button (tap)="scan()">
+            <FormattedString>
+                <Span class="fas" text="&#xf029;"></Span>
+                <Span text=" Scan a QR-Code"></Span>
+            </FormattedString>
+        </Button>
+        <Button (tap)="type()">
+            <FormattedString>
+                <Span class="fas" text="&#xf11c;"></Span>
+                <Span text=" Manually set IP"></Span>
+            </FormattedString>
+        </Button>
+    </ng-container>
+    <ng-container *ngIf="connectionService.isConnected">
+        <Button (tap)="goToShow()">
+            <FormattedString>
+                <Span class="fas" text="&#xf04b;"></Span>
+                <Span text=" Go to Show"></Span>
+            </FormattedString>
+        </Button>
+        <Button (tap)="connectionService.disconnect()">
+            <FormattedString>
+                <Span class="fas" text="&#xf011;"></Span>
+                <Span text=" Disconnect"></Span>
+            </FormattedString>
+        </Button>
+    </ng-container>
 </StackLayout>

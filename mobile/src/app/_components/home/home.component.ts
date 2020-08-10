@@ -43,10 +43,12 @@ export class HomeComponent {
     }
 
     private connect(ip: string): void {
-        this.connectionService.connect(ip).then(() => {
-            this.router.navigate(["/show"]);
-        }, () => {
+        this.connectionService.connect(ip).then(() => undefined, () => {
             dialogs.alert("Something went wrong.");
         });
+    }
+
+    public goToShow(): void {
+        this.router.navigate(["/show"]);
     }
 }
