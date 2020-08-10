@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as express from "express";
+import { Router } from "@angular/router";
 import { StatusbarService } from "./statusbar.service";
 import { QRCodeComponent } from "../_components/qrcode/qrcode.component";
 import { ShowService } from "./show.service";
@@ -8,6 +9,7 @@ import { WidgetGridComponent } from "../_components/widget-grid/widget-grid.comp
 import { LibraryService } from "./library.service";
 import { DialogService } from "./dialog.service";
 import { DmxService } from "./dmx.service";
+import { RecentShowsService } from "./recent-shows.service";
 
 @Injectable({
     providedIn: "root",
@@ -35,6 +37,8 @@ export class MobileService {
         private libraryService: LibraryService,
         private dialogService: DialogService,
         private dmxService: DmxService,
+        private recentShowsService: RecentShowsService,
+        private router: Router,
     ) { }
 
     public init(): void {
@@ -66,6 +70,14 @@ export class MobileService {
                     }
                 }
             });
+            r.get("/recentShows", (req: any, res) => {
+                res.send(this.recentShowsService.get());
+            });
+            r.post("/openRecentShow", async (req: any, res) => {
+                await this.showService.loadShow(req.jsonBody.show);
+                this.router.navigate(["/fixtures"]);
+                res.send({ success: true });
+            });
             r.post("/disconnect", (req: any, res) => {
                 this.connectedMobiles = this.connectedMobiles.filter(
                     (d) => d.device.uuid !== req.jsonBody.deviceId,
@@ -75,7 +87,7 @@ export class MobileService {
             });
             r.get("/widgets", async (req, res) => {
                 if (!this.showService.showLoaded) {
-                    res.status(500).send({ error: "No show loaded!" });
+                    res.status(500).send({ error: "No show loaded!", noShowLoaded: true });
                 }
                 const wgc = new WidgetGridComponent(
                     this.showService,
