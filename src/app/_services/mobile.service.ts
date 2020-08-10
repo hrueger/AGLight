@@ -14,6 +14,19 @@ import { DmxService } from "./dmx.service";
 })
 export class MobileService {
     private server: express.Express;
+    private connectedMobiles: {
+        device: {
+            model: string;
+            deviceType: string;
+            os: string;
+            osVersion: string;
+            sdkVersion: string;
+            language: string;
+            manufacturer: string;
+            uuid: string;
+            region: string;
+        }
+    }[] = [];
     constructor(
         private statusbarService: StatusbarService,
         private modalService: NgbModal,
@@ -24,28 +37,32 @@ export class MobileService {
     ) { }
 
     public init(): void {
-        this.statusbarService.setItem({
-            name: "No mobile connected",
-            icon: "mobile-alt",
-            id: "mobile",
-            dropup: {
-                title: "Mobiles",
-                content: "No mobile connected.",
-                actions: [
-                    {
-                        text: "Connect",
-                        type: "primary",
-                        service: "mobileService",
-                        action: "connect",
-                    },
-                ],
-            },
-        });
+        this.updateStatusbar();
         (() => {
             this.server = express();
+            this.server.use((req: any, res, next) => {
+                let data = "";
+                req.on("data", (chunk) => { data += chunk; });
+                req.on("end", () => {
+                    req.rawBody = data;
+                    req.jsonBody = JSON.parse(data || "null");
+                    next();
+                });
+            });
             const r = express.Router();
-            r.get("/testConnection", (req, res) => {
+            r.post("/connect", (req: any, res) => {
+                this.connectedMobiles.push({
+                    device: req.jsonBody.device,
+                });
                 res.send({ success: true });
+                this.updateStatusbar();
+            });
+            r.post("/disconnect", (req: any, res) => {
+                this.connectedMobiles = this.connectedMobiles.filter(
+                    (d) => d.device.uuid !== req.jsonBody.deviceId,
+                );
+                res.send({ success: true });
+                this.updateStatusbar();
             });
             r.get("/widgets", async (req, res) => {
                 if (!this.showService.showLoaded) {
@@ -68,6 +85,45 @@ export class MobileService {
                 console.log("listening on port 4573");
             });
         })();
+    }
+    public updateStatusbar(): void {
+        if (this.connectedMobiles.length == 0) {
+            this.statusbarService.setItem({
+                name: "No mobile connected",
+                icon: "mobile-alt",
+                id: "mobile",
+                dropup: {
+                    title: "Mobiles",
+                    content: "No mobile connected.",
+                    actions: [
+                        {
+                            text: "Connect",
+                            type: "primary",
+                            service: "mobileService",
+                            action: "connect",
+                        },
+                    ],
+                },
+            });
+            return;
+        }
+        this.statusbarService.setItem({
+            name: `${this.connectedMobiles.length} mobile${this.connectedMobiles.length > 1 ? "s" : ""} connected`,
+            icon: "mobile-alt",
+            id: "mobile",
+            dropup: {
+                title: "Connected mobiles",
+                content: `<ul>${this.connectedMobiles.map((m) => `<li>${m.device.manufacturer[0].toUpperCase() + m.device.manufacturer.slice(1)} ${m.device.model}</li>`).join("")}</ul>`,
+                actions: [
+                    {
+                        text: "Connect another device",
+                        type: "primary",
+                        service: "mobileService",
+                        action: "connect",
+                    },
+                ],
+            },
+        });
     }
     public async connect(): Promise<void> {
         this.modalService.open(QRCodeComponent);
