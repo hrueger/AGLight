@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import * as express from "express";
 import { StatusbarService } from "./statusbar.service";
 import { QRCodeComponent } from "../_components/qrcode/qrcode.component";
@@ -27,6 +27,7 @@ export class MobileService {
             region: string;
         }
     }[] = [];
+    private modal: NgbModalRef;
     constructor(
         private statusbarService: StatusbarService,
         private modalService: NgbModal,
@@ -56,6 +57,14 @@ export class MobileService {
                 });
                 res.send({ success: true });
                 this.updateStatusbar();
+                if (this.modal) {
+                    try {
+                        this.modal.dismiss();
+                        this.modal = undefined;
+                    } catch {
+                        //
+                    }
+                }
             });
             r.post("/disconnect", (req: any, res) => {
                 this.connectedMobiles = this.connectedMobiles.filter(
@@ -126,6 +135,9 @@ export class MobileService {
         });
     }
     public async connect(): Promise<void> {
-        this.modalService.open(QRCodeComponent);
+        this.modal = this.modalService.open(QRCodeComponent);
+        this.modal.result.then(() => {
+            this.modal = undefined;
+        }, () => undefined);
     }
 }
