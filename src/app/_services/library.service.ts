@@ -12,7 +12,8 @@ import { Product } from "../_entities/product";
     providedIn: "root",
 })
 export class LibraryService {
-    private libraryPath = path.join((electron.app || electron.remote.app).getPath("userData"), "library/library.json");
+    private libraryFolder = path.join((electron.app || electron.remote.app).getPath("userData"), "library");
+    private libraryPath = path.join(this.libraryFolder, "library.json");
     private tempStoragePath = path.join((electron.app || electron.remote.app).getPath("userData"), "library.tmp");
     private productCache: Product[] = [];
     public resources: { gobos: { [key: string]: string } };
@@ -74,6 +75,9 @@ export class LibraryService {
     }
 
     public sync(): void {
+        if (!fs.existsSync(this.libraryFolder)) {
+            fs.mkdirSync(this.libraryFolder, { recursive: true });
+        }
         this.statusbarService.setItem({
             name: "Downloading library: 0%",
             icon: "spinner fa-spin",
