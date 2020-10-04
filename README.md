@@ -1,5 +1,5 @@
 # AGLight 💡
-
+[![Avalible on Google Play](https://img.shields.io/endpoint?color=brightgreen&logo=google-play&logoColor=white&url=https%3A%2F%2Fplayshields.herokuapp.com%2Fplay%3Fi%3Dde.hannesrueger.aglight%26l%3DGoogle%2520Play%26m%3Dv%24version%2520(%2524sizeB))](https://play.google.com/store/apps/details?id=de.hannesrueger.aglight)
 [![Production build](https://github.com/hrueger/AGLight/workflows/Production%20build/badge.svg)](https://github.com/hrueger/AGLight/actions)
 [![Lint](https://github.com/hrueger/AGLight/workflows/Lint/badge.svg)](https://github.com/hrueger/AGLight/actions)
 [![License](https://img.shields.io/badge/License-MIT-blue)](./LICENSE.md)
