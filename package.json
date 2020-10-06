@@ -92,7 +92,7 @@
         "commonjs": "0.0.1",
         "copy-webpack-plugin": "^6.0.3",
         "core-js": "3.6.5",
-        "electron": "9.1.2",
+        "electron": "9.3.0",
         "electron-builder": "22.8.0",
         "electron-rebuild": "^1.11.0",
         "electron-reload": "^1.5.0",
