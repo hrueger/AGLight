@@ -31,7 +31,7 @@ export class Fixture extends BaseEntity {
     @OneToMany(() => MultiActionItem, (multiActionItem) => multiActionItem.fixture)
     public multiActionItems: MultiActionItem[];
 
-    public object?: {
+    /* public object?: {
         fixture: import("babylonjs/Meshes/mesh").Mesh;
         fixtureLight: import("babylonjs/Meshes/mesh").Mesh;
         rainbowInterval?: any;
@@ -41,7 +41,7 @@ export class Fixture extends BaseEntity {
             b: number,
             g: number,
         }
-    };
+    }; */
 
     public product?: Product;
 

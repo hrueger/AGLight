@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import {
+/* import {
     Camera,
     Color3,
     Color4,
@@ -13,11 +13,11 @@ import {
     StandardMaterial,
     Tools,
     Vector3,
-} from "babylonjs";
+} from "babylonjs"; */
 import { ipcRenderer } from "electron";
 import * as socketIo from "socket.io-client";
 import { Fixture } from "../../_entities/fixture";
-import { colors } from "../../_ressources/colors";
+// import { colors } from "../../_ressources/colors";
 
 @Component({
     selector: "viewer",
@@ -29,11 +29,11 @@ export class ViewerComponent implements OnInit {
     private readonly rainbowColors: string[] = ["red", "yellow", "green", "blue", "purple"];
     private readonly shadeColorFactor: number = 35;
     private canvas: HTMLCanvasElement;
-    private engine: Engine;
+    /* private engine: Engine;
     private scene: Scene;
     private camera: FreeCamera;
     private ground: Mesh;
-    private light: HemisphericLight;
+    private light: HemisphericLight; */
 
     private fixtures: Fixture[] = [];
     private numberOfFixtures = 0;
@@ -131,7 +131,7 @@ export class ViewerComponent implements OnInit {
             }); */
         });
 
-        ipcRenderer.on("getFixtures", (e, a) => {
+        /* ipcRenderer.on("getFixtures", (e, a) => {
             this.fixtures = a;
             this.canvas = document.getElementById("renderCanvas") as HTMLCanvasElement;
             this.engine = new Engine(this.canvas, true);
@@ -142,9 +142,9 @@ export class ViewerComponent implements OnInit {
             this.setupResizeListeners();
             this.setupKeyEvents();
             this.engine.runRenderLoop(() => this.scene.render());
-        });
+        }); */
     }
-    private createScene(): void {
+    /* private createScene(): void {
         this.scene = new Scene(this.engine);
         this.scene.clearColor = new Color4(0, 0, 0, 0);
 
@@ -167,8 +167,8 @@ export class ViewerComponent implements OnInit {
     private setupKeyEvents() {
         this.camera.inputs.removeByType("FreeCameraKeyboardMoveInput");
         // eslint-disable-next-line no-use-before-define
-        this.camera.inputs.add(new FreeCameraKeyboardMoveInput());
-        /*
+        this.camera.inputs.add(new FreeCameraKeyboardMoveInput()); */
+    /*
       document.onkeydown = (e) => {
         switch (e.which || e.keyCode) {
           case 37: // left
@@ -192,7 +192,7 @@ export class ViewerComponent implements OnInit {
           default: return;
         }
       };
-      */
+      *//*
     }
 
     private createFixture(headIdx: number) {
@@ -202,18 +202,15 @@ export class ViewerComponent implements OnInit {
         fixture.rotation = this.vectorFromAngles(0, -90, 90);
         const fixtureLight = Mesh.CreateCylinder(`fixtureLight_${Math.random().toString()}`,
             80, 0, 40, 64, 16, this.scene, false);
-        fixtureLight.material = this.createMaterial(this.color3FromHex(this.colorNameToHex("white")), this.maxLightMaterialOpacity);
+        fixtureLight.material = this.createMaterial(this
+            .color3FromHex(this.colorNameToHex("white")), this.maxLightMaterialOpacity);
         fixtureLight.parent = fixture;
         fixtureLight.position.y -= 42;
         this.numberOfFixtures++;
         this.fixtures[headIdx].object = {
             fixture,
             fixtureLight,
-        }; /*
-    setTimeout(() => {
-      this.heads[headIdx].viewer.fixtureLight.material =
-      this.createMaterial(this.color3FromHex(this.colorNameToHex("green")), 0.2);
-    }, 1000); */
+        };
     }
 
     private createMaterial(color: Color3, alpha = 1, noRefection = true) {
@@ -260,7 +257,8 @@ export class ViewerComponent implements OnInit {
         const clrs: string[] = [];
         parts.forEach((part) => {
             part = part.replace(/[^a-zA-Z0-9]/g, "");
-            const col = colors.filter((color) => color.name.toLowerCase() == part || color.name.toLowerCase().replace(" ", "") == part.replace(" ", ""))[0];
+            const col = colors.filter((color) => color.name.toLowerCase()
+            == part || color.name.toLowerCase().replace(" ", "") == part.replace(" ", ""))[0];
             if (col) { // color found in list
                 clrs.push(col.hex);
             } else {
@@ -334,10 +332,11 @@ export class ViewerComponent implements OnInit {
         const BB = ((B.toString(16).length == 1) ? `0${B.toString(16)}` : B.toString(16));
 
         return `#${RR}${GG}${BB}`;
-    }
+    } */
 }
 
 // tslint:disable-next-line: max-classes-per-file
+/*
 class FreeCameraKeyboardMoveInput implements ICameraInput<Camera> {
     public keys = [];
 
@@ -479,3 +478,4 @@ class FreeCameraKeyboardMoveInput implements ICameraInput<Camera> {
         }
     }
 }
+*/
