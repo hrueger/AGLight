@@ -71,7 +71,8 @@
         "serialport": "^9.0.2",
         "socket.io-client": "^2.3.1",
         "sudo-prompt": "^9.2.1",
-        "tslib": "^2.0.3"
+        "tslib": "^2.0.3",
+        "uuid": "^8.3.1"
     },
     "devDependencies": {
         "@angular-builders/custom-webpack": "^10.0.1",
@@ -83,6 +84,7 @@
         "@types/request": "^2.48.5",
         "@types/rimraf": "^3.0.0",
         "@types/serialport": "^8.0.1",
+        "@types/uuid": "^8.3.0",
         "angular-cli-builders": "^2.1.2",
         "codelyzer": "^6.0.1",
         "commonjs": "0.0.1",

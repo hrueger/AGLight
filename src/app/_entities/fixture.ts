@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import { Product } from "./product";
 import { Widget } from "./widget";
 import { FixedChannel } from "./fixed-channel";
@@ -14,14 +15,13 @@ export class Fixture {
     public product: Product;
 
     constructor(
-        id: string,
         displayName: string,
         number: number,
         startAddress: number,
         name: string,
         channelMode: string,
     ) {
-        this.id = id;
+        this.id = v4();
         this.displayName = displayName;
         this.number = number;
         this.startAddress = startAddress;

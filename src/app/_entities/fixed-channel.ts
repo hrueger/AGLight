@@ -1,11 +1,13 @@
+import { v4 } from "uuid";
+
 export class FixedChannel {
     public id: string;
     public channel: string;
     public value: number;
 
-    constructor(id: string, channel: string) {
+    constructor(channel: string) {
+        this.id = v4();
         this.channel = channel;
-        this.id = id;
         this.value = 255;
     }
 }
