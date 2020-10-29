@@ -29,11 +29,11 @@ export class FixturesComponent implements OnInit {
         private dialogService: DialogService,
     ) { }
 
-    public async ngOnInit(): Promise<void> {
+    public ngOnInit(): void {
         this.allFixtures = this.getFixtures();
         this.displayFixtures = this.allFixtures;
         this.sortDisplayFixtures();
-        this.fixtures = await (this.showService.connection.getRepository(Fixture).find());
+        this.fixtures = this.showService.showData.fixtures;
         for (const fixture of this.fixtures) {
             fixture.product = this.libraryService.getProduct(fixture.name);
         }
