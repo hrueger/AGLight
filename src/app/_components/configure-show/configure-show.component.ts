@@ -14,11 +14,13 @@ import { FixedChannel } from "../../_entities/fixed-channel";
     templateUrl: "./configure-show.component.html",
 })
 export class ConfigureShowComponent {
-    public allFixtures: Fixture[] = [];
     public displayFixtures: Fixture[] = [];
     public searchValue = "";
     public previewEnabled = false;
-    public fixedChannels: FixedChannel[] = [];
+    public fixedChannels: {
+        fixedChannel: FixedChannel,
+        fixture: Fixture,
+    }[] = [];
     public products: Product[] = [];
     @ViewChild("widgetGrid") public widgetGrid: WidgetGridComponent;
     constructor(
@@ -30,23 +32,26 @@ export class ConfigureShowComponent {
 
     public async ngOnInit(): Promise<void> {
         this.products = this.libraryService.getProducts();
-        this.allFixtures = await this.showService.connection.getRepository(Fixture).find();
-        for (const fixture of this.allFixtures) {
+        for (const fixture of this.showService.showData.fixtures) {
             [fixture.product] = this.products.filter((p) => p.name == fixture.name);
         }
-        this.displayFixtures = this.allFixtures;
+        this.displayFixtures = this.showService.showData.fixtures;
         this.updateFixedChannels();
     }
 
     public async updateFixedChannels(): Promise<void> {
-        this.fixedChannels = await this.showService.connection.getRepository(FixedChannel).find({ relations: ["fixture"] });
-        for (const f of this.fixedChannels) {
-            [f.fixture.product] = this.products.filter((p) => p.name == f.fixture.name);
+        this.fixedChannels = [];
+        for (const fixture of this.showService.showData.fixtures) {
+            if (Array.isArray(fixture.fixedChannels) && fixture.fixedChannels.length > 0) {
+                for (const fixedChannel of fixture.fixedChannels) {
+                    this.fixedChannels.push({ fixture, fixedChannel });
+                }
+            }
         }
     }
 
-    public onFixedChannelAdded(f: FixedChannel): void {
-        this.fixedChannels.push(f);
+    public onFixedChannelAdded(fixture: Fixture, fixedChannel: FixedChannel): void {
+        this.fixedChannels.push({ fixture, fixedChannel });
         for (const c of this.fixedChannels) {
             [c.fixture.product] = this.products.filter((p) => p.name == c.fixture.name);
         }
@@ -55,14 +60,21 @@ export class ConfigureShowComponent {
     public editFixedChannel(fixedChannel: FixedChannel): void {
         this.dialogService.prompt("Edit the value of the fixed channel", "Type in a value between 0 and 255", fixedChannel.value, true).then(async (v: number) => {
             fixedChannel.value = v;
-            await this.showService.connection.getRepository(FixedChannel).save(fixedChannel);
+            for (const fixture of this.showService.showData.fixtures) {
+                fixture.fixedChannels = fixture
+                    .fixedChannels.map((f) => (f.id == fixedChannel.id ? fixedChannel : f));
+            }
             this.widgetGrid.updateFixedChannels();
         });
     }
 
     public async removeFixedChannel(fixedChannel: FixedChannel): Promise<void> {
-        this.showService.connection.getRepository(FixedChannel).delete(fixedChannel.id);
-        this.fixedChannels = this.fixedChannels.filter((f) => f.id !== fixedChannel.id);
+        for (const fixture of this.showService.showData.fixtures) {
+            fixture.fixedChannels = fixture
+                .fixedChannels.map((f) => (f.id == fixedChannel.id ? fixedChannel : f));
+        }
+        this.fixedChannels = this.fixedChannels
+            .filter((f) => f.fixedChannel.id !== fixedChannel.id);
     }
 
     public togglePreview(event: Event): void {
@@ -80,8 +92,8 @@ export class ConfigureShowComponent {
     }
 
     public search(e: string): void {
-        if (this.allFixtures) {
-            this.displayFixtures = this.allFixtures.filter((h) => {
+        if (this.showService.showData.fixtures) {
+            this.displayFixtures = this.showService.showData.fixtures.filter((h) => {
                 const toSearch = `${h && h.displayName ? h.displayName.toLowerCase() : ""} ${
                     h && h.product && h.product.name ? h.product.name.toLowerCase() : ""}`;
                 let notFound = false;
