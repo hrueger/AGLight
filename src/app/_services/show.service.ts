@@ -46,4 +46,8 @@ export class ShowService {
         fs.writeFileSync(path, JSON.stringify(new ShowFile()));
         return this.loadShow(path);
     }
+
+    public save(): void {
+        fs.writeFileSync(this.currentShowFilePath, JSON.stringify(this.showData));
+    }
 }
