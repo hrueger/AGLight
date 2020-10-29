@@ -42,7 +42,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let fixture of fixtures; let i = index">
+                        <tr *ngFor="let fixture of showService.showData.fixtures; let i = index">
                             <td><button class="action-btn red" (click)="deleteFixture(i)"><i class="fas fa-times"></i></button></td>
                             <td class="editable" (click)="change('displayName', i)"><i class="fas fa-pen"></i> {{fixture.displayName}}
                             </td>
