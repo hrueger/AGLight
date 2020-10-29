@@ -151,7 +151,6 @@ export class FixturesComponent implements OnInit {
     public deleteFixture(i: number): void {
         this.dialogService.confirm("Delete fixture(s)",
             "Are you sure that this fixture(s) should be deleted? You won't be able to restore it.").then(async () => {
-            await this.showService.connection.getRepository(Fixture).remove(this.fixtures[i]);
             this.fixtures.splice(i, 1);
             this.save();
         }, () => undefined);
@@ -159,7 +158,7 @@ export class FixturesComponent implements OnInit {
 
     public save(): void {
         if (this.validate()) {
-            this.showService.connection.getRepository(Fixture).save(this.fixtures);
+            this.showService.save();
         }
     }
 
