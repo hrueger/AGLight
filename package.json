@@ -62,7 +62,6 @@
         "electron-splashscreen": "^1.0.0",
         "electron-updater": "^4.3.5",
         "express": "^4.17.1",
-        "jquery": "^3.5.1",
         "ng5-slider": "^1.2.4",
         "ngx-color": "^6.0.4",
         "node-abi": "^2.19.1",
