@@ -5,6 +5,7 @@ import { StatusbarService } from "./statusbar.service";
 import { Widget } from "../_entities/widget";
 import { findChannelAddresses } from "../_utils/find-channel-addresses";
 import { DialogService } from "./dialog.service";
+import { Fixture } from "../_entities/fixture";
 
 @Injectable({
     providedIn: "root",
@@ -116,10 +117,10 @@ export class DmxService {
         this.runningEffects.push(widget);
     }
 
-    public deactivateEffect(widget: Widget): void {
+    public deactivateEffect(fixture: Fixture, widget: Widget): void {
         this.runningEffects = this.runningEffects.filter((w) => {
             if (w.id == widget.id) {
-                const channelAddresses = findChannelAddresses(w);
+                const channelAddresses = findChannelAddresses(fixture, w);
                 this.animateMultipleTo(0, channelAddresses, 500);
                 return false;
             }
