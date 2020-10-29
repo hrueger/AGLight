@@ -1,6 +1,6 @@
 import { Product } from "./product";
 import { Widget } from "./widget";
-import { MultiActionItem } from "./multi-action-item";
+import { FixedChannel } from "./fixed-channel";
 
 export class Fixture {
     public id: string;
@@ -10,7 +10,7 @@ export class Fixture {
     public name: string;
     public channelMode: string;
     public widgets: Widget[];
-    public multiActionItems: MultiActionItem[];
+    public fixedChannels: FixedChannel[];
     public product: Product;
 
     constructor(
@@ -27,5 +27,7 @@ export class Fixture {
         this.startAddress = startAddress;
         this.channelMode = channelMode;
         this.name = name;
+        this.widgets = [];
+        this.fixedChannels = [];
     }
 }

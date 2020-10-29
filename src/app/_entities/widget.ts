@@ -1,6 +1,4 @@
-import { Fixture } from "./fixture";
 import { EffectOptionsData, EffectWidgetOption } from "../_ressources/widgets";
-import { MultiActionItem } from "./multi-action-item";
 
 export type WidgetType = "Fader" | "Button" | "Colorpicker" | "RGB Colorpicker" | "ButtonGrid" | "BlackoutButton" | "MultiAction";
 
@@ -23,11 +21,9 @@ export class Widget {
     };
     public effectConfig: EffectOptionsData;
     public effectData?: EffectWidgetOption;
-    public fixture: Fixture;
-    public multiActionItems: MultiActionItem[];
 
     constructor(id: string, x: number, y: number, rows: number, cols: number, type: WidgetType,
-        channel: string, fixture: Fixture, customChannel = "", effect?: string) {
+        channel: string, customChannel = "", effect?: string) {
         this.id = id;
         this.x = x || 0;
         this.y = y || 0;
@@ -35,7 +31,6 @@ export class Widget {
         this.rows = rows || 1;
         this.type = type || "Button";
         this.channel = channel || "";
-        this.fixture = fixture;
         this.customChannel = customChannel;
         this.effect = effect;
         this.config = {
