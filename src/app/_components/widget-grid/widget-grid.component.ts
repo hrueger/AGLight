@@ -359,7 +359,7 @@ export class WidgetGridComponent implements OnInit {
             );
             break;
         case "blackoutbutton":
-            for (const f of this.showService.showData.fixtures) {
+            for (const f of this.showService.showData.fixtures.filter((t) => !t.isDummyFixture)) {
                 const cm = f.product.modes.filter((m) => m.name == f.channelMode)[0];
                 for (let channelName of cm.channels) {
                     channelName = channelName.replace(" fine", "");
