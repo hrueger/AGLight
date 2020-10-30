@@ -17,10 +17,6 @@ export class ConfigureShowComponent {
     public displayFixtures: Fixture[] = [];
     public searchValue = "";
     public previewEnabled = false;
-    public fixedChannels: {
-        fixedChannel: FixedChannel,
-        fixture: Fixture,
-    }[] = [];
     public products: Product[] = [];
     @ViewChild("widgetGrid") public widgetGrid: WidgetGridComponent;
     constructor(
@@ -32,49 +28,21 @@ export class ConfigureShowComponent {
 
     public async ngOnInit(): Promise<void> {
         this.products = this.libraryService.getProducts();
-        for (const fixture of this.showService.showData.fixtures) {
-            [fixture.product] = this.products.filter((p) => p.name == fixture.name);
-        }
         this.displayFixtures = this.showService.showData.fixtures;
-        this.updateFixedChannels();
-    }
-
-    public async updateFixedChannels(): Promise<void> {
-        this.fixedChannels = [];
-        for (const fixture of this.showService.showData.fixtures) {
-            if (Array.isArray(fixture.fixedChannels) && fixture.fixedChannels.length > 0) {
-                for (const fixedChannel of fixture.fixedChannels) {
-                    this.fixedChannels.push({ fixture, fixedChannel });
-                }
-            }
-        }
-    }
-
-    public onFixedChannelAdded(fixture: Fixture, fixedChannel: FixedChannel): void {
-        this.fixedChannels.push({ fixture, fixedChannel });
-        for (const c of this.fixedChannels) {
-            [c.fixture.product] = this.products.filter((p) => p.name == c.fixture.name);
-        }
     }
 
     public editFixedChannel(fixedChannel: FixedChannel): void {
         this.dialogService.prompt("Edit the value of the fixed channel", "Type in a value between 0 and 255", fixedChannel.value, true).then(async (v: number) => {
             fixedChannel.value = v;
-            for (const fixture of this.showService.showData.fixtures) {
-                fixture.fixedChannels = fixture
-                    .fixedChannels.map((f) => (f.id == fixedChannel.id ? fixedChannel : f));
-            }
             this.widgetGrid.updateFixedChannels();
         });
     }
 
-    public async removeFixedChannel(fixedChannel: FixedChannel): Promise<void> {
-        for (const fixture of this.showService.showData.fixtures) {
-            fixture.fixedChannels = fixture
-                .fixedChannels.map((f) => (f.id == fixedChannel.id ? fixedChannel : f));
-        }
-        this.fixedChannels = this.fixedChannels
-            .filter((f) => f.fixedChannel.id !== fixedChannel.id);
+    public async removeFixedChannel(fixture: Fixture, fixedChannel: FixedChannel): Promise<void> {
+        this.dialogService.confirm("Are you sure?", "Do you really want to remove this fixed channel?").then(async () => {
+            fixture.fixedChannels = fixture.fixedChannels.filter((f) => f.id != fixedChannel.id);
+            this.showService.save();
+        }, () => undefined);
     }
 
     public togglePreview(event: Event): void {
@@ -106,6 +74,15 @@ export class ConfigureShowComponent {
             });
             this.sortDisplayFixtures();
         }
+    }
+
+    public displayFixedChannels(): boolean {
+        for (const fixture of this.showService.showData.fixtures) {
+            if (fixture.fixedChannels?.length > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private sortDisplayFixtures() {
