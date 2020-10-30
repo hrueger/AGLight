@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import { EffectOptionsData, EffectWidgetOption } from "../_ressources/widgets";
 
 export type WidgetType = "Fader" | "Button" | "Colorpicker" | "RGB Colorpicker" | "ButtonGrid" | "BlackoutButton" | "MultiAction";
@@ -22,9 +23,9 @@ export class Widget {
     public effectConfig: EffectOptionsData;
     public effectData?: EffectWidgetOption;
 
-    constructor(id: string, x: number, y: number, rows: number, cols: number, type: WidgetType,
+    constructor(x: number, y: number, rows: number, cols: number, type: WidgetType,
         channel: string, customChannel = "", effect?: string) {
-        this.id = id;
+        this.id = v4();
         this.x = x || 0;
         this.y = y || 0;
         this.cols = cols || 1;
