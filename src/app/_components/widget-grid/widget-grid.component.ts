@@ -26,6 +26,7 @@ import { MultiActionItem } from "../../_entities/multi-action-item";
 export class WidgetGridComponent implements OnInit {
     public options: GridsterConfig;
     public currentWidget: Widget;
+    public currentFixture: Fixture;
     public widgetTypes = widgets;
     @Input() public editMode = false;
     @Input() public previewEnabled = false;
@@ -38,7 +39,6 @@ export class WidgetGridComponent implements OnInit {
 
     constructor(
         private showService: ShowService,
-        private libraryService: LibraryService,
         private dmxService: DmxService,
         private modalService: NgbModal,
         private dialogService: DialogService,
@@ -50,7 +50,7 @@ export class WidgetGridComponent implements OnInit {
 
     public async ngOnInit(): Promise<void> {
         this.debouncedSave.asObservable().pipe(debounceTime(1000)).subscribe(() => {
-            this.save();
+            this.showService.save();
         });
 
         const that = this;
@@ -58,7 +58,7 @@ export class WidgetGridComponent implements OnInit {
             displayGrid: "onDrag&Resize",
             draggable: { enabled: this.editMode },
             itemChangeCallback: () => {
-                that.save();
+                that.showService.save();
             },
             mobileBreakpoint: 0,
             resizable: { enabled: this.editMode },
@@ -81,12 +81,13 @@ export class WidgetGridComponent implements OnInit {
         }, () => undefined);
     }
 
-    public openConfig($event: Event, item: Widget, modal: unknown): void {
+    public openConfig($event: Event, fixture: Fixture, item: Widget, modal: unknown): void {
         this.currentWidget = item;
+        this.currentFixture = fixture;
         $event.preventDefault();
         $event.stopPropagation();
         this.modalService.open(modal, { size: "lg" }).result.then(() => {
-            this.save();
+            this.showService.save();
         }, () => undefined);
     }
 
@@ -405,10 +406,6 @@ export class WidgetGridComponent implements OnInit {
         default:
             break;
         }
-    }
-
-    public save(): void {
-        this.showService.connection.getRepository(Widget).save(this.widgets);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

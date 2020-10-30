@@ -7,13 +7,13 @@
                         {{ widget | json }}
                     </pre>-->
                     <div class="d-flex justify-content-between">
-                        <span class="text-truncate" [title]='widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : widget.type == "MultiAction" ? "Multi Action Button" : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + widget.fixture?.displayName))'>{{widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : widget.type == "MultiAction" ? "Multi Action Button" : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + widget.fixture?.displayName))}}</span>
+                        <span class="text-truncate" [title]='widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : widget.type == "MultiAction" ? "Multi Action Button" : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + fixture.displayName))'>{{widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : widget.type == "MultiAction" ? "Multi Action Button" : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + fixture.displayName))}}</span>
                         <div class="item-buttons d-flex flex-nowrap" *ngIf="editMode">
                             <span [class]="'d-flex flex-nowrap text-' + (widget.config.transitionTime > 50 ? 'success' : 'warning')"><i class="far fa-play-circle mt-1"></i> {{widget.config.transitionTime ? widget.config.transitionTime / 1000 : 0}}s</span>
                             <button class="action-btn yellow ml-1 drag-handler">
                                 <i class="fas fa-arrows-alt"></i>
                             </button>
-                            <button class="action-btn blue mx-1" (click)="openConfig($event, widget, configModal)" (touchstart)="openConfig($event, widget, configModal)">
+                            <button class="action-btn blue mx-1" (click)="openConfig($event, fixture, widget, configModal)" (touchstart)="openConfig($event, fixture, widget, configModal)">
                                 <i class="fas fa-cog"></i>
                             </button>
                             <button class="action-btn red" (click)="removeItem($event, widget)" (touchstart)="removeItem($event, widget)">
@@ -88,7 +88,7 @@
                                 <div class="form-group row">
                                     <label [for]="'buttonName' +  widget.id" class="col-3 col-form-label">Configure</label>
                                     <div class="col-9">
-                                        <button class="btn btn-outline-primary" (click)="openConfig($event, widget, multiActionConfigModal)" (touchstart)="openConfig($event, widget, multiActionConfigModal)">
+                                        <button class="btn btn-outline-primary" (click)="openConfig($event, fixture, widget, multiActionConfigModal)" (touchstart)="openConfig($event, fixture, widget, multiActionConfigModal)">
                                             <i class="fas fa-wrench"></i> Configure
                                         </button>
                                     </div>
@@ -161,7 +161,7 @@
 
 <ng-template #configModal let-modal>
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Settings of <i>{{currentWidget.displayName ? currentWidget.displayName : ((currentWidget.type || (currentWidget.effect | effectName)) + ": " + currentWidget.channel + " - " + currentWidget.fixture?.displayName)}}</i></h4>
+        <h4 class="modal-title" id="modal-basic-title">Settings of <i>{{currentWidget.displayName ? currentWidget.displayName : ((currentWidget.type || (currentWidget.effect | effectName)) + ": " + currentWidget.channel + " - " + currentFixture.displayName)}}</i></h4>
         <button type="button" class="close" (click)="modal.dismiss()"><span>&times;</span></button>
     </div>
     <div class="modal-body">
