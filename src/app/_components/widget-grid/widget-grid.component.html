@@ -1,159 +1,161 @@
-<gridster [options]="options" *ngIf="widgets.length > 0">
-    <gridster-item [item]="widget" *ngFor="let widget of widgets">
-        <div class="content">
-            <div class="widget">
-                <!--<pre>
-                    {{ widget | json }}
-                </pre>-->
-                <div class="d-flex justify-content-between">
-                    <span class="text-truncate" [title]='widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : widget.type == "MultiAction" ? "Multi Action Button" : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + widget.fixture?.displayName))'>{{widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : widget.type == "MultiAction" ? "Multi Action Button" : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + widget.fixture?.displayName))}}</span>
-                    <div class="item-buttons d-flex flex-nowrap" *ngIf="editMode">
-                        <span [class]="'d-flex flex-nowrap text-' + (widget.config.transitionTime > 50 ? 'success' : 'warning')"><i class="far fa-play-circle mt-1"></i> {{widget.config.transitionTime ? widget.config.transitionTime / 1000 : 0}}s</span>
-                        <button class="action-btn yellow ml-1 drag-handler">
-                            <i class="fas fa-arrows-alt"></i>
-                        </button>
-                        <button class="action-btn blue mx-1" (click)="openConfig($event, widget, configModal)" (touchstart)="openConfig($event, widget, configModal)">
-                            <i class="fas fa-cog"></i>
-                        </button>
-                        <button class="action-btn red" (click)="removeItem($event, widget)" (touchstart)="removeItem($event, widget)">
-                            <i class="fas fa-times"></i>
-                        </button>
+<gridster [options]="options" *ngIf="displayWidgetGrid()">
+    <ng-container *ngFor="let fixture of showService.showData.fixtures">
+        <gridster-item [item]="widget" *ngFor="let widget of fixture.widgets">
+            <div class="content">
+                <div class="widget">
+                    <!--<pre>
+                        {{ widget | json }}
+                    </pre>-->
+                    <div class="d-flex justify-content-between">
+                        <span class="text-truncate" [title]='widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : widget.type == "MultiAction" ? "Multi Action Button" : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + widget.fixture?.displayName))'>{{widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : widget.type == "MultiAction" ? "Multi Action Button" : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + widget.fixture?.displayName))}}</span>
+                        <div class="item-buttons d-flex flex-nowrap" *ngIf="editMode">
+                            <span [class]="'d-flex flex-nowrap text-' + (widget.config.transitionTime > 50 ? 'success' : 'warning')"><i class="far fa-play-circle mt-1"></i> {{widget.config.transitionTime ? widget.config.transitionTime / 1000 : 0}}s</span>
+                            <button class="action-btn yellow ml-1 drag-handler">
+                                <i class="fas fa-arrows-alt"></i>
+                            </button>
+                            <button class="action-btn blue mx-1" (click)="openConfig($event, widget, configModal)" (touchstart)="openConfig($event, widget, configModal)">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                            <button class="action-btn red" (click)="removeItem($event, widget)" (touchstart)="removeItem($event, widget)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="p-3 gridster-item-content overflow-auto">
-                    <div class="widget-slider" *ngIf="widget.effect">
-                        <div *ngIf="editMode">
-                            <div class="form-group row" *ngFor="let option of widget.effectData.options">
-                                <label [for]="widget.id + '-effectoption-' + option.name" class="col-3 col-form-label">{{option.name}}</label>
-                                <div class="col-9">
-                                    <input [id]="widget.id + '-effectoption-' + option.name" [name]="widget.id + 'effectoption-' + option.name" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.effectConfig[option.key]" [placeholder]="option.description" type="number" [min]="option.min"
+                    <div class="p-3 gridster-item-content overflow-auto">
+                        <div class="widget-slider" *ngIf="widget.effect">
+                            <div *ngIf="editMode">
+                                <div class="form-group row" *ngFor="let option of widget.effectData.options">
+                                    <label [for]="widget.id + '-effectoption-' + option.name" class="col-3 col-form-label">{{option.name}}</label>
+                                    <div class="col-9">
+                                        <input [id]="widget.id + '-effectoption-' + option.name" [name]="widget.id + 'effectoption-' + option.name" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.effectConfig[option.key]" [placeholder]="option.description" type="number" [min]="option.min"
                                         [max]="option.max" class="form-control">
-                                    <span class="form-text text-slightly-muted">{{option.description}} ({{option.min}} - {{option.max}})</span>
+                                        <span class="form-text text-slightly-muted">{{option.description}} ({{option.min}} - {{option.max}})</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="!editMode">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" (change)="toggleEffect($event, widget)" [id]="'effect'+widget.id">
+                                    <label class="custom-control-label" [for]="'effect'+widget.id">Effect running</label>
                                 </div>
                             </div>
                         </div>
-                        <div *ngIf="!editMode">
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" (change)="toggleEffect($event, widget)" [id]="'effect'+widget.id">
-                                <label class="custom-control-label" [for]="'effect'+widget.id">Effect running</label>
-                            </div>
+                        
+                        <div class="widget-slider d-flex" *ngIf="widget.type == 'Fader'">
+                            <ng5-slider [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: true}" (valueChange)="action('slider', widget, $event)"></ng5-slider>
                         </div>
-                    </div>
-
-                    <div class="widget-slider d-flex" *ngIf="widget.type == 'Fader'">
-                        <ng5-slider [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: true}" (valueChange)="action('slider', widget, $event)"></ng5-slider>
-                    </div>
-
-                    <div class="widget-button" *ngIf="widget.type == 'Button'">
-                        <button *ngIf="!editMode" class="btn btn-outline-primary w-100 h-100" (click)="action('button', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Button"}}</button>
-                        <div *ngIf="editMode">
-                            <div class="form-group row">
-                                <label [for]="'buttonValue' +  widget.id" class="col-3 col-form-label">Value</label>
-                                <div class="col-9">
-                                    <input [id]="'buttonValue' +  widget.id" (ngModelChange)="saveDebounced(); preview(widget, $event);" [(ngModel)]="widget.config.buttonValue" placeholder="The DMX value of this button's channel." type="number" min="0" max="255" class="form-control">
-                                    <span class="form-text text-slightly-muted">0 - 255</span>
+                        
+                        <div class="widget-button" *ngIf="widget.type == 'Button'">
+                            <button *ngIf="!editMode" class="btn btn-outline-primary w-100 h-100" (click)="action('button', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Button"}}</button>
+                            <div *ngIf="editMode">
+                                <div class="form-group row">
+                                    <label [for]="'buttonValue' +  widget.id" class="col-3 col-form-label">Value</label>
+                                    <div class="col-9">
+                                        <input [id]="'buttonValue' +  widget.id" (ngModelChange)="saveDebounced(); preview(widget, $event);" [(ngModel)]="widget.config.buttonValue" placeholder="The DMX value of this button's channel." type="number" min="0" max="255" class="form-control">
+                                        <span class="form-text text-slightly-muted">0 - 255</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label [for]="'buttonName' +  widget.id" class="col-3 col-form-label">Button Name</label>
-                                <div class="col-9">
-                                    <input [id]="'buttonName' +  widget.id" [name]="'buttonName' +  widget.id" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
+                                <div class="form-group row">
+                                    <label [for]="'buttonName' +  widget.id" class="col-3 col-form-label">Button Name</label>
+                                    <div class="col-9">
+                                        <input [id]="'buttonName' +  widget.id" [name]="'buttonName' +  widget.id" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="widget-button" *ngIf="widget.type == 'BlackoutButton'">
-                        <button *ngIf="!editMode" class="btn btn-outline-secondary w-100 h-100" (click)="action('blackoutbutton', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Blackout"}}</button>
-                        <div *ngIf="editMode">
-                            <div class="form-group row">
-                                <label [for]="'buttonName' +  widget.id" class="col-3 col-form-label">Button Name</label>
-                                <div class="col-9">
-                                    <input [id]="'buttonName' +  widget.id" [name]="'buttonName' +  widget.id" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
+                        
+                        <div class="widget-button" *ngIf="widget.type == 'BlackoutButton'">
+                            <button *ngIf="!editMode" class="btn btn-outline-secondary w-100 h-100" (click)="action('blackoutbutton', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Blackout"}}</button>
+                            <div *ngIf="editMode">
+                                <div class="form-group row">
+                                    <label [for]="'buttonName' +  widget.id" class="col-3 col-form-label">Button Name</label>
+                                    <div class="col-9">
+                                        <input [id]="'buttonName' +  widget.id" [name]="'buttonName' +  widget.id" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="widget-button" *ngIf="widget.type == 'MultiAction'">
-                        <button *ngIf="!editMode" class="btn btn-outline-primary w-100 h-100" (click)="action('multiActionButton', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Multi Action"}}</button>
-                        <div *ngIf="editMode">
-                            <div class="form-group row">
-                                <label [for]="'buttonName' +  widget.id" class="col-3 col-form-label">Button Name</label>
-                                <div class="col-9">
-                                    <input [id]="'buttonName' +  widget.id" [name]="'buttonName' +  widget.id" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
+                        
+                        <div class="widget-button" *ngIf="widget.type == 'MultiAction'">
+                            <button *ngIf="!editMode" class="btn btn-outline-primary w-100 h-100" (click)="action('multiActionButton', widget, $event)">{{widget.config.buttonName ? widget.config.buttonName : "Multi Action"}}</button>
+                            <div *ngIf="editMode">
+                                <div class="form-group row">
+                                    <label [for]="'buttonName' +  widget.id" class="col-3 col-form-label">Button Name</label>
+                                    <div class="col-9">
+                                        <input [id]="'buttonName' +  widget.id" [name]="'buttonName' +  widget.id" (ngModelChange)="saveDebounced()" [(ngModel)]="widget.config.buttonName" placeholder="The name of the button." type="string" class="form-control">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label [for]="'buttonName' +  widget.id" class="col-3 col-form-label">Configure</label>
-                                <div class="col-9">
-                                    <button class="btn btn-outline-primary" (click)="openConfig($event, widget, multiActionConfigModal)" (touchstart)="openConfig($event, widget, multiActionConfigModal)">
-                                        <i class="fas fa-wrench"></i> Configure
-                                    </button>
+                                <div class="form-group row">
+                                    <label [for]="'buttonName' +  widget.id" class="col-3 col-form-label">Configure</label>
+                                    <div class="col-9">
+                                        <button class="btn btn-outline-primary" (click)="openConfig($event, widget, multiActionConfigModal)" (touchstart)="openConfig($event, widget, multiActionConfigModal)">
+                                            <i class="fas fa-wrench"></i> Configure
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="widget-colorpicker" *ngIf="widget.type == 'Colorpicker'">
-                        <color-circle circleSize="50" (onChangeComplete)="action('colorpicker', widget, $event)"></color-circle>
-                    </div>
-
-                    <div class="widget-rgb-colorpicker" *ngIf="widget.type == 'RGB Colorpicker'">
-                        <color-swatches (onChangeComplete)="action('colorpicker', widget, $event)"></color-swatches>
-                    </div>
-
-                    <div class="widget-buttongrid" *ngIf="widget.type == 'Buttongrid'">
-                        <table>
-                            <tr *ngFor="let row of getButtongridRowArray(widget); let i = index">
-                                <td *ngFor="let col of getButtongridColArray(widget, i); let j = index">
-                                    <button class="btn btn-outline-primary" [ngStyle]='tryGetBackgroundColor(widget.channel.steps[col].name)' (click)="action('buttongrid', widget, $event, col)">{{widget.channel.steps[col].name}}</button>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-
-                    <div class="widget-wheel h-100" *ngIf="widget.type == 'Wheel'">
-                        <!--{{widget.fixture.product.availableChannels[widget.channel] | json}}-->
-                        <!--{{widget.fixture.product.wheels[widget.channel] | json}}-->
-
-                        <svg viewBox="-50 -50 100 100">
-                            <style>
-                                .wheel-slot {
-                                    cursor: pointer;
-                                }
-                                .wheel-slot circle:hover {
-                                    r: 13;
-                                    transition: .5s;
-                                }
-                                .wheel-slot circle {
-                                    r: 10;
-                                    transition: .5s;
-                                }
-                            </style>
-                            <circle cx="0" cy="0" r="50" fill="#444" class="wheel"></circle>
-                            <circle cx="0" cy="0" r="3" fill="#fff" class="hole"></circle>
-                            <g transform="scale(1, 1)" class="arrow">
-                                <g transform="rotate(-30)">
-                                    <path d="M 0,-6 C 3,-6 6,-3 6,0" fill="none" stroke="#aaa" stroke-width="1"></path>
-                                    <path d="M 0,-8 -4,-6 0,-4 Z" fill="#aaa"></path>
+                        
+                        <div class="widget-colorpicker" *ngIf="widget.type == 'Colorpicker'">
+                            <color-circle circleSize="50" (onChangeComplete)="action('colorpicker', widget, $event)"></color-circle>
+                        </div>
+                        
+                        <div class="widget-rgb-colorpicker" *ngIf="widget.type == 'RGB Colorpicker'">
+                            <color-swatches (onChangeComplete)="action('colorpicker', widget, $event)"></color-swatches>
+                        </div>
+                        
+                        <div class="widget-buttongrid" *ngIf="widget.type == 'Buttongrid'">
+                            <table>
+                                <tr *ngFor="let row of getButtongridRowArray(widget); let i = index">
+                                    <td *ngFor="let col of getButtongridColArray(widget, i); let j = index">
+                                        <button class="btn btn-outline-primary" [ngStyle]='tryGetBackgroundColor(widget.channel.steps[col].name)' (click)="action('buttongrid', widget, $event, col)">{{widget.channel.steps[col].name}}</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div class="widget-wheel h-100" *ngIf="widget.type == 'Wheel'">
+                            <!--{{widget.fixture.product.availableChannels[widget.channel] | json}}-->
+                            <!--{{widget.fixture.product.wheels[widget.channel] | json}}-->
+                            
+                            <svg viewBox="-50 -50 100 100">
+                                <style>
+                                    .wheel-slot {
+                                        cursor: pointer;
+                                    }
+                                    .wheel-slot circle:hover {
+                                        r: 13;
+                                        transition: .5s;
+                                    }
+                                    .wheel-slot circle {
+                                        r: 10;
+                                        transition: .5s;
+                                    }
+                                </style>
+                                <circle cx="0" cy="0" r="50" fill="#444" class="wheel"></circle>
+                                <circle cx="0" cy="0" r="3" fill="#fff" class="hole"></circle>
+                                <g transform="scale(1, 1)" class="arrow">
+                                    <g transform="rotate(-30)">
+                                        <path d="M 0,-6 C 3,-6 6,-3 6,0" fill="none" stroke="#aaa" stroke-width="1"></path>
+                                        <path d="M 0,-8 -4,-6 0,-4 Z" fill="#aaa"></path>
+                                    </g>
                                 </g>
-                            </g>
-                            <g [attr.transform]="'rotate(' + (360 / widget.fixture.product.wheels[widget.channel].slots.length * idx) + ', 0, 0)'" class="slot" *ngFor="let slot of widget.fixture.product.wheels[widget.channel].slots; let idx = index">
-                                <title>Slot {{idx + 1}}: {{slot.name || slot.type}}</title>
-                                <g class="wheel-slot" transform="translate(0, -36.367246225096906)" (click)="action('wheel', widget, $event, idx)">
-                                    <circle cx="0" cy="0" r="10" [attr.fill]="slot.type == 'Color' ? slot.colors[0] : '#555555'" />
+                                <g [attr.transform]="'rotate(' + (360 / widget.fixture.product.wheels[widget.channel].slots.length * idx) + ', 0, 0)'" class="slot" *ngFor="let slot of widget.fixture.product.wheels[widget.channel].slots; let idx = index">
+                                    <title>Slot {{idx + 1}}: {{slot.name || slot.type}}</title>
+                                    <g class="wheel-slot" transform="translate(0, -36.367246225096906)" (click)="action('wheel', widget, $event, idx)">
+                                        <circle cx="0" cy="0" r="10" [attr.fill]="slot.type == 'Color' ? slot.colors[0] : '#555555'" />
+                                    </g>
                                 </g>
-                            </g>
-                        </svg>
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-    </gridster-item>
+            
+        </gridster-item>
+    </ng-container>
 </gridster>
-<div *ngIf="!widgets || widgets.length == 0" class="d-flex flex-column justify-content-center h-100 text-center">
+<div *ngIf="!displayWidgetGrid()" class="d-flex flex-column justify-content-center h-100 text-center">
     <div>No widgets to be displayed!</div>
 </div>
 

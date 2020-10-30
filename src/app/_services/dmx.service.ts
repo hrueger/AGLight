@@ -110,7 +110,7 @@ export class DmxService {
         setTimeout(() => this.calculateEffects(), 10);
     }
 
-    public activateEffect(widget: Widget): void {
+    public activateEffect(fixture: Fixture, widget: Widget): void {
         if (!widget.effect) {
             return;
         }
