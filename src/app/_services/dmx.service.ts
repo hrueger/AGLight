@@ -94,11 +94,11 @@ export class DmxService {
     }
 
     private calculateEffects() {
-        if (this.runningEffects.length) {
+        /* if (this.runningEffects.length) {
             const data = {};
             const t = Date.now();
             for (const e of this.runningEffects) {
-                const channelAddresses = findChannelAddresses(e);
+                 const channelAddresses = findChannelAddresses(e);
                 e.effectData.f.forEach((f, idx) => {
                     for (const a of channelAddresses) {
                         data[a + idx] = f(t, e.effectConfig);
@@ -107,7 +107,7 @@ export class DmxService {
             }
             this.update(data);
         }
-        setTimeout(() => this.calculateEffects(), 10);
+        setTimeout(() => this.calculateEffects(), 10); */
     }
 
     public activateEffect(fixture: Fixture, widget: Widget): void {
