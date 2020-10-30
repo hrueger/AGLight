@@ -332,6 +332,13 @@ export class WidgetGridComponent implements OnInit {
         this.showService.save();
     }
 
+    public getWidgetTitle(fixture: Fixture, widget: Widget): string {
+        if (widget.displayName) return widget.displayName;
+        if (widget.type == "BlackoutButton") return "Blackout";
+        if (widget.type == "MultiAction") return "Multi Action Button";
+        return `${this.editMode ? `${widget.type || widget.effect || "Effect"}: ` : ""}${widget.channel} - ${fixture.displayName}`;
+    }
+
     public action(type: string, fixture: Fixture,
         widget: Widget, event: Event | number | any, idx?: number): void {
         if (this.editMode && !this.previewEnabled) {

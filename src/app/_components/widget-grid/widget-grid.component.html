@@ -7,7 +7,7 @@
                         {{ widget | json }}
                     </pre>-->
                     <div class="d-flex justify-content-between">
-                        <span class="text-truncate" [title]='widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : widget.type == "MultiAction" ? "Multi Action Button" : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + fixture.displayName))'>{{widget.displayName ? widget.displayName : (widget.type == "BlackoutButton" ? "Blackout" : widget.type == "MultiAction" ? "Multi Action Button" : ((editMode ? ((widget.type || (widget.effect | effectName)) + ": ") : "") + widget.channel + " - " + fixture.displayName))}}</span>
+                        <span class="text-truncate" [title]="getWidgetTitle(fixture, widget)">{{getWidgetTitle(fixture, widget)}}</span>
                         <div class="item-buttons d-flex flex-nowrap" *ngIf="editMode">
                             <span [class]="'d-flex flex-nowrap text-' + (widget.config.transitionTime > 50 ? 'success' : 'warning')"><i class="far fa-play-circle mt-1"></i> {{widget.config.transitionTime ? widget.config.transitionTime / 1000 : 0}}s</span>
                             <button class="action-btn yellow ml-1 drag-handler">
@@ -163,7 +163,7 @@
 
 <ng-template #configModal let-modal>
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Settings of <i>{{currentWidget.displayName ? currentWidget.displayName : ((currentWidget.type || (currentWidget.effect | effectName)) + ": " + currentWidget.channel + " - " + currentFixture.displayName)}}</i></h4>
+        <h4 class="modal-title" id="modal-basic-title">Settings of <i>{{getWidgetTitle(currentFixture, currentWidget)}}</i></h4>
         <button type="button" class="close" (click)="modal.dismiss()"><span>&times;</span></button>
     </div>
     <div class="modal-body">
