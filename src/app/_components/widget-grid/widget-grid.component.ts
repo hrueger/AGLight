@@ -30,9 +30,6 @@ export class WidgetGridComponent implements OnInit {
     public widgetTypes = widgets;
     @Input() public editMode = false;
     @Input() public previewEnabled = false;
-    @Input() public fixedChannels: FixedChannel[] = [];
-    @Output() public fixedChannelAdded: EventEmitter<FixedChannel>
-        = new EventEmitter<FixedChannel>();
 
     private debouncedSave: Subject<any> = new Subject<any>();
     private readonly shadeColorFactor = 35;
@@ -77,7 +74,7 @@ export class WidgetGridComponent implements OnInit {
             for (const fixture of this.showService.showData.fixtures) {
                 fixture.widgets = fixture.widgets.filter((w) => w.id !== item.id);
             }
-            this.widgets.splice(this.widgets.indexOf(item), 1);
+            this.showService.save();
         }, () => undefined);
     }
 
@@ -91,11 +88,11 @@ export class WidgetGridComponent implements OnInit {
         }, () => undefined);
     }
 
-    public preview(widget: Widget, value: number): void {
+    public preview(fixture: Fixture, widget: Widget, value: number): void {
         if (!this.previewEnabled || !this.editMode) {
             return;
         }
-        this.dmxService.updateMultiple(value, findChannelAddresses(widget));
+        this.dmxService.updateMultiple(value, findChannelAddresses(fixture, widget));
     }
 
     public addMultiActionItemToCurrentWidget(): void {
@@ -103,22 +100,16 @@ export class WidgetGridComponent implements OnInit {
             name: f.displayName,
             description: `${f.number}x ${f.product.name} <span class="text-muted">(${f.product.manufacturer.name})</span>`,
             value: f.id,
-        }))).then(async (fixtureId: number) => {
+        }))).then(async (fixtureId: string) => {
             this.dialogService.select("Add Multi Action", "Choose the channel:", this.getSelectChannelOptions(this.showService.showData.fixtures.find((f) => f.id == fixtureId))).then((channel: string) => {
                 this.dialogService.prompt("Add Multi Action", "Input the value for that channel:", 0, true).then(async (val: number) => {
-                    const item = new MultiActionItem();
-                    item.fixture = this.showService.showData.fixtures.find((f) => f.id == fixtureId);
+                    const item = new MultiActionItem(channel,
+                        undefined, val, fixtureId, this.currentWidget.id);
                     if (!this.currentWidget.multiActionItems) {
                         this.currentWidget.multiActionItems = [];
                     }
-                    item.widget = this.currentWidget;
-                    item.channel = channel;
-                    item.value = val;
-                    await this.showService.connection.getRepository(MultiActionItem).save(item);
-                    // delete item.widget; // otherwise the json debug pipe won't work
                     this.currentWidget.multiActionItems.push(item);
-                    await this.showService.connection
-                        .getRepository(Widget).save(this.currentWidget);
+                    this.showService.save();
                 });
             });
         });
@@ -126,30 +117,30 @@ export class WidgetGridComponent implements OnInit {
 
     public removeMultiActionItem(item: MultiActionItem): void {
         this.dialogService.confirm("Are you sure?", "Do you really want to remove this Multi Action Item?").then(async () => {
-            await this.showService.connection.getRepository(MultiActionItem).remove(item);
             this.currentWidget.multiActionItems = this.currentWidget
-                .multiActionItems.filter((i) => i.id != item.id);
+                .multiActionItems.splice(this.currentWidget.multiActionItems.indexOf(item), 1);
+            this.showService.save();
         }, () => undefined);
     }
 
     public changeMultiActionItemChannel(item: MultiActionItem): void {
-        this.dialogService.select("Edit Multi Action", "Choose the channel:", this.getSelectChannelOptions(this.showService.showData.fixtures.find((f) => f.id == item.fixture.id))).then(async (channel: string) => {
+        this.dialogService.select("Edit Multi Action", "Choose the channel:", this.getSelectChannelOptions(this.showService.showData.fixtures.find((f) => f.id == item.fixtureId))).then(async (channel: string) => {
             item.channel = channel;
-            await this.showService.connection.getRepository(MultiActionItem).save(item);
+            this.showService.save();
         });
     }
 
     public changeMultiActionItemValue(item: MultiActionItem): void {
         this.dialogService.prompt("Edit Multi Action", "Input the value:", item.value).then(async (value: number) => {
             item.value = value;
-            await this.showService.connection.getRepository(MultiActionItem).save(item);
+            this.showService.save();
         });
     }
 
     public changeMultiActionItemTransitionTime(item: MultiActionItem): void {
         this.dialogService.prompt("Edit Multi Action", "Input the transition time in milliseconds:", item.transitionTime).then(async (value: number) => {
             item.transitionTime = value;
-            await this.showService.connection.getRepository(MultiActionItem).save(item);
+            this.showService.save();
         });
     }
 
@@ -164,11 +155,10 @@ export class WidgetGridComponent implements OnInit {
             if (opts3.length) {
                 this.dialogService.select("Add widget", "Choose the channel:", opts3).then(async (channel: any) => {
                     if (isFixedChannelValue) {
-                        const w = new FixedChannel(fixture, channel);
-                        await this.showService.connection.manager.save(w);
-                        this.fixedChannels.push(w);
+                        const w = new FixedChannel(channel);
+                        fixture.fixedChannels.push(w);
                         this.updateFixedChannels();
-                        this.fixedChannelAdded.emit(w);
+                        this.showService.save();
                         return;
                     }
                     if (returnChannel) {
@@ -326,22 +316,23 @@ export class WidgetGridComponent implements OnInit {
         default:
             break;
         }
-        await this.showService.connection.manager.save(w);
-        await this.loadAll();
+        this.showService.showData.generalWidgets.push(w);
+        this.showService.save();
     }
 
-    public action(type: string, widget: Widget, event: Event | number | any, idx?: number): void {
+    public action(type: string, fixture: Fixture,
+        widget: Widget, event: Event | number | any, idx?: number): void {
         if (this.editMode && !this.previewEnabled) {
             return;
         }
         let channels: number[];
         switch (type) {
         case "slider":
-            channels = findChannelAddresses(widget);
+            channels = findChannelAddresses(fixture, widget);
             this.dmxService.animateMultipleTo(event, channels, widget.config?.transitionTime);
             break;
         case "button":
-            channels = findChannelAddresses(widget);
+            channels = findChannelAddresses(fixture, widget);
             this.dmxService.animateMultipleTo(
                 widget.config?.buttonValue ? widget.config.buttonValue : 0,
                 channels,
@@ -372,7 +363,7 @@ export class WidgetGridComponent implements OnInit {
         case "multiActionButton":
             for (const item of widget.multiActionItems) {
                 channels = findChannelAddresses2(
-                    this.showService.showData.fixtures.find((f) => f.id == item.fixture.id),
+                    this.showService.showData.fixtures.find((f) => f.id == fixture.id),
                     item.channel,
                 );
                 this.dmxService.animateMultipleTo(
@@ -383,15 +374,15 @@ export class WidgetGridComponent implements OnInit {
             }
             break;
         case "wheel":
-            const capability = widget.fixture.product.availableChannels[widget.channel].capabilities.filter((s) => s.type == "WheelSlot" && s.slotNumber == idx + 1)[0];
+            const capability = fixture.product.availableChannels[widget.channel].capabilities.filter((s) => s.type == "WheelSlot" && s.slotNumber == idx + 1)[0];
             this.dmxService.animateMultipleTo(
                 Math.round((capability.dmxRange[0] + capability.dmxRange[1]) / 2),
-                findChannelAddresses(widget),
+                findChannelAddresses(fixture, widget),
                 widget.config?.transitionTime,
             );
             break;
         case "colorpicker":
-            channels = findChannelAddresses(widget);
+            channels = findChannelAddresses(fixture, widget);
             for (const c of channels) {
                 this.dmxService.animateTo(
                     {
@@ -491,8 +482,11 @@ export class WidgetGridComponent implements OnInit {
     public updateFixedChannels(): void {
         setTimeout(() => {
             if ((this.dmxService.isConnected && this.previewEnabled) || !this.editMode) {
-                for (const f of this.fixedChannels) {
-                    this.dmxService.updateMultiple(f.value, findChannelAddresses(f));
+                for (const fixture of this.showService.showData.fixtures) {
+                    for (const fixedChannel of fixture.fixedChannels) {
+                        this.dmxService.updateMultiple(fixedChannel.value,
+                            findChannelAddresses(fixture, fixedChannel));
+                    }
                 }
             }
         }, 200);

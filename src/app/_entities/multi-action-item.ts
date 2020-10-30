@@ -7,7 +7,6 @@ export class MultiActionItem {
     public value: number;
     public transitionTime: number;
     public fixtureId: string;
-    public widgetId: string;
 
     constructor(channel: string,
         customChannel: string, value: number,
@@ -19,6 +18,5 @@ export class MultiActionItem {
         this.value = value;
         this.transitionTime = transitionTime;
         this.fixtureId = fixtureId;
-        this.widgetId = widgetId;
     }
 }

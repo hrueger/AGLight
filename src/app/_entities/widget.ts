@@ -1,5 +1,6 @@
 import { v4 } from "uuid";
 import { EffectOptionsData, EffectWidgetOption } from "../_ressources/widgets";
+import { MultiActionItem } from "./multi-action-item";
 
 export type WidgetType = "Fader" | "Button" | "Colorpicker" | "RGB Colorpicker" | "ButtonGrid" | "BlackoutButton" | "MultiAction";
 
@@ -22,6 +23,7 @@ export class Widget {
     };
     public effectConfig: EffectOptionsData;
     public effectData?: EffectWidgetOption;
+    public multiActionItems: MultiActionItem[] = [];
 
     constructor(x: number, y: number, rows: number, cols: number, type: WidgetType,
         channel: string, customChannel = "", effect?: string) {
