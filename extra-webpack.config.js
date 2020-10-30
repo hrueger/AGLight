@@ -8,6 +8,6 @@ module.exports = {
         ws: "require('ws')",
         "socket.io": "require('socket.io')",
         "express": "require('express')",
-    },
+    }
     // end of extra configs
 };
