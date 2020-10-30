@@ -22,7 +22,7 @@ export class FixturesComponent implements OnInit {
     public getChannelCount = getChannelCount;
 
     constructor(
-        private showService: ShowService,
+        public showService: ShowService,
         private modalService: NgbModal,
         private libraryService: LibraryService,
         private dialogService: DialogService,
