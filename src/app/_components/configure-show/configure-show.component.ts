@@ -28,7 +28,7 @@ export class ConfigureShowComponent {
 
     public async ngOnInit(): Promise<void> {
         this.products = this.libraryService.getProducts();
-        this.displayFixtures = this.showService.showData.fixtures;
+        this.displayFixtures = this.showService.showData.fixtures.filter((f) => !f.isDummyFixture);
     }
 
     public editFixedChannel(fixedChannel: FixedChannel): void {
@@ -62,6 +62,7 @@ export class ConfigureShowComponent {
     public search(e: string): void {
         if (this.showService.showData.fixtures) {
             this.displayFixtures = this.showService.showData.fixtures.filter((h) => {
+                if (h.isDummyFixture) return false;
                 const toSearch = `${h && h.displayName ? h.displayName.toLowerCase() : ""} ${
                     h && h.product && h.product.name ? h.product.name.toLowerCase() : ""}`;
                 let notFound = false;

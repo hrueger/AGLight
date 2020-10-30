@@ -204,7 +204,8 @@ export class FixturesComponent implements OnInit {
     }
 
     private validate() {
-        for (const fixture of this.showService.showData.fixtures as any) {
+        const fixturesToCheck = this.showService.showData.fixtures.filter((f) => !f.isDummyFixture);
+        for (const fixture of fixturesToCheck as any) {
             fixture.endAddress = fixture.startAddress - 1
                 + (fixture.number * getChannelCount(fixture));
         }

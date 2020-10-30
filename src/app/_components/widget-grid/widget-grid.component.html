@@ -168,7 +168,7 @@
     </div>
     <div class="modal-body">
         <form>
-            <div class="form-group row" *ngIf="!currentWidget.effect">
+            <div class="form-group row" *ngIf="!currentWidget.effect && !currentFixture.isDummyFixture">
                 <label class="col-3 col-form-label" for="type">Type</label>
                 <div class="col-9">
                     <select id="name" name="name" placeholder="The widget's type" [(ngModel)]="currentWidget.type" class="custom-select">

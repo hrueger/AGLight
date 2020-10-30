@@ -13,6 +13,7 @@ export class Fixture {
     public widgets: Widget[];
     public fixedChannels: FixedChannel[];
     public product: Product;
+    public isDummyFixture = false;
 
     constructor(
         displayName: string,

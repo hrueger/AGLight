@@ -1,5 +1,5 @@
 import {
-    Component, Input, Output, EventEmitter, OnInit,
+    Component, Input, OnInit,
 } from "@angular/core";
 import { GridsterConfig } from "angular-gridster2";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -10,7 +10,6 @@ import { Fixture } from "../../_entities/fixture";
 import { Widget, WidgetType } from "../../_entities/widget";
 import { colors } from "../../_ressources/colors";
 import { ShowService } from "../../_services/show.service";
-import { LibraryService } from "../../_services/library.service";
 import { DialogService } from "../../_services/dialog.service";
 import { DmxService } from "../../_services/dmx.service";
 import { beautifyCamelCase } from "../../_utils/camelcase-beautifier";
@@ -316,7 +315,20 @@ export class WidgetGridComponent implements OnInit {
         default:
             break;
         }
-        this.showService.showData.generalWidgets.push(w);
+        let f = this.showService.showData.fixtures.find((d) => d.isDummyFixture == true);
+        if (f) {
+            f.widgets.push(w);
+        } else {
+            f = {
+                id: "dummy",
+                isDummyFixture: true,
+                widgets: [],
+                fixedChannels: [],
+                name: "DUMMY",
+            } as any;
+            f.widgets.push(w);
+            this.showService.showData.fixtures.push(f);
+        }
         this.showService.save();
     }
 
