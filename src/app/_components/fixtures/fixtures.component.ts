@@ -72,8 +72,8 @@ export class FixturesComponent implements OnInit {
     public addFixture(fixture: Fixture, content: unknown): void {
         this.currentFixture = fixture as any;
         this.modalService.open(content, { size: "xl" }).result.then((result) => {
-            this.dialogService.prompt("Number of fixtures", "Type in the number of fixtures you want to add:", 2, true).then(async (n: number) => {
-                const f = new Fixture("Change this", n, 1, result.fixture.name, result.mode.name);
+            this.dialogService.prompt("Number of fixtures", "Type in the number of fixtures you want to add:", 2, true).then(async (n: string) => {
+                const f = new Fixture("Change this", parseInt(n, 10), 1, result.fixture.name, result.mode.name);
                 f.product = this.libraryService.getProduct(result.fixture.name);
                 this.showService.showData.fixtures.push(f);
                 this.sortUsedFixtures();
@@ -121,14 +121,14 @@ export class FixturesComponent implements OnInit {
                 if (res) {
                     switch (field) {
                     case "number":
-                        this.showService.showData.fixtures[i].number = parseInt(res, undefined);
+                        this.showService.showData.fixtures[i].number = parseInt(res, 10);
                         break;
                     case "displayName":
                         this.showService.showData.fixtures[i].displayName = res;
                         break;
                     case "startAddress":
                         this.showService.showData.fixtures[i]
-                            .startAddress = parseInt(res, undefined);
+                            .startAddress = parseInt(res, 10);
                         this.sortUsedFixtures();
                         break;
                     default:

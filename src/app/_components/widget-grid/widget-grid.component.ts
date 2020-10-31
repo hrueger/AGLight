@@ -381,10 +381,7 @@ export class WidgetGridComponent implements OnInit {
             break;
         case "multiActionButton":
             for (const item of widget.multiActionItems) {
-                channels = findChannelAddresses2(
-                    this.showService.showData.fixtures.find((f) => f.id == fixture.id),
-                    item.channel,
-                );
+                channels = findChannelAddresses2(fixture, item.channel);
                 this.dmxService.animateMultipleTo(
                     item.value ? item.value : 0,
                     channels,

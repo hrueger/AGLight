@@ -96,7 +96,7 @@ export class LibraryService {
 
         req.on("response", (data) => {
             // Change the total bytes value to get progress later.
-            totalBytes = parseInt(data.headers["content-length"], undefined);
+            totalBytes = parseInt(data.headers["content-length"], 10);
         });
 
         req.on("data", (chunk) => {
