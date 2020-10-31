@@ -62,7 +62,7 @@
         "electron-splashscreen": "^1.0.0",
         "electron-updater": "^4.3.5",
         "express": "^4.17.1",
-        "ng5-slider": "^1.2.4",
+        "@angular-slider/ngx-slider": "^2.0.0",
         "ngx-color": "^6.0.4",
         "node-abi": "^2.19.1",
         "popper.js": "^1.16.1",

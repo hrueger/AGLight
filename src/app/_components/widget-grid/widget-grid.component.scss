@@ -36,7 +36,7 @@ gridster {
     .widget-slider {
         margin: auto;
         height: calc( 100% - 40px);
-        .ng5-slider .ng5-slider-pointer {
+        .ngx-slider .ngx-slider-pointer {
             outline: none;
             border-radius: 2px;
             width: 64px;
@@ -47,10 +47,10 @@ gridster {
                 outline: none;
             }
         }
-        .ng5-slider.vertical .ng5-slider-bar-wrapper {
+        .ngx-slider.vertical .ngx-slider-bar-wrapper {
             margin: 0;
         }
-        .ng5-slider .ng5-slider-bubble {
+        .ngx-slider .ngx-slider-bubble {
             display: none;
         }
     }
