@@ -9,7 +9,7 @@ export function findChannelAddresses(fixture: Fixture, widget: Widget | FixedCha
         .map((_, idx) => fixture.startAddress
             + (getChannelCount(fixture) == 1
                 ? idx
-                : (idx * (getChannelCount(fixture) + 1)))
+                : (idx * (getChannelCount(fixture))))
             + fixture.product.modes
                 .filter((m) => m.name == fixture.channelMode)[0]
                 .channels.findIndex((c) => c == widget.channel));
@@ -21,7 +21,7 @@ export function findChannelAddresses2(fixture: Fixture, channel: string): number
         .map((_, idx) => fixture.startAddress
             + (getChannelCount(fixture) == 1
                 ? idx
-                : (idx * (getChannelCount(fixture) + 1)))
+                : (idx * (getChannelCount(fixture))))
             + fixture.product.modes
                 .filter((m) => m.name == fixture.channelMode)[0]
                 .channels.findIndex((c) => c == channel));
