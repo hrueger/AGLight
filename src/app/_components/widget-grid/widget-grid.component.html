@@ -217,7 +217,7 @@
             <tbody>
                 <tr *ngFor="let actionItem of currentWidget.multiActionItems; let i = index">
                     <td><button class="action-btn red" (click)="removeMultiActionItem(actionItem)"><i class="fas fa-times"></i></button></td>
-                    <td>{{actionItem.fixture.displayName}}</td>
+                    <td>{{getMultiActionItemFixture(actionItem).displayName}}</td>
                     <td class="editable" (click)="changeMultiActionItemChannel(actionItem)"><i class="fas fa-pen"></i> {{actionItem.channel}}</td>
                     <td class="editable" (click)="changeMultiActionItemValue(actionItem)"><i class="fas fa-pen"></i> {{actionItem.value}}
                     </td>

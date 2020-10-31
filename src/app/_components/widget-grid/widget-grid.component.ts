@@ -94,8 +94,12 @@ export class WidgetGridComponent implements OnInit {
         this.dmxService.updateMultiple(value, findChannelAddresses(fixture, widget));
     }
 
+    public getMultiActionItemFixture(actionItem: MultiActionItem): Fixture {
+        return this.showService.showData.fixtures.find((f) => f.id == actionItem.fixtureId);
+    }
+
     public addMultiActionItemToCurrentWidget(): void {
-        this.dialogService.select("Add Multi Action", "Choose the fixture:", this.showService.showData.fixtures.map((f) => ({
+        this.dialogService.select("Add Multi Action", "Choose the fixture:", this.showService.showData.fixtures.filter((f) => !f.isDummyFixture).map((f) => ({
             name: f.displayName,
             description: `${f.number}x ${f.product.name} <span class="text-muted">(${f.product.manufacturer.name})</span>`,
             value: f.id,
@@ -381,7 +385,10 @@ export class WidgetGridComponent implements OnInit {
             break;
         case "multiActionButton":
             for (const item of widget.multiActionItems) {
-                channels = findChannelAddresses2(fixture, item.channel);
+                channels = findChannelAddresses2(
+                    this.getMultiActionItemFixture(item),
+                    item.channel,
+                );
                 this.dmxService.animateMultipleTo(
                     item.value ? item.value : 0,
                     channels,
