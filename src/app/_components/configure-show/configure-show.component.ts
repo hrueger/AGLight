@@ -14,11 +14,9 @@ import { FixedChannel } from "../../_entities/fixed-channel";
     templateUrl: "./configure-show.component.html",
 })
 export class ConfigureShowComponent {
-    public allFixtures: Fixture[] = [];
     public displayFixtures: Fixture[] = [];
     public searchValue = "";
     public previewEnabled = false;
-    public fixedChannels: FixedChannel[] = [];
     public products: Product[] = [];
     @ViewChild("widgetGrid") public widgetGrid: WidgetGridComponent;
     constructor(
@@ -30,39 +28,21 @@ export class ConfigureShowComponent {
 
     public async ngOnInit(): Promise<void> {
         this.products = this.libraryService.getProducts();
-        this.allFixtures = await this.showService.connection.getRepository(Fixture).find();
-        for (const fixture of this.allFixtures) {
-            [fixture.product] = this.products.filter((p) => p.name == fixture.name);
-        }
-        this.displayFixtures = this.allFixtures;
-        this.updateFixedChannels();
-    }
-
-    public async updateFixedChannels(): Promise<void> {
-        this.fixedChannels = await this.showService.connection.getRepository(FixedChannel).find({ relations: ["fixture"] });
-        for (const f of this.fixedChannels) {
-            [f.fixture.product] = this.products.filter((p) => p.name == f.fixture.name);
-        }
-    }
-
-    public onFixedChannelAdded(f: FixedChannel): void {
-        this.fixedChannels.push(f);
-        for (const c of this.fixedChannels) {
-            [c.fixture.product] = this.products.filter((p) => p.name == c.fixture.name);
-        }
+        this.displayFixtures = this.showService.showData.fixtures.filter((f) => !f.isDummyFixture);
     }
 
     public editFixedChannel(fixedChannel: FixedChannel): void {
         this.dialogService.prompt("Edit the value of the fixed channel", "Type in a value between 0 and 255", fixedChannel.value, true).then(async (v: number) => {
             fixedChannel.value = v;
-            await this.showService.connection.getRepository(FixedChannel).save(fixedChannel);
             this.widgetGrid.updateFixedChannels();
         });
     }
 
-    public async removeFixedChannel(fixedChannel: FixedChannel): Promise<void> {
-        this.showService.connection.getRepository(FixedChannel).delete(fixedChannel.id);
-        this.fixedChannels = this.fixedChannels.filter((f) => f.id !== fixedChannel.id);
+    public async removeFixedChannel(fixture: Fixture, fixedChannel: FixedChannel): Promise<void> {
+        this.dialogService.confirm("Are you sure?", "Do you really want to remove this fixed channel?").then(async () => {
+            fixture.fixedChannels = fixture.fixedChannels.filter((f) => f.id != fixedChannel.id);
+            this.showService.save();
+        }, () => undefined);
     }
 
     public togglePreview(event: Event): void {
@@ -80,8 +60,9 @@ export class ConfigureShowComponent {
     }
 
     public search(e: string): void {
-        if (this.allFixtures) {
-            this.displayFixtures = this.allFixtures.filter((h) => {
+        if (this.showService.showData.fixtures) {
+            this.displayFixtures = this.showService.showData.fixtures.filter((h) => {
+                if (h.isDummyFixture) return false;
                 const toSearch = `${h && h.displayName ? h.displayName.toLowerCase() : ""} ${
                     h && h.product && h.product.name ? h.product.name.toLowerCase() : ""}`;
                 let notFound = false;
@@ -94,6 +75,15 @@ export class ConfigureShowComponent {
             });
             this.sortDisplayFixtures();
         }
+    }
+
+    public displayFixedChannels(): boolean {
+        for (const fixture of this.showService.showData.fixtures) {
+            if (fixture.fixedChannels?.length > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private sortDisplayFixtures() {

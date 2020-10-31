@@ -5,6 +5,7 @@ import { StatusbarService } from "./statusbar.service";
 import { Widget } from "../_entities/widget";
 import { findChannelAddresses } from "../_utils/find-channel-addresses";
 import { DialogService } from "./dialog.service";
+import { Fixture } from "../_entities/fixture";
 
 @Injectable({
     providedIn: "root",
@@ -93,11 +94,11 @@ export class DmxService {
     }
 
     private calculateEffects() {
-        if (this.runningEffects.length) {
+        /* if (this.runningEffects.length) {
             const data = {};
             const t = Date.now();
             for (const e of this.runningEffects) {
-                const channelAddresses = findChannelAddresses(e);
+                 const channelAddresses = findChannelAddresses(e);
                 e.effectData.f.forEach((f, idx) => {
                     for (const a of channelAddresses) {
                         data[a + idx] = f(t, e.effectConfig);
@@ -106,20 +107,20 @@ export class DmxService {
             }
             this.update(data);
         }
-        setTimeout(() => this.calculateEffects(), 10);
+        setTimeout(() => this.calculateEffects(), 10); */
     }
 
-    public activateEffect(widget: Widget): void {
+    public activateEffect(fixture: Fixture, widget: Widget): void {
         if (!widget.effect) {
             return;
         }
         this.runningEffects.push(widget);
     }
 
-    public deactivateEffect(widget: Widget): void {
+    public deactivateEffect(fixture: Fixture, widget: Widget): void {
         this.runningEffects = this.runningEffects.filter((w) => {
             if (w.id == widget.id) {
-                const channelAddresses = findChannelAddresses(w);
+                const channelAddresses = findChannelAddresses(fixture, w);
                 this.animateMultipleTo(0, channelAddresses, 500);
                 return false;
             }

@@ -1,29 +1,22 @@
-import {
-    BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne,
-} from "typeorm";
-import { Fixture } from "./fixture";
-import { Widget } from "./widget";
+import { v4 } from "uuid";
 
-@Entity()
-export class MultiActionItem extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    public id: number;
-
-    @Column({ nullable: true })
+export class MultiActionItem {
+    public id: string;
     public channel: string;
-
-    @Column({ default: "" })
     public customChannel: string;
-
-    @Column({ default: 0 })
     public value: number;
-
-    @Column({ default: 1000 })
     public transitionTime: number;
+    public fixtureId: string;
 
-    @ManyToOne(() => Fixture, (fixture) => fixture.multiActionItems)
-    public fixture: Fixture;
-
-    @ManyToOne(() => Widget, (widget) => widget.multiActionItems)
-    public widget: Widget;
+    constructor(channel: string,
+        customChannel: string, value: number,
+        fixtureId: string, widgetId: string,
+        transitionTime = 1000) {
+        this.id = v4();
+        this.channel = channel;
+        this.customChannel = customChannel;
+        this.value = value;
+        this.transitionTime = transitionTime;
+        this.fixtureId = fixtureId;
+    }
 }

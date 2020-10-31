@@ -1,51 +1,20 @@
-import {
-    BaseEntity, Column, Entity, PrimaryGeneratedColumn, OneToMany,
-} from "typeorm";
+import { v4 } from "uuid";
 import { Product } from "./product";
 import { Widget } from "./widget";
-import { MultiActionItem } from "./multi-action-item";
+import { FixedChannel } from "./fixed-channel";
 
-@Entity()
-export class Fixture extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    public id: number;
-
-    @Column()
+export class Fixture {
+    public id: string;
     public displayName: string;
-
-    @Column()
     public number: number;
-
-    @Column()
     public startAddress: number;
-
-    @Column()
     public name: string;
-
-    @Column()
     public channelMode: string;
-
-    @OneToMany(() => Widget, (widget) => widget.fixture)
     public widgets: Widget[];
+    public fixedChannels: FixedChannel[];
+    public product: Product;
+    public isDummyFixture = false;
 
-    @OneToMany(() => MultiActionItem, (multiActionItem) => multiActionItem.fixture)
-    public multiActionItems: MultiActionItem[];
-
-    /* public object?: {
-        fixture: import("babylonjs/Meshes/mesh").Mesh;
-        fixtureLight: import("babylonjs/Meshes/mesh").Mesh;
-        rainbowInterval?: any;
-        currentRainbowColorIndex?: number;
-        currentRGBColor?: {
-            r: number,
-            b: number,
-            g: number,
-        }
-    }; */
-
-    public product?: Product;
-
-    // tslint:disable-next-line: variable-name
     constructor(
         displayName: string,
         number: number,
@@ -53,11 +22,13 @@ export class Fixture extends BaseEntity {
         name: string,
         channelMode: string,
     ) {
-        super();
+        this.id = v4();
         this.displayName = displayName;
         this.number = number;
         this.startAddress = startAddress;
         this.channelMode = channelMode;
         this.name = name;
+        this.widgets = [];
+        this.fixedChannels = [];
     }
 }

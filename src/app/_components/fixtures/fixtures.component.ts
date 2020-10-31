@@ -15,7 +15,6 @@ import { getChannelCount } from "../../_utils/channel-count";
 })
 export class FixturesComponent implements OnInit {
     public searchValue = "";
-    public fixtures: Fixture[] = [];
     public displayFixtures: Product[];
     public allFixtures: Product[];
     public currentFixture: Product;
@@ -23,18 +22,17 @@ export class FixturesComponent implements OnInit {
     public getChannelCount = getChannelCount;
 
     constructor(
-        private showService: ShowService,
+        public showService: ShowService,
         private modalService: NgbModal,
         private libraryService: LibraryService,
         private dialogService: DialogService,
     ) { }
 
-    public async ngOnInit(): Promise<void> {
+    public ngOnInit(): void {
         this.allFixtures = this.getFixtures();
         this.displayFixtures = this.allFixtures;
         this.sortDisplayFixtures();
-        this.fixtures = await (this.showService.connection.getRepository(Fixture).find());
-        for (const fixture of this.fixtures) {
+        for (const fixture of this.showService.showData.fixtures) {
             fixture.product = this.libraryService.getProduct(fixture.name);
         }
         /* const that = this;
@@ -74,10 +72,10 @@ export class FixturesComponent implements OnInit {
     public addFixture(fixture: Fixture, content: unknown): void {
         this.currentFixture = fixture as any;
         this.modalService.open(content, { size: "xl" }).result.then((result) => {
-            this.dialogService.prompt("Number of fixtures", "Type in the number of fixtures you want to add:", 2, true).then(async (n: number) => {
-                const f = new Fixture("Change this", n, 1, result.fixture.name, result.mode.name);
+            this.dialogService.prompt("Number of fixtures", "Type in the number of fixtures you want to add:", 2, true).then(async (n: string) => {
+                const f = new Fixture("Change this", parseInt(n, 10), 1, result.fixture.name, result.mode.name);
                 f.product = this.libraryService.getProduct(result.fixture.name);
-                this.fixtures.push(f);
+                this.showService.showData.fixtures.push(f);
                 this.sortUsedFixtures();
                 this.save();
             }, () => undefined);
@@ -94,17 +92,17 @@ export class FixturesComponent implements OnInit {
         let options = [];
         switch (field) {
         case "number":
-            val = this.fixtures[i].number;
+            val = this.showService.showData.fixtures[i].number;
             title = "Change number of fixtures";
             message = "Enter the number of the fixtures:";
             break;
         case "startAddress":
-            val = this.fixtures[i].startAddress;
+            val = this.showService.showData.fixtures[i].startAddress;
             title = "Change start address";
             message = "Enter the fixture's start address:";
             break;
         case "displayName":
-            val = this.fixtures[i].displayName;
+            val = this.showService.showData.fixtures[i].displayName;
             title = "Change display name";
             message = "Enter the fixture's display name:";
             break;
@@ -113,7 +111,7 @@ export class FixturesComponent implements OnInit {
             title = "Choose channel mode";
             message = "Choose the channel mode of that fixture:";
             selectBox = true;
-            options = this.getSelectOptionsFromFixture(this.fixtures[i]);
+            options = this.getSelectOptionsFromFixture(this.showService.showData.fixtures[i]);
             break;
         default:
             break;
@@ -123,13 +121,14 @@ export class FixturesComponent implements OnInit {
                 if (res) {
                     switch (field) {
                     case "number":
-                        this.fixtures[i].number = parseInt(res, undefined);
+                        this.showService.showData.fixtures[i].number = parseInt(res, 10);
                         break;
                     case "displayName":
-                        this.fixtures[i].displayName = res;
+                        this.showService.showData.fixtures[i].displayName = res;
                         break;
                     case "startAddress":
-                        this.fixtures[i].startAddress = parseInt(res, undefined);
+                        this.showService.showData.fixtures[i]
+                            .startAddress = parseInt(res, 10);
                         this.sortUsedFixtures();
                         break;
                     default:
@@ -141,7 +140,7 @@ export class FixturesComponent implements OnInit {
         } else {
             this.dialogService.select(title, message, options).then((res: any) => {
                 if (res) {
-                    this.fixtures[i].channelMode = res.name;
+                    this.showService.showData.fixtures[i].channelMode = res.name;
                 }
                 this.save();
             }, () => undefined);
@@ -151,20 +150,19 @@ export class FixturesComponent implements OnInit {
     public deleteFixture(i: number): void {
         this.dialogService.confirm("Delete fixture(s)",
             "Are you sure that this fixture(s) should be deleted? You won't be able to restore it.").then(async () => {
-            await this.showService.connection.getRepository(Fixture).remove(this.fixtures[i]);
-            this.fixtures.splice(i, 1);
+            this.showService.showData.fixtures.splice(i, 1);
             this.save();
         }, () => undefined);
     }
 
     public save(): void {
         if (this.validate()) {
-            this.showService.connection.getRepository(Fixture).save(this.fixtures);
+            this.showService.save();
         }
     }
 
     private sortUsedFixtures() {
-        this.fixtures.sort((a, b) => {
+        this.showService.showData.fixtures.sort((a, b) => {
             if (a.startAddress > b.startAddress) {
                 return 1;
             }
@@ -206,12 +204,13 @@ export class FixturesComponent implements OnInit {
     }
 
     private validate() {
-        for (const fixture of this.fixtures as any) {
+        const fixturesToCheck = this.showService.showData.fixtures.filter((f) => !f.isDummyFixture);
+        for (const fixture of fixturesToCheck as any) {
             fixture.endAddress = fixture.startAddress - 1
                 + (fixture.number * getChannelCount(fixture));
         }
-        for (const a of this.fixtures as any) {
-            for (const b of this.fixtures as any) {
+        for (const a of this.showService.showData.fixtures as any) {
+            for (const b of this.showService.showData.fixtures as any) {
                 if (
                     (
                         (

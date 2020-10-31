@@ -47,19 +47,22 @@
                         <span>Fixed Channels</span>
                     </h6>
                     <div class="flex-grow-1 overflow-auto">
-                        <span class="text-muted mx-3" *ngIf="fixedChannels?.length == 0">
+                        <span class="text-muted mx-3" *ngIf="!displayFixedChannels()">
                             No fixed channels
                         </span>
-                        <ul class="nav flex-column">
-                            <li class="nav-item" *ngFor="let fixedChannel of fixedChannels">
-                                <a class="nav-link d-flex justify-content-between">
-                                    <span>{{fixedChannel.channel}} <span class="text-muted">| {{fixedChannel.fixture.product.name}} |</span> {{fixedChannel.value}}</span>
-                                    <div>
-                                        <button class="action-btn blue" (click)="editFixedChannel(fixedChannel)"><i class="fas fa-pen"></i></button>
-                                        <button class="action-btn red" (click)="removeFixedChannel(fixedChannel)"><i class="fas fa-times"></i></button>
-                                    </div>
-                                </a>
-                            </li>
+                        <ul class="nav flex-column" *ngIf="displayFixedChannels()">
+                            <ng-container *ngFor="let fixture of showService.showData.fixtures">
+                                <li class="nav-item" *ngFor="let fixedChannel of fixture.fixedChannels">
+                                    <a class="nav-link d-flex justify-content-between">
+                                        <span>{{fixedChannel.channel}} <span class="text-muted">| {{fixture.product.name}} |</span> {{fixedChannel.value}}</span>
+                                        <div>
+                                            <button class="action-btn blue" (click)="editFixedChannel(fixedChannel)"><i class="fas fa-pen"></i></button>
+                                            <button class="action-btn red" (click)="removeFixedChannel(fixture, fixedChannel)"><i class="fas fa-times"></i></button>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ng-container>
+                            
                         </ul>
                     </div>
 
@@ -68,7 +71,7 @@
         </nav>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-            <widget-grid #widgetGrid [editMode]="true" [previewEnabled]="previewEnabled" [fixedChannels]="fixedChannels" (fixedChannelAdded)="onFixedChannelAdded($event)"></widget-grid>
+            <widget-grid #widgetGrid [editMode]="true" [previewEnabled]="previewEnabled"></widget-grid>
         </main>
     </div>
 </div>

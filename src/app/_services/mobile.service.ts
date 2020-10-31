@@ -92,20 +92,19 @@ export class MobileService {
                 res.send({ success: true });
                 this.updateStatusbar();
             });
-            r.get("/widgets", async (req, res) => {
+            r.get("/show", async (req, res) => {
                 if (!this.showService.showLoaded) {
                     res.status(500).send({ error: "No show loaded!", noShowLoaded: true });
                 }
                 const wgc = new WidgetGridComponent(
                     this.showService,
-                    this.libraryService,
                     this.dmxService,
                     this.modalService,
                     this.dialogService,
                 );
                 wgc.editMode = true;
                 await wgc.ngOnInit();
-                res.send({ widgets: wgc.widgets });
+                res.send({ showData: this.showService.showData });
             });
             this.server.use(r);
             this.server.listen(4573, () => {
