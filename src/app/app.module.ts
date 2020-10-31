@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { GridsterModule } from "angular-gridster2";
-import { Ng5SliderModule } from "ng5-slider";
+import { NgxSliderModule } from "@angular-slider/ngx-slider";
 import { ColorCircleModule } from "ngx-color/circle";
 import { ColorSwatchesModule } from "ngx-color/swatches";
 import "reflect-metadata";
@@ -67,7 +67,7 @@ import { QRCodeComponent } from "./_components/qrcode/qrcode.component";
         HttpClientModule,
         AppRoutingModule,
         GridsterModule,
-        Ng5SliderModule,
+        NgxSliderModule,
         ColorCircleModule,
         ColorSwatchesModule,
         QRCodeModule,

@@ -42,7 +42,7 @@
                         </div>
                         
                         <div class="widget-slider d-flex" *ngIf="widget.type == 'Fader'">
-                            <ng5-slider [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: true}" (valueChange)="action('slider', fixture, widget, $event)"></ng5-slider>
+                            <ngx-slider [options]="{floor: 0, ceil: 255, vertical: true, showSelectionBar: true, animate: true}" (valueChange)="action('slider', fixture, widget, $event)"></ngx-slider>
                         </div>
                         
                         <div class="widget-button" *ngIf="widget.type == 'Button'">
