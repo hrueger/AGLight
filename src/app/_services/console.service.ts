@@ -105,6 +105,14 @@ export class ConsoleService {
                         dropup: {
                             title: "Connected",
                             content: "",
+                            actions: [
+                                {
+                                    text: "Configure",
+                                    type: "primary",
+                                    service: "consoleService",
+                                    action: "openConfigureConsoleDialog",
+                                },
+                            ],
                         },
                     });
 
@@ -127,14 +135,9 @@ export class ConsoleService {
                     }
 
                     this.settingsService.set(Settings.CONSOLE_IP, ip);
-                    const modal = this.modalService.open(ConsoleComponent, { size: "xl" });
-                    (modal.componentInstance as ConsoleComponent).tiles = this.tiles;
-                    modal.result.then((tiles) => {
-                        this.tiles = tiles;
-                        this.settingsService.set(Settings.TILES, tiles.map((t) => {
-                            t.tile = undefined; return t;
-                        }));
-                    }, () => undefined);
+                    if (userFeedback) {
+                        this.openConfigureConsoleDialog();
+                    }
                 } else if (userFeedback) {
                     this.showError("No tiles found.");
                 } else {
@@ -148,6 +151,17 @@ export class ConsoleService {
                 this.setStatusbarNotConnected();
             }
         });
+    }
+
+    public openConfigureConsoleDialog(): void {
+        const modal = this.modalService.open(ConsoleComponent, { size: "xl" });
+        (modal.componentInstance as ConsoleComponent).tiles = this.tiles;
+        modal.result.then((tiles) => {
+            this.tiles = tiles;
+            this.settingsService.set(Settings.TILES, tiles.map((t) => {
+                t.tile = undefined; return t;
+            }));
+        }, () => undefined);
     }
 
     private showError(e: any) {
