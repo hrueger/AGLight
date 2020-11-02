@@ -1,31 +1,31 @@
 import { Injectable } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import {
-    hub, Tile as TileType, TileEncoder12, TileEncoder8, TileFader4, TileLedButton12, TileLedButton8,
+    hub, TileEncoder12, TileEncoder8, TileFader4, TileLedButton12, TileLedButton8, Tile,
 } from " ../../../../makehaus-js/dist";
 import { StatusbarService } from "./statusbar.service";
 import { DialogService } from "./dialog.service";
 import { SettingsService } from "./settings.service";
 import { ConsoleComponent } from "../_components/console/console.component";
+import { TileBase } from "../../../../makehaus-js/dist/control/api-base";
 
-const TileTypes = ["8E", "12E", "4F", "8B", "12B"];
-type TileTypeShort = "8E" | "12E" | "4F" | "8B" | "12B";
+const TileTypes = Object.values(Tile);
 
 export class TileConfig {
-    tile?: Tile;
-    tileType: TileTypeShort;
+    tile?: TileBase<any>;
+    tileType: Tile;
     x: number;
     y: number;
     rows: number;
     cols: number;
-    constructor(tile: Tile, tileType: TileTypeShort, cols: number, rows: number) {
+    constructor(tile: TileBase<any>, tileType: Tile, cols: number, rows: number) {
         this.tile = tile;
         this.tileType = tileType;
         this.cols = cols;
         this.rows = rows;
     }
 }
-export type Tile = TileLedButton8 | TileLedButton12 | TileEncoder8 | TileEncoder12 | TileFader4;
+// export type Tile = TileLedButton8 | TileLedButton12 | TileEncoder8 | TileEncoder12 | TileFader4;
 enum Settings {
     CONSOLE_IP = "CONSOLE_IP",
     TILES = "TILES",
@@ -90,11 +90,16 @@ export class ConsoleService {
             },
         });
         hub.init(ip, 8192).then(() => {
-            hub.on(TileType.LEDBUTTON8, (t: Tile) => this.tiles.push(new TileConfig(t, "8B", 4, 2)));
-            hub.on(TileType.LEDBUTTON12, (t: Tile) => this.tiles.push(new TileConfig(t, "12B", 4, 3)));
-            hub.on(TileType.MOTORFADER4, (t: Tile) => this.tiles.push(new TileConfig(t, "4F", 4, 4)));
-            hub.on(TileType.ENCODER8, (t: Tile) => this.tiles.push(new TileConfig(t, "8E", 4, 2)));
-            hub.on(TileType.ENCODER12, (t: Tile) => this.tiles.push(new TileConfig(t, "12E", 4, 3)));
+            hub.on(Tile.LEDBUTTON8,
+                (t: TileLedButton8) => this.tiles.push(new TileConfig(t, Tile.LEDBUTTON8, 4, 2)));
+            hub.on(Tile.LEDBUTTON12,
+                (t: TileLedButton12) => this.tiles.push(new TileConfig(t, Tile.LEDBUTTON12, 4, 3)));
+            hub.on(Tile.MOTORFADER4,
+                (t: TileFader4) => this.tiles.push(new TileConfig(t, Tile.MOTORFADER4, 4, 4)));
+            hub.on(Tile.ENCODER8,
+                (t: TileEncoder8) => this.tiles.push(new TileConfig(t, Tile.ENCODER8, 4, 2)));
+            hub.on(Tile.ENCODER12,
+                (t: TileEncoder12) => this.tiles.push(new TileConfig(t, Tile.ENCODER12, 4, 3)));
 
             setTimeout(() => {
                 if (this.tiles.length > 0) {
