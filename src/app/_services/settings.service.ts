@@ -21,7 +21,7 @@ export class SettingsService {
         if (!fs.existsSync(this.settingsPath)) {
             fs.writeFileSync(this.settingsPath, JSON.stringify({}));
         } else {
-            this.settings = JSON.parse(fs.readFileSync(this.settingsFolder).toString() || "{}") || {};
+            this.settings = JSON.parse(fs.readFileSync(this.settingsPath).toString() || "{}") || {};
         }
     }
 
