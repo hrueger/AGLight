@@ -16,6 +16,8 @@ import { beautifyCamelCase } from "../../_utils/camelcase-beautifier";
 import { findChannelAddresses, findChannelAddresses2 } from "../../_utils/find-channel-addresses";
 import { widgets, effectWidgets } from "../../_ressources/widgets";
 import { MultiActionItem } from "../../_entities/multi-action-item";
+import { ConsoleService } from "../../_services/console.service";
+import { Tile, TileFader4, TileLedButton12 } from "../../../../../makehaus-js/dist";
 
 @Component({
     selector: "widget-grid",
@@ -38,6 +40,7 @@ export class WidgetGridComponent implements OnInit {
         private dmxService: DmxService,
         private modalService: NgbModal,
         private dialogService: DialogService,
+        private consoleService: ConsoleService,
     ) { }
 
     public saveDebounced(): void {
@@ -353,6 +356,14 @@ export class WidgetGridComponent implements OnInit {
         case "slider":
             channels = findChannelAddresses(fixture, widget);
             this.dmxService.animateMultipleTo(event, channels, widget.config?.transitionTime);
+            this.consoleService.tiles
+                .filter((t) => t.tileType == Tile.MOTORFADER4)
+                .forEach((t) => {
+                    for (const w of (t.tile as TileFader4).widgets) {
+                        // eslint-disable-next-line no-mixed-operators
+                        w.setValue((event / 255) * (2 ** 16));
+                    }
+                });
             break;
         case "button":
             channels = findChannelAddresses(fixture, widget);
@@ -361,6 +372,23 @@ export class WidgetGridComponent implements OnInit {
                 channels,
                 widget.config?.transitionTime,
             );
+            this.consoleService.tiles
+                .filter((t) => t.tileType == Tile.LEDBUTTON12 || t.tileType == Tile.LEDBUTTON8)
+                .forEach((t) => {
+                    for (const w of (t.tile as TileLedButton12).widgets) {
+                        let hue = 0;
+                        const run = () => {
+                            w.setHsl(hue, 1, 0.5);
+                            hue++;
+                            if (hue < 360) {
+                                setTimeout(() => run(), 20);
+                            } else {
+                                w.setColor("#000000");
+                            }
+                        };
+                        run();
+                    }
+                });
             break;
         case "blackoutbutton":
             for (const f of this.showService.showData.fixtures.filter((t) => !t.isDummyFixture)) {
@@ -377,6 +405,13 @@ export class WidgetGridComponent implements OnInit {
                     }
                 }
             }
+            this.consoleService.tiles
+                .filter((t) => t.tileType == Tile.LEDBUTTON12 || t.tileType == Tile.LEDBUTTON8)
+                .forEach((t) => {
+                    for (const w of (t.tile as TileLedButton12).widgets) {
+                        w.setColor("#000000");
+                    }
+                });
             break;
         case "buttongrid":
             // chl = findChannelAddress(widget);
@@ -395,6 +430,28 @@ export class WidgetGridComponent implements OnInit {
                     item.transitionTime,
                 );
             }
+            this.consoleService.tiles
+                .filter((t) => t.tileType == Tile.LEDBUTTON12 || t.tileType == Tile.LEDBUTTON8)
+                .forEach((t) => {
+                    for (const w of (t.tile as TileLedButton12).widgets) {
+                        let lightness = 0;
+                        let increasing = true;
+                        const factor = 0.05;
+                        const run = () => {
+                            w.setHsl(180, 1, lightness);
+                            lightness += (increasing ? factor : (-factor));
+                            if (lightness > 0.5) {
+                                increasing = false;
+                            }
+                            if (lightness > 0) {
+                                setTimeout(() => run(), 0);
+                            } else {
+                                w.setColor("#000000");
+                            }
+                        };
+                        run();
+                    }
+                });
             break;
         case "wheel":
             const capability = fixture.product.availableChannels[widget.channel].capabilities.filter((s) => s.type == "WheelSlot" && s.slotNumber == idx + 1)[0];

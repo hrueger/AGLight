@@ -36,7 +36,7 @@ enum Settings {
 })
 export class ConsoleService {
     private isConnected = false;
-    private tiles: TileConfig[] = [];
+    public tiles: TileConfig[] = [];
     constructor(
         private statusbarService: StatusbarService,
         private dialogService: DialogService,

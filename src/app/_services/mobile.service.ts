@@ -10,6 +10,7 @@ import { LibraryService } from "./library.service";
 import { DialogService } from "./dialog.service";
 import { DmxService } from "./dmx.service";
 import { RecentShowsService } from "./recent-shows.service";
+import { ConsoleService } from "./console.service";
 
 @Injectable({
     providedIn: "root",
@@ -39,6 +40,7 @@ export class MobileService {
         private dialogService: DialogService,
         private dmxService: DmxService,
         private recentShowsService: RecentShowsService,
+        private consoleService: ConsoleService,
         private router: Router,
         private zone: NgZone,
     ) { }
@@ -101,6 +103,7 @@ export class MobileService {
                     this.dmxService,
                     this.modalService,
                     this.dialogService,
+                    this.consoleService,
                 );
                 wgc.editMode = true;
                 await wgc.ngOnInit();
