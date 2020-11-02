@@ -29,8 +29,9 @@ export class SettingsService {
         return this.settings[key] || null;
     }
 
-    public set(key: string, value: Value): void {
+    public set(key: string, value: Value,
+        replacer?: (this: any, key: string, value: any) => any): void {
         this.settings[key] = value;
-        fs.writeFileSync(this.settingsPath, JSON.stringify(this.settings));
+        fs.writeFileSync(this.settingsPath, JSON.stringify(this.settings, replacer, 4));
     }
 }

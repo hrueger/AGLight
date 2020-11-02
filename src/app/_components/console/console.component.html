@@ -1,0 +1,38 @@
+<div class="modal-header">
+    <h4 class="modal-title">Configure console</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span>&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+    <gridster [options]="options">
+        <gridster-item [item]="tile" *ngFor="let tile of tiles">
+            <table *ngIf="['8E', '12E'].includes(tile.tileType)">
+                <tr *ngFor="let e of (tile.tileType == '8E' ? [1, 2] : [1, 2, 3])">
+                    <td><div class="tile encoder"></div></td>
+                    <td><div class="tile encoder"></div></td>
+                    <td><div class="tile encoder"></div></td>
+                    <td><div class="tile encoder"></div></td>
+                </tr>
+            </table>
+            <table *ngIf="['8B', '12B'].includes(tile.tileType)">
+                <tr *ngFor="let b of (tile.tileType == '8B' ? [1, 2] : [1, 2, 3])">
+                    <td><div class="tile button"></div></td>
+                    <td><div class="tile button"></div></td>
+                    <td><div class="tile button"></div></td>
+                    <td><div class="tile button"></div></td>
+                </tr>
+            </table><table *ngIf="tile.tileType == '4F'">
+                <tr>
+                    <td><div class="tile fader"></div></td>
+                    <td><div class="tile fader"></div></td>
+                    <td><div class="tile fader"></div></td>
+                    <td><div class="tile fader"></div></td>
+                </tr>
+            </table>
+        </gridster-item>
+    </gridster>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="activeModal.close(tiles)">Save</button>
+</div>

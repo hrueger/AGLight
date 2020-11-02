@@ -33,6 +33,7 @@ import { AppComponent } from "./app.component";
 import { StatusbarComponent } from "./_components/statusbar/statusbar.component";
 import { DialogComponent } from "./_components/dialog/dialog.component";
 import { QRCodeComponent } from "./_components/qrcode/qrcode.component";
+import { ConsoleComponent } from "./_components/console/console.component";
 
 @NgModule({
     bootstrap: [AppComponent],
@@ -59,6 +60,7 @@ import { QRCodeComponent } from "./_components/qrcode/qrcode.component";
         DialogComponent,
         SafePipe,
         QRCodeComponent,
+        ConsoleComponent,
     ],
     imports: [
         BrowserModule,
@@ -75,6 +77,7 @@ import { QRCodeComponent } from "./_components/qrcode/qrcode.component";
     entryComponents: [
         DialogComponent,
         QRCodeComponent,
+        ConsoleComponent,
     ],
     providers: [],
 })
