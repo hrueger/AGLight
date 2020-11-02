@@ -14,13 +14,21 @@ const TileTypes = Object.values(Tile);
 export class TileConfig {
     tile?: TileBase<any>;
     tileType: Tile;
+    tileIndex: number;
     x: number;
     y: number;
     rows: number;
     cols: number;
-    constructor(tile: TileBase<any>, tileType: Tile, cols: number, rows: number) {
+    constructor(
+        tile: TileBase<any>,
+        tileType: Tile,
+        tileIndex: number,
+        cols: number,
+        rows: number,
+    ) {
         this.tile = tile;
         this.tileType = tileType;
+        this.tileIndex = tileIndex;
         this.cols = cols;
         this.rows = rows;
     }
@@ -91,15 +99,25 @@ export class ConsoleService {
         });
         hub.init(ip, 8192).then(() => {
             hub.on(Tile.LEDBUTTON8,
-                (t: TileLedButton8) => this.tiles.push(new TileConfig(t, Tile.LEDBUTTON8, 4, 2)));
+                (t: TileLedButton8) => this.tiles.push(
+                    new TileConfig(t, Tile.LEDBUTTON8, t.tileIndex(), 4, 2),
+                ));
             hub.on(Tile.LEDBUTTON12,
-                (t: TileLedButton12) => this.tiles.push(new TileConfig(t, Tile.LEDBUTTON12, 4, 3)));
+                (t: TileLedButton12) => this.tiles.push(
+                    new TileConfig(t, Tile.LEDBUTTON12, t.tileIndex(), 4, 3),
+                ));
             hub.on(Tile.MOTORFADER4,
-                (t: TileFader4) => this.tiles.push(new TileConfig(t, Tile.MOTORFADER4, 4, 4)));
+                (t: TileFader4) => this.tiles.push(
+                    new TileConfig(t, Tile.MOTORFADER4, t.tileIndex(), 4, 4),
+                ));
             hub.on(Tile.ENCODER8,
-                (t: TileEncoder8) => this.tiles.push(new TileConfig(t, Tile.ENCODER8, 4, 2)));
+                (t: TileEncoder8) => this.tiles.push(
+                    new TileConfig(t, Tile.ENCODER8, t.tileIndex(), 4, 2),
+                ));
             hub.on(Tile.ENCODER12,
-                (t: TileEncoder12) => this.tiles.push(new TileConfig(t, Tile.ENCODER12, 4, 3)));
+                (t: TileEncoder12) => this.tiles.push(
+                    new TileConfig(t, Tile.ENCODER12, t.tileIndex(), 4, 3),
+                ));
 
             setTimeout(() => {
                 if (this.tiles.length > 0) {
@@ -132,7 +150,8 @@ export class ConsoleService {
                         }
                         if (isEqual) {
                             for (const tile of this.tiles) {
-                                const t = lastTileConfig.find((tl) => tl.tileType == tile.tileType);
+                                const t = lastTileConfig.find((tl) => tl.tileType == tile.tileType
+                                    && tl.tileIndex == tile.tileIndex);
                                 tile.x = t.x;
                                 tile.y = t.y;
                             }
