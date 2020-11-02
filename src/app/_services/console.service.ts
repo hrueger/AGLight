@@ -1,20 +1,20 @@
 import { Injectable } from "@angular/core";
-import * as SerialPort from "serialport";
-import * as Readline from "@serialport/parser-readline";
+import { hub, Tile as TileType, TileEncoder12, TileEncoder8, TileFader4, TileLedButton12, TileLedButton8 } from " ../../../../makehaus-js/dist";
 import { StatusbarService } from "./statusbar.service";
+import { DialogService } from "./dialog.service";
 
-const READY_TO_CONNECT = "ready_to_connect";
-const DELIMITER = "________";
+type Tile = TileLedButton8 | TileLedButton12 | TileEncoder8 | TileEncoder12 | TileFader4;
 
 @Injectable({
     providedIn: "root",
 })
 export class ConsoleService {
-    private connection: SerialPort;
     private isConnected = false;
-    private consoleName: string;
-    private consoleVersion: string;
-    constructor(private statusbarService: StatusbarService) { }
+    private tiles: Tile[] = [];
+    constructor(
+        private statusbarService: StatusbarService,
+        private dialogService: DialogService,
+    ) { }
 
     public init(): void {
         this.statusbarService.setItem({
@@ -42,111 +42,57 @@ export class ConsoleService {
             id: "console",
             dropup: {
                 title: "Connecting",
-                content: "Connecting can take up to a minute, depending on the speed of your computer.",
+                content: "Please wait...",
             },
         });
-        SerialPort.list().then((d) => {
-            if (d && d[0]) {
-                new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        // eslint-disable-next-line prefer-promise-reject-errors
-                        reject("Timeout");
-                    }, 5000);
-                    this.connection = new SerialPort(d[0].path, { baudRate: 115200 }, (e) => {
-                        reject(e);
-                    });
-                    resolve();
-                }).then(
-                    () => {
-                        const parser = this.connection.pipe(new Readline({ delimiter: "\n" }));
-                        this.connection.on("open", () => {
-                            this.statusbarService.setItem({
-                                name: "Loading info",
-                                icon: "plug",
-                                id: "console",
-                                dropup: {
-                                    title: "Connected",
-                                    content: "loading more info...",
-                                },
-                                actions: [],
-                            });
-                        });
-                        parser.on("data", (data) => {
-                            this.newMessage(data.trim());
-                        });
-                    },
-                    (err) => {
-                        // eslint-disable-next-line no-console
-                        console.log(err);
+        this.dialogService.prompt("Connect to console", "Input the IP Address of your console.", "192.168.178.85").then((ip: string) => {
+            hub.init(ip, 8192).then(() => {
+                hub.on(TileType.LEDBUTTON12, (t) => this.tiles.push(t));
+                hub.on(TileType.LEDBUTTON8, (t) => this.tiles.push(t));
+                hub.on(TileType.MOTORFADER4, (t) => this.tiles.push(t));
+                hub.on(TileType.ENCODER8, (t) => this.tiles.push(t));
+                hub.on(TileType.ENCODER12, (t) => this.tiles.push(t));
+
+                setTimeout(() => {
+                    if (this.tiles.length > 0) {
                         this.statusbarService.setItem({
-                            name: "Error while connecting",
-                            icon: "times",
+                            name: "MakeHaus",
+                            icon: "home",
                             id: "console",
                             dropup: {
-                                title: "Error",
-                                content: `Could not connect to console. Reason: ${err}`,
-                                actions: [
-                                    {
-                                        text: "Try again",
-                                        type: "primary",
-                                        service: "consoleService",
-                                        action: "connect",
-                                    },
-                                ],
+                                title: "Connected",
+                                content: "",
                             },
                         });
+                    } else {
+                        this.showError("No tiles found.");
+                    }
+                }, 1000);
+            }, (e) => {
+                this.showError(e);
+            });
+        }, () => {
+            this.init();
+        });
+    }
+
+    private showError(e: any) {
+        this.statusbarService.setItem({
+            name: "Error while connecting",
+            icon: "times",
+            id: "console",
+            dropup: {
+                title: "Error",
+                content: `Could not connect to console. Reason: ${e}`,
+                actions: [
+                    {
+                        text: "Try again",
+                        type: "primary",
+                        service: "consoleService",
+                        action: "connect",
                     },
-                // eslint-disable-next-line no-console
-                ).catch((err) => console.error("caught", err));
-            }
+                ],
+            },
         });
-    }
-
-    public newMessage(m: string): void {
-        if (!this.isConnected && m.endsWith(READY_TO_CONNECT)) {
-            const p = m.split(DELIMITER);
-            this.isConnected = true;
-            [this.consoleName, this.consoleVersion] = p;
-            this.statusbarService.setItem({
-                name: `${this.consoleName} ${this.consoleVersion}`,
-                icon: "plug",
-                id: "console",
-                dropup: {
-                    title: "Connected",
-                    content: `to ${this.consoleName} ${this.consoleVersion}.`,
-                    actions: [
-                        {
-                            text: "Disconnect",
-                            type: "primary",
-                            service: "consoleService",
-                            action: "disconnect",
-                        },
-                    ],
-                },
-            });
-            this.sendMessage("connected");
-        } else {
-            // eslint-disable-next-line no-console
-            console.warn(m);
-        }
-    }
-
-    public async sendMessage(m: string): Promise<void> {
-        return new Promise((resolve, reject) => {
-            this.connection.write(`${m}\n`, (err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
-        });
-    }
-
-    public disconnect(): void {
-        if (this.connection.isOpen) {
-            this.connection.close();
-        }
-        this.init();
     }
 }

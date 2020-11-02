@@ -34,6 +34,7 @@
     },
     "private": true,
     "dependencies": {
+        "@angular-slider/ngx-slider": "^2.0.0",
         "@angular/animations": "^10.2.1",
         "@angular/cdk": "^10.2.6",
         "@angular/cli": "~10.2.0",
@@ -51,6 +52,7 @@
         "@angular/router": "^10.2.1",
         "@fortawesome/fontawesome-free": "^5.15.1",
         "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
+        "@makeproaudio/makehaus-js": "^1.0.6",
         "@ng-bootstrap/ng-bootstrap": "^7.0.0",
         "@serialport/parser-readline": "^9.0.1",
         "@types/socket.io": "^2.1.11",
@@ -62,7 +64,6 @@
         "electron-splashscreen": "^1.0.0",
         "electron-updater": "^4.3.5",
         "express": "^4.17.1",
-        "@angular-slider/ngx-slider": "^2.0.0",
         "ngx-color": "^6.0.4",
         "node-abi": "^2.19.1",
         "popper.js": "^1.16.1",
