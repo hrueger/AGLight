@@ -230,15 +230,15 @@ export class DmxService {
                             dropup: {
                                 title: "Successfully connected",
                                 content: `to an ${this.devices[key].name} on '${deviceId}'.`,
+                                actions: [
+                                    {
+                                        text: "Disconnect",
+                                        type: "primary",
+                                        service: "dmxService",
+                                        action: "disconnect",
+                                    },
+                                ],
                             },
-                            actions: [
-                                {
-                                    text: "Disconnect",
-                                    type: "primary",
-                                    service: "dmxService",
-                                    action: "disconnect",
-                                },
-                            ],
                         });
                         if (onSuccessfulConnection && typeof onSuccessfulConnection == "function") {
                             onSuccessfulConnection();
