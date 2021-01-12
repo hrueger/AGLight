@@ -4,7 +4,7 @@
 [![Lint](https://github.com/hrueger/AGLight/workflows/Lint/badge.svg)](https://github.com/hrueger/AGLight/actions)
 [![License](https://img.shields.io/badge/License-MIT-blue)](./LICENSE.md)
 [![GitHub last commit](https://img.shields.io/github/last-commit/hrueger/AGLight?color=brightgreen)](https://github.com/hrueger/AGLight/commits)
-[![Maintenance](https://img.shields.io/maintenance/yes/2020)](https://github.com/hrueger/AGLight/commits)
+[![Maintenance](https://img.shields.io/maintenance/yes/2021)](https://github.com/hrueger/AGLight/commits)
 
 ## Screenshots
 Dashboard | Fixture Editor | Choose between channel modes 
